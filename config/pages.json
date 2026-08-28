@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "pages": [
+    {
+      "id": "work",
+      "title": "Ingestion Hub",
+      "path": "/",
+      "rail": true,
+      "endpoint": "/api/work/items",
+      "group": "Operate"
+    },
+    {
+      "id": "sites",
+      "title": "Sites",
+      "path": "/sites",
+      "rail": false,
+      "endpoint": "/api/portfolio",
+      "group": "Operate"
+    },
+    {
+      "id": "site-view",
+      "title": "Editor",
+      "path": "/site",
+      "rail": true,
+      "endpoint": "/api/sites/current",
+      "group": "Operate"
+    },
+    {
+      "id": "proofs",
+      "title": "Proofs",
+      "path": "/proofs",
+      "rail": false,
+      "endpoint": "/api/proofs",
+      "group": "Operate"
+    },
+    {
+      "id": "applications",
+      "title": "Applications",
+      "path": "/applications",
+      "rail": false,
+      "endpoint": "/api/applications",
+      "group": "Produce"
+    },
+    {
+      "id": "deployments",
+      "title": "Deployments",
+      "path": "/deployments",
+      "rail": true,
+      "endpoint": "/api/deployments",
+      "group": "Produce"
+    },
+    {
+      "id": "media",
+      "title": "Media",
+      "path": "/media",
+      "rail": false,
+      "endpoint": "/api/media",
+      "group": "Produce"
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "path": "/components",
+      "rail": false,
+      "endpoint": "/api/components",
+      "group": "Produce"
+    },
+    {
+      "id": "seo",
+      "title": "SEO",
+      "path": "/seo",
+      "rail": false,
+      "endpoint": "/api/seo",
+      "group": "Produce"
+    },
+    {
+      "id": "gate",
+      "title": "Quality Gate",
+      "path": "/gate",
+      "rail": false,
+      "endpoint": "/api/gate",
+      "group": "Produce"
+    },
+    {
+      "id": "builds",
+      "title": "Build run",
+      "path": "/builds",
+      "rail": true,
+      "endpoint": "/api/builds",
+      "group": "Produce"
+    },
+    {
+      "id": "automations",
+      "title": "Shay's Skills Leash",
+      "path": "/automations",
+      "rail": false,
+      "endpoint": "/api/automations",
+      "group": "Produce"
+    },
+    {
+      "id": "shadow",
+      "title": "Shadow Runs",
+      "path": "/shadow",
+      "rail": false,
+      "endpoint": "/api/shadow/runs",
+      "group": "Produce"
+    },
+    {
+      "id": "settings",
+      "title": "Settings / Admin",
+      "path": "/settings",
+      "rail": false,
+      "endpoint": "/api/admin/paths",
+      "group": "Know"
+    }
+  ],
+  "note": "Nav grouping is authoritative from docs/plans/reference/site-studio-vision.html (Operate/Produce/Know). applications, automations and shadow are absent from that sketch and KEPT by ruling 2026-08-26: a design sketch omitting a screen is not a delete instruction."
+}

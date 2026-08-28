@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "phase": "composer-and-console-surface",
+  "created": "2026-08-26",
+  "note": "Claim a lane before working it. Release on completion. A claim older than 60 minutes with no heartbeat is STALE and reclaimable by any agent. No lane depends on in-memory context: everything it needs is in its contract file.",
+  "stale_after_minutes": 60,
+  "lanes": [
+    {
+      "id": "L0",
+      "name": "orchestrator",
+      "model_tier": "TOP",
+      "owned_paths": [
+        "docs/lanes/",
+        "docs/contracts/"
+      ],
+      "contract": "docs/lanes/LANE-MAP.md",
+      "depends_on": [],
+      "estimate_hours": 4,
+      "status": "in_progress",
+      "claimed_by": "claude-code:session-6a8b2f08",
+      "claimed_at": "2026-08-26T03:06:04+00:00",
+      "last_heartbeat": "2026-08-26T03:06:04+00:00",
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L1",
+      "name": "composer-verify",
+      "model_tier": "MID",
+      "owned_paths": [
+        "scripts/capture/archetype-matrix.mjs",
+        "docs/research/archetypes/"
+      ],
+      "contract": "docs/contracts/CONTRACT-composer.md",
+      "depends_on": [],
+      "estimate_hours": 3,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L2",
+      "name": "portfolio-registry",
+      "model_tier": "MID",
+      "owned_paths": [
+        "server/modules/portfolio/",
+        "public/pages/sites.html",
+        "public/pages/sites.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-portfolio.md",
+      "depends_on": [
+        "L0"
+      ],
+      "estimate_hours": 5,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L3",
+      "name": "console-kit",
+      "model_tier": "MID",
+      "owned_paths": [
+        "public/kit/"
+      ],
+      "contract": "docs/contracts/CONTRACT-console-kit.md",
+      "depends_on": [
+        "L0"
+      ],
+      "estimate_hours": 4,
+      "status": "complete",
+      "claimed_by": "claude-code:session-6a8b2f08",
+      "claimed_at": "2026-08-26T03:06:04+00:00",
+      "last_heartbeat": "2026-08-26T03:06:04+00:00",
+      "acceptance_artifact": "tests/kit-primitives.test.js (17 tests); kit demo capture pending",
+      "notes": "panel/route-badge/empty-state/toolbar/diff shipped. Nav grouped Operate/Produce/Know per vision.html. shadow folded into the nav and switched to the shared shell; its exclusion was a smoke-gate artifact, not a design decision."
+    },
+    {
+      "id": "L4",
+      "name": "editor",
+      "model_tier": "MID",
+      "owned_paths": [
+        "public/pages/editor.html",
+        "public/pages/editor.js",
+        "public/js/editor/"
+      ],
+      "contract": "docs/contracts/CONTRACT-editor.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 8,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L5",
+      "name": "inspector",
+      "model_tier": "MID",
+      "owned_paths": [
+        "public/js/inspector/"
+      ],
+      "contract": "docs/contracts/CONTRACT-inspector.md",
+      "depends_on": [
+        "L4"
+      ],
+      "estimate_hours": 6,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L6",
+      "name": "review-deploy",
+      "model_tier": "MID",
+      "owned_paths": [
+        "public/pages/review.html",
+        "public/pages/review.js",
+        "public/pages/deployments.html",
+        "public/pages/deployments.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-review-deploy.md",
+      "depends_on": [
+        "L5"
+      ],
+      "estimate_hours": 6,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L7",
+      "name": "seo",
+      "model_tier": "CHEAP",
+      "owned_paths": [
+        "server/modules/seo/",
+        "public/pages/seo.html",
+        "public/pages/seo.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-seo.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 4,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L8",
+      "name": "build-run-gate",
+      "model_tier": "MID",
+      "owned_paths": [
+        "public/pages/build-run.html",
+        "public/pages/build-run.js",
+        "public/pages/gate.html",
+        "public/pages/gate.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-build-gate.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 8,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L9",
+      "name": "libraries",
+      "model_tier": "CHEAP",
+      "owned_paths": [
+        "public/pages/media.html",
+        "public/pages/media.js",
+        "public/pages/components.html",
+        "public/pages/components.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-libraries.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 4,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L10",
+      "name": "system-truth",
+      "model_tier": "MID",
+      "owned_paths": [
+        "public/pages/system-truth.html",
+        "public/pages/system-truth.js",
+        "server/modules/truth/"
+      ],
+      "contract": "docs/contracts/CONTRACT-system-truth.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 6,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L11",
+      "name": "learning",
+      "model_tier": "CHEAP",
+      "owned_paths": [
+        "public/pages/learning.html",
+        "public/pages/learning.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-learning.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 3,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L12",
+      "name": "acceptance",
+      "model_tier": "MID",
+      "owned_paths": [
+        "docs/research/acceptance/"
+      ],
+      "contract": "docs/contracts/CONTRACT-acceptance.md",
+      "depends_on": [
+        "L2",
+        "L4",
+        "L6",
+        "L8"
+      ],
+      "estimate_hours": 5,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": null
+    },
+    {
+      "id": "L13",
+      "name": "recipes-and-dna",
+      "model_tier": "CHEAP",
+      "owned_paths": [
+        "public/pages/recipes.html",
+        "public/pages/recipes.js"
+      ],
+      "contract": "docs/contracts/CONTRACT-recipes-dna.md",
+      "depends_on": [
+        "L3"
+      ],
+      "estimate_hours": 4,
+      "status": "unclaimed",
+      "claimed_by": null,
+      "claimed_at": null,
+      "last_heartbeat": null,
+      "acceptance_artifact": null,
+      "notes": "Screen present in vision.html nav under Produce; had no lane in the first map."
+    }
+  ],
+  "primary_reference": "docs/plans/reference/site-studio-vision.html",
+  "reference_note": "Directional per D1: structure and function must match, pixel parity is never a gate."
+}

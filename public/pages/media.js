@@ -1,0 +1,220 @@
+// Media page: a real tile grid of real images found across the imported
+// portfolio sites (asset name, which site uses it, and provenance/unfilled
+// slots) -- Fritz's own definition of this screen. This is NOT the
+// AI-generated-media concept (cost, provider, prompt hash); spec.media_slots
+// exists for that and is always empty on a real HTML import today, so any
+// entry it does carry renders as an honestly-labeled unfilled placeholder,
+// never a fabricated row.
+import { render as renderShell } from "/kit/shell.js";
+import { createRegion } from "/kit/region.js";
+import { pill } from "/kit/pill.js";
+import { panel } from "/kit/panel.js";
+
+const root = renderShell({ pageId: "media" });
+
+const section = document.createElement("section");
+
+const heading = document.createElement("h2");
+heading.textContent = "Media";
+
+const sub = document.createElement("p");
+sub.className = "card__meta";
+sub.textContent = "Real images found across the imported portfolio sites. Not AI-generated media -- that capability has not shipped yet.";
+
+const jumpOffEl = document.createElement("p");
+jumpOffEl.className = "proofs-jump-off";
+
+const count = document.createElement("p");
+count.className = "card__meta";
+
+const regionEl = document.createElement("div");
+
+section.append(heading, sub, jumpOffEl, count, regionEl);
+root.appendChild(section);
+
+// The jump-off is page chrome, not media data -- it must show regardless of
+// whether any asset was found, so it is fetched from the registry route
+// directly rather than riding along on the (possibly empty) media region.
+// Same pattern as public/pages/proofs.js.
+fetch("/api/platform/registry", { headers: { Accept: "application/json" } })
+  .then((res) => (res.ok ? res.json() : null))
+  .then((body) => {
+    const entries = body && Array.isArray(body.entries) ? body.entries : [];
+    renderJumpOff(entries.find((entry) => entry.id === "media-studio") || null);
+  })
+  .catch(() => renderJumpOff(null));
+
+function renderJumpOff(mediaStudio) {
+  jumpOffEl.textContent = "";
+  if (!mediaStudio) return;
+  if (mediaStudio.jump_off) {
+    const link = document.createElement("a");
+    link.href = mediaStudio.jump_off;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Media Studio ->";
+    jumpOffEl.appendChild(link);
+  } else {
+    jumpOffEl.textContent = mediaStudio.authority
+      ? `No jump-off URL configured yet for Media Studio. ${mediaStudio.authority}.`
+      : "No jump-off URL configured yet for Media Studio.";
+  }
+}
+
+function filenameOf(src) {
+  const clean = String(src || "").split(/[?#]/)[0];
+  const parts = clean.split("/");
+  return parts[parts.length - 1] || src;
+}
+
+// Builds the real thumbnail/full-image URL against the asset-serving route:
+// site_id + src identify the real file; from (the first real page known to
+// reference it) lets the server resolve a plain-relative src against the
+// right directory.
+function assetUrl(asset) {
+  const params = new URLSearchParams({ site_id: asset.site_id, src: asset.src });
+  if (Array.isArray(asset.pages) && asset.pages.length) params.set("from", asset.pages[0]);
+  return `/api/media/asset?${params.toString()}`;
+}
+
+function altPill(asset) {
+  const hasAlt = typeof asset.alt === "string" && asset.alt.trim().length > 0;
+  const el = pill(hasAlt ? asset.alt : "no alt text", hasAlt ? "ok" : "error");
+  el.classList.add("media-alt-pill");
+  el.title = hasAlt ? `alt text: ${asset.alt}` : "no alt attribute found on this image tag";
+  return el;
+}
+
+function assetCard(asset) {
+  const card = document.createElement("div");
+  card.className = "pcard";
+
+  const thumb = document.createElement("div");
+  thumb.className = "pcard__thumb";
+  const img = document.createElement("img");
+  img.loading = "lazy";
+  img.alt = `Real image ${filenameOf(asset.src)} from ${asset.site_id}`;
+  img.src = assetUrl(asset);
+  thumb.appendChild(img);
+  card.appendChild(thumb);
+
+  const body = document.createElement("div");
+  body.className = "pcard__body";
+
+  const name = document.createElement("div");
+  name.className = "pcard__name";
+  name.textContent = filenameOf(asset.src);
+  name.title = asset.src;
+  body.appendChild(name);
+
+  const row = document.createElement("div");
+  row.className = "pcard__row";
+  row.appendChild(pill(asset.site_id, "ok"));
+  row.appendChild(altPill(asset));
+  body.appendChild(row);
+
+  const touch = document.createElement("div");
+  touch.className = "pcard__touch";
+  const pages = Array.isArray(asset.pages) ? asset.pages : [];
+  const usage = typeof asset.usage_count === "number" ? asset.usage_count : pages.length;
+  touch.textContent = `used on ${usage} real page${usage === 1 ? "" : "s"}`;
+  touch.title = pages.join(", ");
+  body.appendChild(touch);
+
+  card.appendChild(body);
+  return card;
+}
+
+// An unfilled media_slots entry has no real image on disk -- the thumbnail
+// is a deliberately different diagonal-stripe placeholder, never an <img>
+// pointed at a file that does not exist.
+function unfilledCard(slot) {
+  const card = document.createElement("div");
+  card.className = "pcard";
+
+  const thumb = document.createElement("div");
+  thumb.className = "pcard__thumb pcard__thumb--unfilled";
+  const label = document.createElement("span");
+  label.className = "pcard__nothumb";
+  label.textContent = "UNFILLED";
+  thumb.appendChild(label);
+  card.appendChild(thumb);
+
+  const body = document.createElement("div");
+  body.className = "pcard__body";
+
+  const name = document.createElement("div");
+  name.className = "pcard__name";
+  name.textContent = slot.role || slot.id || "media slot";
+  body.appendChild(name);
+
+  const row = document.createElement("div");
+  row.className = "pcard__row";
+  row.appendChild(pill(slot.site_id, "ok"));
+  row.appendChild(pill(slot.state || "unfilled", "warn"));
+  body.appendChild(row);
+
+  const touch = document.createElement("div");
+  touch.className = "pcard__touch";
+  touch.textContent = slot.prompt || slot.reason || "no prompt or reason recorded";
+  body.appendChild(touch);
+
+  card.appendChild(body);
+  return card;
+}
+
+function grid(items, cardFn) {
+  const g = document.createElement("div");
+  g.className = "pgrid";
+  for (const item of items) g.appendChild(cardFn(item));
+  return g;
+}
+
+// Skipped sites (real sites with no spec yet, not imported) must stay
+// visible on this screen too -- same honesty listPortfolioSpecs already
+// guarantees for Sites/SEO/Gate. Rendered from the same /api/media body this
+// region already fetched, not a second request.
+function coveragePanel(data) {
+  const body = document.createElement("div");
+
+  const distinctSites = new Set((data.assets || []).map((a) => a.site_id)).size;
+  const summary = document.createElement("p");
+  summary.className = "card__meta";
+  summary.textContent = `${distinctSites} real site(s) contributed at least one real image. ${(data.unfilled || []).length} unfilled media slot(s) recorded (spec.media_slots -- always empty on a real HTML import today; the field exists for future AI-generated media).`;
+  body.appendChild(summary);
+
+  const skipped = data.skipped_sites || [];
+  const skippedNote = document.createElement("p");
+  skippedNote.className = "card__meta";
+  skippedNote.textContent = skipped.length
+    ? `${skipped.length} real site(s) have no spec yet, not imported: ${skipped.map((s) => `${s.id} (${s.reason})`).join(", ")}.`
+    : "Every real portfolio site the scan found already has a spec; none are waiting on import.";
+  body.appendChild(skippedNote);
+
+  return panel({ title: "Portfolio coverage", route: "/api/media", children: body });
+}
+
+createRegion(regionEl, {
+  collection: "assets",
+  endpoint: "/api/media",
+  render(data) {
+    const assets = (data.assets || [])
+      .slice()
+      .sort((a, b) => a.site_id.localeCompare(b.site_id) || a.src.localeCompare(b.src));
+    const unfilled = data.unfilled || [];
+    count.textContent = `${assets.length} real asset(s) (source: ${data.source || "unknown"})`;
+
+    const wrap = document.createElement("div");
+    wrap.appendChild(grid(assets, assetCard));
+
+    if (unfilled.length) {
+      const h3 = document.createElement("h3");
+      h3.textContent = "Unfilled media slots";
+      wrap.appendChild(h3);
+      wrap.appendChild(grid(unfilled, unfilledCard));
+    }
+
+    wrap.appendChild(coveragePanel(data));
+    return wrap;
+  },
+});

@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+*.log
+.studio-next-data/
+dist/
+coverage/
+.playwright-mcp/
+tmp/

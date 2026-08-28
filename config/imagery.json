@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "provider": "pollinations",
+  "endpoint": "https://image.pollinations.ai/prompt",
+  "width": 1024,
+  "height": 576,
+  "max_images_per_run": 12,
+  "concurrency": 2,
+  "timeout_ms": 60000,
+  "preflight_timeout_ms": 20000,
+  "rate_limit_retries": 4,
+  "rate_limit_backoff_initial_ms": 1000,
+  "rate_limit_backoff_multiplier": 2
+}

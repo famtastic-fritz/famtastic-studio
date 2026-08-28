@@ -1,0 +1,46 @@
+# Codex M2 exit gate, round 2
+
+Verdict: **NOT SAFE** at clean SHA `e383c25b4a667f4676f843ed2a921941d331785d`. Seven findings are resolved; eight remain unresolved. Cut items were excluded.
+
+1. **F1 — NOT RESOLVED.** The shadow runner still creates `SHADOW_DATA_ROOT` and a run directory before checking boundaries, and compares only against the greenfield data root—not proof/campaign/blob roots ([shadow.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/shadow.js:93), [run order](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/shadow.js:303)). Pointing `SHADOW_DATA_ROOT` at a production root therefore writes there before validation.  
+   Minimal fix: canonicalize and allowlist the base before the first `mkdir`; reject symlinks and intersections with every protected production root.
+
+2. **F2 — NOT RESOLVED.** G4-1 still executes `runShadowWorkload()`, a synthetic one-file fixture, rather than `runShadow()` ([gate-g4-1-shadow-boundary.mjs](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/scripts/gate-g4-1-shadow-boundary.mjs:212)). Missing/empty production surfaces remain skips and exit status depends only on `FAIL`, so four unproved surfaces can still yield PASS. Its outreach claim is also still stale.  
+   Minimal fix: drive the shipped runner, make required unobservable surfaces produce nonzero `INCOMPLETE`, attack configured/symlinked protected roots, and correct the outreach text.
+
+3. **F3 — NOT RESOLVED.** G4-0 still hand-builds the producer payload, calls only `validateRequest`/`verifySignature`, and invents the 202 response locally ([gate-g4-0-contract.mjs](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/scripts/gate-g4-0-contract.mjs:64), [static response](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/scripts/gate-g4-0-contract.mjs:200)). It records current SHAs but enforces no expected pins. The command returned 11/11 PASS, confirming this limited check still passes.  
+   Minimal fix: derive bytes from the pinned producer artifact and run isolated ingress/acceptance/202/idempotency with temp stores and stubbed generation/callbacks.
+
+4. **F4 — RESOLVED under ADR-0005’s disposition.** The live record root is captured before the environment override and threaded into `writeRecord`; `list()`/`read()` use the live root afterward ([shadow.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/shadow.js:303)). Concurrent global mutation is the explicitly accepted serial-shadow limitation, so it is not re-raised.
+
+5. **F5 — RESOLVED.** The route passes bound `identity.site_id`; the kernel refuses mismatch before examining stages or reconstructing inputs ([pipeline module](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/modules/pipeline/index.js:59), [pipeline kernel](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/pipeline.js:439)). A direct probe returned `403 site_mismatch`.
+
+6. **F6 — NOT RESOLVED.** The shared resolver itself is hardened, but deploy bypasses it for the exact vulnerable operations. `buildManifest()` walks with `path.join` and follows file symlinks; `restoreTarget()` trusts persisted manifest paths and writes them with `path.join`, so `../` in a corrupted receipt can still write outside the release ([deploy.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/deploy.js:31), [restore path](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/deploy.js:180)). The new containment suite imports only `createPaths` and never attacks real deploy/restore callers ([containment-symlink.test.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/tests/containment-symlink.test.js:14)).  
+   Minimal fix: reject source symlinks and validate/canonicalize every manifest entry against a release-scoped boundary before reading or writing; add actual deploy and corrupted-receipt tests.
+
+7. **F7 — RESOLVED under ADR-0005’s accepted contract.** `deploy.plan()` returns the publishable manifest/hash with `dispatched:false`, and `/api/sites/plan-deploy` exposes it without dispatch ([deploy module](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/modules/deploy/index.js:34), [deploy plan](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/deploy.js:205)).
+
+8. **F8 — NOT RESOLVED because the fix introduced a receipt defect.** Atomic pointer write/read and rollback switching exist. However the pointer is stored as `active.json` inside the receipt directory, while `list()` treats every `.json` there as a deploy receipt ([pointer](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/deploy.js:85), [receipt enumeration](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/deploy.js:135)). This exposes a false receipt and lets `latestReceipt()` select a pointer object lacking receipt fields/timestamp.  
+   Minimal fix: store the pointer separately or exclude `active.json`; test `goLive → list → subsequent deploy → rollback`.
+
+9. **F9 — NOT RESOLVED.** Temp copy and hash verification are present, but the success journal and receipt are still persisted before the final rename ([deploy sequence](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/deploy.js:266)). A receipt-write or `renameSync` failure after lines 301–311 leaves durable `deployed` evidence without the final target. The failure handler covers only the earlier temp-copy phase.  
+   Minimal fix: keep the pre-publish journal non-successful, finalize the target and verify its final path, then persist/finalize success; cover receipt and rename failures.
+
+10. **F10 — RESOLVED.** Tree identity hashes file paths and working-tree bytes; stage content produces real DNA digests; packet/recipe state, zero usage/cost, and completeness checks are present ([pipeline.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/pipeline.js:63), [DNA hashing](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/dna.js:138), [manifest guard](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/pipeline.js:149)). Direct probes accepted a complete manifest and refused a missing digest.
+
+11. **F11 — NOT RESOLVED for the non-cut outcome-shape half.** Pipeline completion persists `record.outcome` as `{status:'success', ...}`, but save-as-recipe still requires literal `record.outcome === 'success'` ([pipeline finish](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/pipeline.js:424), [builds route](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/modules/builds/index.js:114)). Real successful pipeline runs therefore still cannot be saved. The full rerun route remains excluded as CUT.  
+   Minimal fix: accept the canonical object outcome, with a real pipeline→save regression test.
+
+12. **F12 — RESOLVED.** Explicit `verification.passed === false` and `status === 'failed'` both lose ([recipe.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/recipe.js:201)). Direct probes confirmed both contradictory cases fail and a genuine verified success passes.
+
+13. **F13 — RESOLVED.** CTA resolution selects a real contact page/anchor/fallback, and fragment links are checked through `getElementById` ([compose.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/compose.js:41), [verify.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/verify.js:112)).
+
+14. **F14 — RESOLVED.** Unreadable logs now produce counted `error`/`partial` states; `not_configured` has distinct rendering and honesty-gate handling ([proofs.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/server/kernel/proofs.js:95), [region.js](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/public/kit/region.js:149), [region-honesty.mjs](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/scripts/region-honesty.mjs:27)).
+
+15. **F15 — NOT RESOLVED.** `npm run gates` still runs only lint, Vitest, and smoke; neither revenue gate is included ([package.json](/Users/famtastic-fritz/Development/famtastic-wt-phase-0/site-studio-next/package.json:8)). “Being assembled with the cutover packet” is pending work, not current-SHA evidence.  
+   Minimal fix: commit one final-SHA command covering lint, full Vitest/PROVE, smoke, G4-0, and G4-1, then record its exact output and artifact hashes.
+
+Independent verification: clean branch/SHA, `git diff --check` PASS, lint PASS, relevant module syntax PASS, and plan audit clean. The sandbox prevented Vitest from creating worker temp directories, so I did not independently claim the reported 353/353; that restriction is not counted as a product failure.
+
+**VERDICT: NOT SAFE.**
+

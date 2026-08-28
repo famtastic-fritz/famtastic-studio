@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "note": "Gate configuration. Every entry records whether its numbers are SOURCED or OURS. A setting with no source is marked provisional and must stay labelled that way wherever it surfaces.",
+
+  "webaim_six": {
+    "mode": "blocking",
+    "source": "WebAIM Million 2026 — six categories account for 96% of all errors across 1,000,000 home pages, unchanged for seven years",
+    "sourced": true,
+    "runs_before_any_model_call": true,
+    "checks": [
+      "low_contrast_text",
+      "missing_alt_text",
+      "missing_form_labels",
+      "empty_links",
+      "empty_buttons",
+      "missing_document_language"
+    ],
+    "contrast": {
+      "normal_text_min_ratio": 4.5,
+      "large_text_min_ratio": 3.0,
+      "large_text_px": 24,
+      "large_bold_px": 18.5,
+      "source": "WCAG 2.2 SC 1.4.3; 1pt = 1.333px"
+    },
+    "rationale": "Deterministic, zero model cost, and it earned blocking status: it independently caught 17 low-contrast failures on a page a human had already judged weak, including an h1 at ratio 1.11 against a required 3:1."
+  },
+
+  "aesthetic_critic": {
+    "mode": "report_only",
+    "blocking": false,
+    "why_not_blocking": "The cutoff is not placed. The only two scored samples were an old-tooling beta and a commissioned-asset flagship, which measures tooling history rather than quality. It blocks nothing until samples from the CURRENT pipeline are scored and the operator's verdicts locate the split.",
+    "scale": [0, 100],
+    "dimensions": [
+      { "id": "alignment_with_user_instruction", "weight": 40, "isolated_judge": true },
+      { "id": "aesthetics_and_readability", "weight": 30, "isolated_judge": true },
+      { "id": "structural_integrity_and_responsiveness", "weight": 30, "isolated_judge": true }
+    ],
+    "one_isolated_judge_per_dimension": true,
+    "allow_unknown": true,
+    "partial_credit": true,
+    "bands": {
+      "90-100": "Outstanding, professional, nearly perfect",
+      "70-89": "Good but with noticeable issues or minor flaws",
+      "50-69": "Average, with clear limitations or several weaknesses",
+      "30-49": "Below average, significant flaws or missing requirements",
+      "0-29": "Poor, major requirements missing, very low quality"
+    },
+    "agreement_ceiling": 0.687,
+    "agreement_ceiling_note": "Measured human-to-human pairwise agreement on this task. The gate is never held to a stricter bar than people manage against each other. GPT-to-human was 0.809.",
+    "source": "Code Aesthetics (arXiv 2510.23272); construction rules from Anthropic 'Demystifying evals for AI agents'",
+    "sourced": true,
+    "pass_cutoff": null,
+    "pass_cutoff_status": "UNPLACED — indicated 55-70 by two samples, but those samples are retired from cutoff-setting"
+  },
+
+  "token_adherence": {
+    "mode": "reported",
+    "blocking": false,
+    "warning_band": [0.8, 0.95],
+    "warning_band_status": "OURS, provisional — a display band only, not a gate",
+    "sourced": false,
+    "why": "No published threshold for token adherence in rendered output exists in any source consulted, including the W3C Design Tokens format spec and Style Dictionary. Both define how tokens are authored and transformed, not how a render is scored against them. The 85% figure from the build plan is not adopted."
+  },
+
+  "repair_loop": {
+    "max_iterations": 3,
+    "sourced": false,
+    "status": "OURS, provisional",
+    "why": "Neither Code Aesthetics nor WebDevJudge states a repair-loop cap. The adjacent numbers in those papers are agent STEP limits (6 static, 5 basic dynamic, 15 complex) and a limit of 3 interactive elements during training — neither is evidence about re-repair counts."
+  },
+
+  "recalibration": {
+    "interval": "weekly",
+    "sourced": false,
+    "status": "OURS, provisional",
+    "why": "Anthropic guidance says 'frequently calibrated', 'periodic human calibration', and human review 'only occasionally' once robust. No numeric interval and no acceptable agreement percentage is stated anywhere in the source set."
+  },
+
+  "visual_baselines": {
+    "tolerance_option": "maxDiffPixels",
+    "tolerance_value": null,
+    "tolerance_status": "UNPLACED — tune from the measured false-positive rate, do not guess",
+    "same_environment_required": true,
+    "source": "Playwright visual comparisons. Rendering varies with host OS, version, settings, hardware, power source and headless mode; a baseline is only comparable to a capture made the same way. Playwright states no default for maxDiffPixels.",
+    "sourced": true
+  },
+
+  "capture_harness": {
+    "required_for_any_visual_gate": true,
+    "implementation": "scripts/capture/render-capture.mjs",
+    "why": "Not a convenience. A calibration run scored two false defects against the strongest page available — a timed chat bubble read as an overlap defect, and five lazy-loaded images read as broken. A naive screenshot critic would have failed it. Any threshold set on unsettled captures encodes measurement noise."
+  }
+}

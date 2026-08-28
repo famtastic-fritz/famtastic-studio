@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "providers": [
+    { "id": "famtasticinc", "status": "primary", "model": "path deploy then DNS pointed at the folder" },
+    { "id": "netlify", "status": "planned", "model": "gated on sandbox contract" },
+    { "id": "vercel", "status": "planned", "model": "gated on sandbox contract" },
+    { "id": "cloudflare", "status": "planned", "model": "gated on sandbox contract" }
+  ]
+}

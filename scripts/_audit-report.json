@@ -1,0 +1,2797 @@
+{
+  "work": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Work"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Work"
+          },
+          {
+            "level": 2,
+            "text": "Open work items"
+          },
+          {
+            "level": 3,
+            "text": "Recent journal entries (needs review)"
+          },
+          {
+            "level": 3,
+            "text": "Recent events"
+          },
+          {
+            "level": 3,
+            "text": "Sites with no pages on disk"
+          },
+          {
+            "level": 2,
+            "text": "Shay"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Recent journal entries (needs review): 20Recent events: 20Si"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "41 / 41 open",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta work-not-configured-note",
+          "text": "Connections (customer status + studio st",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "h3",
+          "cls": "",
+          "text": "Recent journal entries (needs review)",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "span",
+          "cls": "card__meta",
+          "text": "11 hours ago",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "Next safe action: Open Site View > Histo",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta work-item__footer",
+          "text": "Last event: mutation.applied (11 hours a",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        },
+        {
+          "tag": "h3",
+          "cls": "",
+          "text": "Recent events",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "Next safe action: Review in Site View > ",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        },
+        {
+          "tag": "h3",
+          "cls": "",
+          "text": "Sites with no pages on disk",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "span",
+          "cls": "card__meta",
+          "text": "just now",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta work-item__footer",
+          "text": "Last event: no events recorded for this ",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "work-item__site",
+          "text": "site-drop-the-beat",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "work-item__site",
+          "text": "site-drop-the-beat",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "work-item__site",
+          "text": "site-drop-the-beat",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "work-item__site",
+          "text": "site-drop-the-beat",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "41 / 41 open",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta work-not-configured-note",
+          "text": "Connections (customer status + studio st",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "h3",
+          "cls": "",
+          "text": "Recent journal entries (needs review)",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "span",
+          "cls": "card__meta",
+          "text": "11 hours ago",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "Next safe action: Open Site View > Histo",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta work-item__footer",
+          "text": "Last event: mutation.applied (11 hours a",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        },
+        {
+          "tag": "h3",
+          "cls": "",
+          "text": "Recent events",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "Next safe action: Review in Site View > ",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        },
+        {
+          "tag": "h3",
+          "cls": "",
+          "text": "Sites with no pages on disk",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "span",
+          "cls": "card__meta",
+          "text": "just now",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta work-item__footer",
+          "text": "Last event: no events recorded for this ",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "sites": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Sites"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sites"
+          },
+          {
+            "level": 2,
+            "text": "Sites"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "What do these counts mean?directories: 5top-level entries un"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "5 / 5 directories under /Users/famtastic",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Site",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Status",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Spec",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Last touch",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "SUMMARY",
+          "cls": "",
+          "text": "What do these counts mean?",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "",
+          "text": "restaurant",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "",
+          "text": "site-altitude",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "",
+          "text": "site-auntie-gale",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        },
+        {
+          "tag": "p",
+          "cls": "card__meta",
+          "text": "5 / 5 directories under /Users/famtastic",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Site",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Status",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Spec",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Last touch",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "site-view": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Site View"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Site View"
+          },
+          {
+            "level": 2,
+            "text": "Site: site-drop-the-beat"
+          },
+          {
+            "level": 2,
+            "text": "Shay"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "tabs__panel region",
+            "text": "PathTitleBytesModifieddist/_partials/_footer.html(no <title>"
+          }
+        ],
+        "tablists": [
+          {
+            "tabs": [
+              {
+                "text": "Pages",
+                "selected": "true",
+                "controls": "panel-pages",
+                "tabindex": "0"
+              },
+              {
+                "text": "Spec",
+                "selected": "false",
+                "controls": "panel-spec",
+                "tabindex": "-1"
+              },
+              {
+                "text": "History",
+                "selected": "false",
+                "controls": "panel-history",
+                "tabindex": "-1"
+              },
+              {
+                "text": "Canvas",
+                "selected": "false",
+                "controls": "panel-canvas",
+                "tabindex": "-1"
+              },
+              {
+                "text": "Conversation",
+                "selected": "false",
+                "controls": "panel-conversation",
+                "tabindex": "-1"
+              }
+            ]
+          }
+        ],
+        "tabpanels": 5
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Path",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Title",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Bytes",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Modified",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(13,15,18)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.12",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "tabs__tab",
+          "text": "Pages",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "DIV",
+          "cls": "tabs__panel region",
+          "text": "PathTitleBytesModifieddist/_partials/_fo",
+          "outline": "none 3px rgb(217, 220, 225)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Path",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Title",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Bytes",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "th",
+          "cls": "",
+          "text": "Modified",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(244,245,247)",
+          "fontSize": 11,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.95",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "applications": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Applications"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Applications"
+          },
+          {
+            "level": 2,
+            "text": "Applications"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not found: Not found. (source: /Users/famtastic-fritz/Develo"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "proofs": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Proofs"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Proofs"
+          },
+          {
+            "level": 2,
+            "text": "Proofs"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not implemented: no reader exists yet for the connections pl"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "deployments": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Deployments"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Deployments"
+          },
+          {
+            "level": 2,
+            "text": "Deployments"
+          },
+          {
+            "level": 2,
+            "text": "Shay"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not implemented: no deploy-receipt reader exists yet; showin"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "media": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Media"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Media"
+          },
+          {
+            "level": 2,
+            "text": "Media assets"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not found: Not found. (source: /Users/famtastic-fritz/Develo"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "components": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Components"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Components"
+          },
+          {
+            "level": 2,
+            "text": "Components"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not found: Not found. (source: /Users/famtastic-fritz/Develo"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "builds": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Builds + Recipes"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Builds + Recipes"
+          },
+          {
+            "level": 2,
+            "text": "Builds"
+          },
+          {
+            "level": 2,
+            "text": "Shay"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not implemented: no build-run reader exists yet; showing raw"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        },
+        {
+          "tag": "h2",
+          "cls": "",
+          "text": "Shay",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 600,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "automations": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Automations"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Automations"
+          },
+          {
+            "level": 2,
+            "text": "Automations"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Not implemented: no skills or schedules reader exists yet"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  },
+  "settings": {
+    "dark": {
+      "structural": {
+        "h1Count": 1,
+        "h1s": [
+          "Settings / Admin"
+        ],
+        "headings": [
+          {
+            "level": 1,
+            "text": "Settings / Admin"
+          },
+          {
+            "level": 2,
+            "text": "Paths and admin"
+          }
+        ],
+        "skipped": [],
+        "landmarks": {
+          "nav": 1,
+          "main": 1,
+          "header": 1
+        },
+        "skipLinkPresent": false,
+        "imgs": [],
+        "unnamed": [],
+        "formControls": [],
+        "liveRegions": [
+          {
+            "ariaLive": "polite",
+            "cls": "region",
+            "text": "Path rootsdata root: /Users/famtastic-fritz/Development/famt"
+          }
+        ],
+        "tablists": [],
+        "tabpanels": 0
+      },
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(9,10,12)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "3.22",
+          "min": 4.5
+        },
+        {
+          "tag": "div",
+          "cls": "card__meta",
+          "text": "data root: /Users/famtastic-fritz/Develo",
+          "color": "rgb(91, 98, 109)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(20,23,28)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "2.92",
+          "min": 4.5
+        }
+      ],
+      "keyboard": [
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Applications",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Proofs",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Deployments",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Media",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Components",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Builds + Recipes",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Automations",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Settings / Admin",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        null,
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Work",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Sites",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "cls": "shell__nav-link",
+          "text": "Site View",
+          "outline": "solid 2px rgb(127, 184, 240)",
+          "boxShadow": "none",
+          "visible": true
+        }
+      ]
+    },
+    "light": {
+      "structural": null,
+      "contrast": [
+        {
+          "tag": "div",
+          "cls": "shell__nav-brand",
+          "text": "Site Studio",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(233,234,237)",
+          "fontSize": 12.5,
+          "fontWeight": 700,
+          "isLarge": false,
+          "ratio": "2.67",
+          "min": 4.5
+        },
+        {
+          "tag": "div",
+          "cls": "card__meta",
+          "text": "data root: /Users/famtastic-fritz/Develo",
+          "color": "rgb(138, 144, 154)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "effectiveBg": "rgb(255,255,255)",
+          "fontSize": 12.5,
+          "fontWeight": 400,
+          "isLarge": false,
+          "ratio": "3.21",
+          "min": 4.5
+        }
+      ],
+      "keyboard": null
+    }
+  }
+}

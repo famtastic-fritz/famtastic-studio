@@ -1,0 +1,480 @@
+/* Site Studio console -- component styling: cards, tables, pills, tabs,
+   buttons, region status states, and the fam-* content-block contract used
+   by the Spec/Settings surfaces. Kept in a second file (rather than folded
+   into app.css) purely so neither file has to carry both the token system
+   and every component at once -- app.css owns tokens/base/shell, this file
+   owns everything rendered *inside* the shell's <main>. Both are linked
+   from every page's <head>. Depends on the custom properties defined in
+   app.css; do not link this file without app.css. */
+
+/* ============ buttons ============ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-bg-raised);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+  border-color: transparent;
+  color: #0b0d15;
+}
+
+.btn--primary:hover {
+  color: #0b0d15;
+  filter: brightness(1.08);
+}
+
+.btn--danger {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: transparent;
+}
+
+.btn--danger:hover {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+/* ============ cards ============ */
+
+.card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+}
+
+.card__title {
+  font-size: var(--text-md);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.card__meta {
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+}
+
+/* ============ table ============ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 10px var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  color: var(--color-text-faint);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: var(--color-bg-raised);
+}
+
+/* ============ pills ============ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.pill--ok {
+  color: var(--color-ok);
+  background: var(--color-ok-bg);
+  border-color: color-mix(in srgb, var(--color-ok) 45%, transparent);
+}
+
+.pill--warn {
+  color: var(--color-warn);
+  background: var(--color-warn-bg);
+  border-color: color-mix(in srgb, var(--color-warn) 45%, transparent);
+}
+
+.pill--unknown {
+  color: var(--color-unknown);
+  background: var(--color-unknown-bg);
+  border-color: var(--color-border-strong);
+}
+
+.pill--error {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border-color: color-mix(in srgb, var(--color-error) 45%, transparent);
+}
+
+.pill--empty {
+  color: var(--color-empty);
+  background: var(--color-empty-bg);
+  border-color: var(--color-border-strong);
+}
+
+/* ============ region states ============ */
+/* Honest states must look honest -- each one is visually distinct, not a
+   palette variation on the same shape. loading pulses neutral; empty is a
+   quiet dashed neutral box; not_found is empty's box plus an explicit
+   "Not found:" prefix from region.js; not_implemented is a solid warn-toned
+   block (region.js applies these colors inline -- see that file -- because
+   it owns no stylesheet in this tree); error is a solid error-toned block;
+   stale reuses error's block with a "Stale:" text prefix from region.js
+   (a region.js constraint outside this file's ownership: stale carries no
+   separate CSS hook to key off of). */
+
+.region__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-dim);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+}
+
+.region__status--error {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error);
+  font-weight: 500;
+}
+
+.region__status--empty {
+  background: var(--color-bg-raised);
+  border: 1px dashed var(--color-border-strong);
+}
+
+.region__status--not-found {
+  border-style: solid;
+  border-color: var(--color-border-strong);
+}
+
+.region__status--not-implemented {
+  font-weight: 500;
+}
+
+.region__status--loading {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border);
+}
+
+.region__status--loading::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-strong);
+  border-top-color: var(--color-accent);
+  animation: spin 0.8s linear infinite;
+  flex: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============ denominator legend ============ */
+
+.denominator-legend {
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-raised);
+  padding: var(--space-2) var(--space-3);
+}
+
+.denominator-legend summary {
+  cursor: pointer;
+  color: var(--color-text-dim);
+  font-size: var(--text-sm);
+}
+
+.denominator-legend dl {
+  margin: var(--space-3) 0 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-3);
+}
+
+.denominator-legend dt {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.denominator-legend dd {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-dim);
+}
+
+/* ============ tabs ============ */
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tabs__list {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabs__tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tabs__tab:hover {
+  color: var(--color-text);
+}
+
+.tabs__tab[aria-selected="true"] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+  font-weight: 600;
+}
+
+.tabs__panels {
+  padding-top: var(--space-2);
+}
+
+.tabs__panel:focus {
+  outline: none;
+}
+
+
+
+/* Stale is not error: the data shown is real, just no longer fresh. Amber and
+   dashed, so it reads as a caution over usable content rather than a failure. */
+.region__status--stale {
+  color: var(--color-warn, #d8a657);
+  border-left: 3px dashed var(--color-warn, #d8a657);
+  background: color-mix(in srgb, var(--color-warn, #d8a657) 10%, transparent);
+}
+
+/* ---- L3 console kit primitives (2026-08-26) --------------------------- */
+
+.kit-panel { border: 1px solid var(--stroke, #e5e5e5); border-radius: 12px; background: var(--glass, #fff); margin-bottom: 1.25rem; overflow: hidden; }
+.kit-panel-head { display: flex; align-items: center; gap: .75rem; padding: .7rem 1rem; border-bottom: 1px solid var(--stroke, #e5e5e5); }
+.kit-panel-title { font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--dim, #555); margin: 0; }
+.kit-panel-actions { margin-left: auto; }
+.kit-panel-note { margin: .6rem 1rem 0; font-size: .8rem; color: var(--dim, #555); }
+.kit-panel-body { padding: 1rem; }
+
+/* The route a panel reads from is always visible, never a tooltip only. */
+.kit-route { margin-left: auto; font-family: var(--mono, ui-monospace, monospace); font-size: .68rem; color: var(--dim, #666); border: 1px solid var(--stroke, #e5e5e5); border-radius: 20px; padding: .15rem .5rem; white-space: nowrap; }
+.kit-panel-actions ~ .kit-route, .kit-panel-head .kit-route + .kit-panel-actions { margin-left: .5rem; }
+.kit-route-computed { font-style: italic; opacity: .8; }
+
+.kit-empty { padding: 1rem 0; }
+.kit-empty-label { display: block; font-size: .9rem; }
+.kit-empty-reason { margin: .35rem 0 0; font-size: .82rem; color: var(--dim, #555); max-width: 60ch; }
+.kit-empty-detail { display: inline-block; margin-top: .4rem; font-size: .7rem; opacity: .75; }
+/* not_proven must NOT look like pass or fail. Collapsing "we could not check"
+   with "we checked and it is fine" is how a truth surface stops being one. */
+.kit-empty-not_proven .kit-empty-label { color: var(--warn, #b45309); }
+.kit-empty-not_proven { border-left: 3px solid var(--warn, #b45309); padding-left: .75rem; }
+.kit-empty-error .kit-empty-label { color: var(--bad, #b91c1c); }
+.kit-empty-stale .kit-empty-label { color: var(--warn, #b45309); }
+
+.kit-toolbar { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+.kit-toolbar-floating { position: absolute; z-index: 40; background: var(--glass2, #fff); border: 1px solid var(--stroke2, #ccc); border-radius: 10px; padding: .3rem; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+/* WCAG 2.2 SC 2.5.8, mutable:false. Enforced in the primitive, not per screen. */
+.kit-toolbar-btn { min-width: 24px; min-height: 24px; padding: .35rem .6rem; font-size: .8rem; border-radius: 8px; border: 1px solid var(--stroke2, #ccc); background: transparent; color: inherit; cursor: pointer; font-family: inherit; }
+.kit-toolbar-btn:hover:not(:disabled) { border-color: var(--accent, #2563eb); }
+.kit-toolbar-btn:disabled { opacity: .45; cursor: not-allowed; }
+.kit-toolbar-danger:hover:not(:disabled) { border-color: var(--bad, #b91c1c); color: var(--bad, #b91c1c); }
+
+.kit-diff { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.kit-diff-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--dim, #666); margin-bottom: .35rem; }
+.kit-diff-text { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: .8rem; background: rgba(127,127,127,.06); padding: .6rem; border-radius: 8px; }
+.kit-diff-img { width: 100%; height: auto; border: 1px solid var(--stroke, #e5e5e5); border-radius: 8px; display: block; }
+.kit-diff-missing { color: var(--dim, #777); font-style: italic; }
+.kit-diff-identical { grid-column: 1 / -1; margin: 0; font-size: .8rem; color: var(--dim, #555); }
+@media (max-width: 860px) { .kit-diff { grid-template-columns: 1fr; } }
+
+/* The identifier is the primary column: it inherited a faint colour and was the
+   least legible thing in its own row. */
+.kit-site-id { color: var(--color-text, #e8e8e8); font-weight: 600; }
+.kit-panel-body .table td { color: var(--color-text, #e8e8e8); }
+
+/* ---- Portfolio card grid (console-v2 Sites) ---------------------------- */
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 14px 0 22px; }
+.pcard { display: block; border: 1px solid var(--color-border, #2a2a35); border-radius: 12px; overflow: hidden; background: var(--color-bg-raised, #15151d); text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
+.pcard:hover { border-color: var(--color-accent, #7c6cff); transform: translateY(-2px); }
+.pcard__thumb { aspect-ratio: 16/10; background: #0d0d13; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.pcard__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.pcard__nothumb { font-size: .72rem; color: var(--color-text-faint, #777); font-style: italic; }
+.pcard__body { padding: 12px 14px 14px; }
+.pcard__name { font-weight: 650; font-size: .95rem; text-transform: capitalize; color: var(--color-text, #e8e8e8); }
+.pcard__domain { font-family: var(--mono, ui-monospace, monospace); font-size: .72rem; color: var(--color-text-faint, #8a8a96); margin: 2px 0 8px; }
+.pcard__row { display: flex; flex-wrap: wrap; gap: 6px; }
+.pcard__touch { margin-top: 8px; font-size: .7rem; color: var(--color-text-faint, #77777f); }
+.pcard__more { margin: 6px 0 18px; }
+.pcard__more > summary { cursor: pointer; font-size: .8rem; color: var(--color-text-faint, #8a8a96); padding: 6px 0; }
+@media (max-width: 640px) { .pgrid { grid-template-columns: 1fr; } }
+
+/* ---- Shay's Workspace Cybernetic Cockpit ------------------------------ */
+.shay-workspace { display: flex; flex-direction: column; gap: 14px; padding: 4px 0; font-family: var(--font-sans); }
+.shay-workspace__header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--color-border); }
+.shay-workspace__brand { display: flex; align-items: center; gap: 10px; }
+.shay-workspace__title { font-size: .85rem; font-weight: 750; letter-spacing: .06em; color: #f0f0f5; }
+.pill--active-glow { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); box-shadow: 0 0 8px rgba(52, 211, 153, 0.25); font-size: .7rem; font-weight: 700; }
+.shay-workspace__exec { background: #0c0d14; border: 1px solid #1f2233; border-radius: 8px; padding: 10px 12px; }
+.shay-workspace__exec-label { font-size: .68rem; font-weight: 700; letter-spacing: .08em; color: #8a8f9d; text-transform: uppercase; }
+.shay-workspace__exec-title { font-family: var(--font-mono); font-size: .82rem; font-weight: 650; color: #e2e8f0; margin-top: 4px; }
+.shay-workspace__exec-target { font-family: var(--font-mono); font-size: .72rem; color: #60a5fa; margin-top: 2px; }
+.shay-workspace__section-label { font-size: .68rem; font-weight: 700; letter-spacing: .08em; color: #8a8f9d; margin-bottom: 8px; text-transform: uppercase; }
+.shay-workspace__step-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.shay-workspace__step { display: flex; align-items: center; gap: 8px; font-size: .78rem; font-family: var(--font-mono); color: #94a3b8; }
+.shay-workspace__step--completed { color: #e2e8f0; }
+.shay-workspace__step--completed .shay-workspace__step-icon { color: #34d399; font-weight: bold; }
+.shay-workspace__step--running { color: #67e8f9; font-weight: 600; }
+.shay-workspace__step--running .shay-workspace__step-icon { color: #67e8f9; display: inline-block; animation: spin 2s linear infinite; }
+.shay-workspace__step-name { flex: 1; }
+.shay-workspace__step-dur { font-size: .7rem; color: #64748b; }
+.shay-workspace__terminal { background: #07080d; border: 1px solid #1e2030; border-radius: 8px; padding: 10px; font-family: var(--font-mono); font-size: .72rem; height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.shay-workspace__log-line { line-height: 1.4; word-break: break-all; }
+.shay-workspace__log-time { color: #64748b; }
+.shay-workspace__log-line--success .shay-workspace__log-text { color: #34d399; }
+.shay-workspace__log-line--warn .shay-workspace__log-text { color: #fbbf24; }
+.shay-workspace__log-line--cyan .shay-workspace__log-text { color: #38bdf8; }
+.shay-workspace__log-line--purple .shay-workspace__log-text { color: #c084fc; }
+.shay-workspace__log-line--info .shay-workspace__log-text { color: #94a3b8; }
+.shay-workspace__actions { display: flex; gap: 8px; margin-top: 4px; }
+
+/* ---- Recipe Visual DAG Node Ladder ----------------------------------- */
+.recipe-dag { display: flex; flex-direction: column; gap: 12px; margin: 16px 0 20px; }
+.recipe-dag__ladder { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: #0c0d14; border: 1px solid #1f2233; border-radius: 12px; padding: 16px; }
+.recipe-dag__node { background: #151622; border: 1px solid #2b2e44; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; min-width: 140px; }
+.recipe-dag__node-head { display: flex; align-items: center; justify-content: space-between; }
+.recipe-dag__node-title { font-weight: 700; font-size: .8rem; color: #e2e8f0; }
+.recipe-dag__node-model { font-family: var(--font-mono); font-size: .7rem; color: #60a5fa; background: #1e2238; border-radius: 4px; padding: 2px 6px; }
+.recipe-dag__arrow { color: #475569; font-size: 1rem; font-weight: bold; }
+.recipe-dag__form { background: #0f101a; border: 1px solid #222538; border-radius: 10px; padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; align-items: end; }
+.recipe-dag__field { display: flex; flex-direction: column; gap: 4px; }
+.recipe-dag__label { font-size: .72rem; font-family: var(--font-mono); color: #94a3b8; }
+.recipe-dag__input { background: #07080d; border: 1px solid #2e324b; border-radius: 6px; padding: 6px 10px; color: #f1f5f9; font-size: .8rem; font-family: var(--font-mono); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ============ toggle switch (public/kit/toggle.js) ============ */
+/* A real <button role="switch">, not the cockpit mockup's div-with-onclick.
+   The button's own padding clears the 24x24px minimum target (WCAG 2.2 SC
+   2.5.8) even though the visual track is smaller. */
+
+.kit-toggle {
+  --toggle-w: 40px;
+  --toggle-h: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.kit-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.kit-toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.kit-toggle__track {
+  width: var(--toggle-w);
+  height: var(--toggle-h);
+  border-radius: 999px;
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-strong);
+  position: relative;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.kit-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(var(--toggle-h) - 6px);
+  height: calc(var(--toggle-h) - 6px);
+  border-radius: 50%;
+  background: var(--color-text-dim);
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.kit-toggle--on .kit-toggle__track {
+  background: color-mix(in srgb, var(--color-ok) 35%, transparent);
+  border-color: var(--color-ok);
+}
+
+.kit-toggle--on .kit-toggle__thumb {
+  background: var(--color-ok);
+  transform: translateX(calc(var(--toggle-w) - var(--toggle-h)));
+}
+

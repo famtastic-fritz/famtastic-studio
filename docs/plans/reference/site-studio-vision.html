@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Studio — the vision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#07080d;--glass:rgba(255,255,255,.035);--glass2:rgba(255,255,255,.065);
+ --stroke:rgba(255,255,255,.08);--stroke2:rgba(255,255,255,.15);
+ --ink:#e9ebf3;--dim:#8b90a3;--faint:#5a5f72;
+ --shay:#8b7cf6;--cy:#4fd8e8;--ok:#3ee08f;--warn:#f5b73d;--bad:#f5564f;
+ --mono:'JetBrains Mono',monospace;--sans:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;font-size:13px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(750px 400px at 78% -10%,rgba(139,124,246,.1),transparent 60%)}
+.app{position:relative;display:grid;grid-template-columns:178px 1fr;grid-template-rows:46px 1fr 30px;height:100vh}
+.top{grid-column:1/3;display:flex;align-items:center;gap:11px;padding:0 14px;border-bottom:1px solid var(--stroke);background:rgba(11,13,21,.8);backdrop-filter:blur(12px);z-index:30}
+.orb{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#cfc6ff,var(--shay) 45%,#3a2f8f);box-shadow:0 0 11px rgba(139,124,246,.55);flex:none}
+.brand{font-weight:700;font-size:12.5px;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.brand small{font-size:9.5px;color:var(--dim);font-weight:500}
+.sp{flex:1}
+.chip{font-family:var(--mono);font-size:9.5px;color:var(--dim);border:1px solid var(--stroke);border-radius:20px;padding:3px 10px;background:var(--glass)}
+.chip b{color:var(--ok)}
+.btn{font-family:var(--sans);font-size:11.5px;font-weight:600;border-radius:8px;padding:6px 12px;cursor:pointer;border:1px solid var(--stroke2);background:var(--glass2);color:var(--ink);transition:.14s}
+.btn:hover{border-color:var(--shay);color:#cfc6ff}
+.btn.pri{background:linear-gradient(90deg,var(--shay),#6f8ff5);border-color:transparent;color:#fff}
+.btn.pri:hover{filter:brightness(1.13);color:#fff}
+.btn.sm{font-size:10.5px;padding:4px 9px}
+.btn.gh{background:none;border-color:var(--stroke)}
+.btn.bad{border-color:rgba(245,86,79,.4);color:#ffb3af}
+.btn.bad:hover{background:rgba(245,86,79,.15);border-color:var(--bad)}
+.icb{background:none;border:1px solid var(--stroke);color:var(--dim);border-radius:7px;width:27px;height:25px;cursor:pointer;font-size:11px}
+.icb.on{background:var(--glass2);color:var(--shay);border-color:var(--stroke2)}
+.nav{border-right:1px solid var(--stroke);padding:9px 7px;display:flex;flex-direction:column;gap:1px;background:rgba(11,13,21,.5);overflow-y:auto}
+.nlab{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:8px 9px 4px}
+.ni{display:flex;align-items:center;gap:8px;padding:6.5px 9px;border-radius:7px;color:var(--dim);cursor:pointer;font-weight:500;font-size:11.8px;border:1px solid transparent;background:none;font-family:var(--sans);width:100%;text-align:left}
+.ni:hover{color:var(--ink);background:var(--glass)}
+.ni.on{color:var(--ink);background:var(--glass2);border-color:var(--stroke)}
+.ni .ic{width:13px;text-align:center;font-size:11px;opacity:.85}
+.ni .bg{margin-left:auto;font-family:var(--mono);font-size:8.5px;border-radius:8px;padding:1px 6px}
+.bg.hot{background:rgba(245,86,79,.16);color:var(--bad)}
+.bg.ok{background:rgba(62,224,143,.12);color:var(--ok)}
+.bg.cool{background:rgba(139,124,246,.16);color:var(--shay)}
+.main{overflow-y:auto;padding:18px 22px 30px}
+.main::-webkit-scrollbar{width:7px}.main::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:4px}
+.pg{display:none}.pg.on{display:block;animation:fade .2s}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h1{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.head{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.head .d{font-size:11px;color:var(--dim)}
+.panel{border:1px solid var(--stroke);border-radius:11px;background:var(--glass);overflow:hidden;margin-bottom:12px}
+.ph{display:flex;align-items:center;gap:9px;padding:9px 13px;border-bottom:1px solid var(--stroke);font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--dim)}
+.route{margin-left:auto;font-family:var(--mono);font-size:8.5px;color:var(--faint);text-transform:none;letter-spacing:0;background:rgba(0,0,0,.3);padding:2px 7px;border-radius:5px}
+.ib{padding:12px 13px}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid var(--stroke);font-size:12px}
+.row:last-child{border:none}
+.row:hover{background:var(--glass)}
+.row .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--shay)}
+.row .who{font-family:var(--mono);font-size:9.5px;color:var(--faint);width:66px;flex:none}
+.row .what{flex:1}
+.row .what small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-top:2px}
+.pill{font-family:var(--mono);font-size:9px;border-radius:9px;padding:2px 8px;white-space:nowrap}
+.pill.ok{background:rgba(62,224,143,.11);color:var(--ok)}
+.pill.warn{background:rgba(245,183,61,.13);color:var(--warn)}
+.pill.bad{background:rgba(245,86,79,.13);color:var(--bad)}
+.pill.b{background:rgba(139,124,246,.15);color:var(--shay)}
+.pill.g{background:var(--glass2);color:var(--dim)}
+.pill.cy{background:rgba(79,216,232,.11);color:var(--cy)}
+.stat{border:1px solid var(--stroke);border-radius:11px;padding:12px 14px;background:var(--glass);position:relative}
+.stat .k{font-family:var(--mono);font-size:21px;font-weight:600;line-height:1.1}
+.stat .l{font-size:10px;color:var(--dim);margin-top:3px}
+.stat .sub{font-family:var(--mono);font-size:9px;color:var(--faint);margin-top:5px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse}
+th{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:left;padding:8px 13px;border-bottom:1px solid var(--stroke)}
+td{padding:10px 13px;border-bottom:1px solid var(--stroke);font-size:12px}
+tr:last-child td{border:none}
+tr:hover td{background:var(--glass)}
+.mono{font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+/* ===== DAG pipeline ===== */
+.dag{display:flex;flex-direction:column;gap:1px}
+.grp-lab{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;padding:9px 13px 4px;background:rgba(0,0,0,.16)}
+.stg{display:flex;align-items:center;gap:9px;padding:7px 13px;border-bottom:1px solid rgba(255,255,255,.045);font-size:11.5px}
+.stg .n{width:17px;height:17px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8.5px;border:1px solid var(--stroke2);color:var(--faint)}
+.stg.done .n{background:rgba(62,224,143,.15);color:var(--ok);border-color:transparent}
+.stg.run .n{border-color:var(--shay);color:var(--shay);animation:spin 1.1s linear infinite}
+.stg.fail .n{background:rgba(245,86,79,.16);color:var(--bad);border-color:transparent}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stg.done{color:var(--dim)}.stg.run{color:var(--ink)}
+.stg .nm{min-width:150px}
+.stg .prov{font-family:var(--mono);font-size:8.5px;padding:1px 7px;border-radius:8px}
+.prov.shay{background:rgba(139,124,246,.16);color:var(--shay)}
+.prov.det{background:var(--glass2);color:var(--faint)}
+.stg .needs{font-family:var(--mono);font-size:8.5px;color:var(--faint);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stg .meta{font-family:var(--mono);font-size:9px;color:var(--faint);width:74px;text-align:right}
+/* ===== verdict ===== */
+.verdict{border-radius:11px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;border:1px solid}
+.verdict.block{background:rgba(245,86,79,.09);border-color:rgba(245,86,79,.35)}
+.verdict.pass{background:rgba(62,224,143,.08);border-color:rgba(62,224,143,.3)}
+.verdict .big{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:.06em}
+.verdict.block .big{color:var(--bad)}.verdict.pass .big{color:var(--ok)}
+.verdict .txt{flex:1;font-size:12px;line-height:1.5}
+.verdict .txt b{display:block;font-size:13.5px;margin-bottom:3px}
+/* lanes */
+.lane{display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:1px solid var(--stroke)}
+.lane:last-child{border:none}
+.lane .st{width:19px;height:19px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px}
+.st.p{background:rgba(62,224,143,.14);color:var(--ok)}
+.st.f{background:rgba(245,86,79,.14);color:var(--bad)}
+.st.w{background:rgba(245,183,61,.14);color:var(--warn)}
+.lane .body{flex:1}
+.lane .body b{font-size:12.5px;font-weight:600;display:block}
+.lane .body span{font-size:10.5px;color:var(--dim)}
+.lane .kind{font-family:var(--mono);font-size:8.5px;padding:2px 7px;border-radius:8px;background:var(--glass2);color:var(--faint)}
+/* screenshot critique */
+.shotwrap{position:relative;border:1px solid var(--stroke);border-radius:9px;overflow:hidden;background:#0a0c13}
+.shot{width:100%;height:290px;position:relative;overflow:hidden}
+.bbox{position:absolute;border:2px solid var(--bad);border-radius:3px;background:rgba(245,86,79,.09);cursor:pointer}
+.bbox b{position:absolute;top:-19px;left:-2px;background:var(--bad);color:#fff;font-family:var(--mono);font-size:8.5px;padding:1px 6px;border-radius:4px 4px 0 0;white-space:nowrap}
+.bbox.warn{border-color:var(--warn);background:rgba(245,183,61,.09)}
+.bbox.warn b{background:var(--warn);color:#241c00}
+/* plain render for critique */
+.plain{background:#fff;color:#111;padding:22px 30px;font-family:Georgia,serif;height:100%}
+.plain h1{font-size:20px;margin-bottom:8px;color:#111}
+.plain h2{font-size:14px;margin:12px 0 5px}
+.plain p{font-size:11px;line-height:1.55;color:#444;max-width:520px}
+/* good render */
+.good{height:100%;display:flex;flex-direction:column;font-family:var(--sans)}
+.g-hero{flex:1;background:linear-gradient(135deg,#0b1e3a,#16325c 55%,#0d2440);color:#fff;padding:26px 34px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.g-hero::after{content:'';position:absolute;right:-30px;top:-20px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(240,196,96,.3),transparent 65%)}
+.g-hero h2{font-family:'Playfair Display',serif;font-size:30px;line-height:1.05;position:relative;z-index:2}
+.g-hero h2 em{font-style:normal;color:#f0c460}
+.g-hero p{color:#b8c8e0;font-size:12px;margin-top:9px;max-width:330px;position:relative;z-index:2}
+.g-btn{background:#f0c460;color:#0b1e3a;font-weight:700;font-size:11px;padding:8px 17px;border-radius:5px;margin-top:14px;width:fit-content;position:relative;z-index:2}
+.g-strip{display:flex;gap:10px;padding:16px 34px;background:#0e1626}
+.g-card{flex:1;background:#141f34;border:1px solid #22314f;border-radius:7px;padding:12px}
+.g-card h3{font-size:11.5px;color:#f0c460;margin-bottom:4px}
+.g-card p{font-size:10px;color:#8fa3bd;line-height:1.45}
+/* repair queue */
+.rep{display:flex;gap:11px;padding:11px 13px;border-bottom:1px solid var(--stroke);align-items:flex-start}
+.rep:last-child{border:none}
+.rep .code{font-family:var(--mono);font-size:9.5px;background:rgba(245,86,79,.13);color:var(--bad);padding:2px 7px;border-radius:5px;flex:none;margin-top:1px}
+.rep .code.w{background:rgba(245,183,61,.13);color:var(--warn)}
+.rep .ins{flex:1;font-size:11.5px;line-height:1.5}
+.rep .ins small{display:block;color:var(--dim);font-family:var(--mono);font-size:9.5px;margin-top:3px}
+/* token audit bar */
+.tbar{height:9px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden;display:flex;margin:7px 0 5px}
+.tbar div{height:100%}
+.legend{display:flex;gap:12px;font-family:var(--mono);font-size:9px;color:var(--dim);flex-wrap:wrap}
+.legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:4px}
+/* editor bits */
+.edwrap{display:grid;grid-template-columns:1fr 262px;gap:12px;align-items:start}
+.stagebar{display:flex;align-items:center;gap:8px;padding:7px 11px;border-bottom:1px solid var(--stroke);background:var(--glass)}
+.frame{height:390px;overflow:auto;background:repeating-conic-gradient(#0a0b11 0% 25%,#080910 0% 50%) 50%/14px 14px;padding:12px;display:flex;justify-content:center}
+.canvas{width:880px;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.55);transition:width .25s;height:fit-content}
+.canvas.mob{width:380px}
+.sec{position:relative}
+.sec:hover{outline:1.5px dashed rgba(139,124,246,.5);outline-offset:-2px;cursor:pointer}
+.sec.sel{outline:2px solid var(--shay);outline-offset:-2px}
+.sectag{position:absolute;top:-1px;left:-1px;background:var(--shay);color:#fff;font-family:var(--mono);font-size:8.5px;padding:2px 7px;border-radius:0 0 5px 0;z-index:6;display:none}
+.sec.sel .sectag{display:block}
+.fltbar{position:absolute;top:-28px;right:0;display:none;gap:3px;background:#151827;border:1px solid var(--stroke2);border-radius:6px;padding:3px;z-index:7}
+.sec.sel .fltbar{display:flex}
+.fltbar button{background:none;border:none;color:var(--dim);width:23px;height:21px;border-radius:4px;cursor:pointer;font-size:10.5px}
+.fltbar button:hover{background:var(--glass2);color:var(--ink)}
+[data-ed]{cursor:text}
+[contenteditable=true]{outline:2px solid var(--cy);outline-offset:2px;background:rgba(79,216,232,.08)}
+.itabs{display:flex;border-bottom:1px solid var(--stroke)}
+.itab{flex:1;background:none;border:none;color:var(--dim);font-family:var(--sans);font-size:11px;font-weight:500;padding:7px 0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.itab.on{color:var(--ink);border-bottom-color:var(--shay)}
+.grp{border-bottom:1px solid var(--stroke)}
+.gh2{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:11px;font-weight:600;user-select:none}
+.gh2 .car{margin-left:auto;color:var(--faint);font-size:8px}
+.grp.cl .car{transform:rotate(-90deg)}
+.gb{padding:0 12px 11px}
+.grp.cl .gb{display:none}
+.fld{margin-bottom:9px}
+.fld label{display:flex;font-size:9.5px;color:var(--dim);margin-bottom:4px}
+.fld label .c{margin-left:auto;font-family:var(--mono);font-size:8.5px;color:var(--faint)}
+.fld input,.fld textarea,.fld select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--stroke);border-radius:6px;padding:6px 8px;color:var(--ink);font-family:var(--sans);font-size:11px;outline:none}
+.fld input:focus,.fld textarea:focus{border-color:var(--shay)}
+.fld textarea{resize:vertical;min-height:46px;line-height:1.4}
+.swrow{display:flex;gap:5px;flex-wrap:wrap}
+.sw{width:24px;height:24px;border-radius:5px;border:1px solid var(--stroke2);cursor:pointer}
+.sw.on{outline:2px solid var(--shay);outline-offset:1px}
+.lock{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;color:var(--warn);margin-top:5px}
+.tg{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:11px;color:var(--dim)}
+.tog{margin-left:auto;width:30px;height:17px;border-radius:11px;background:var(--glass2);border:1px solid var(--stroke2);position:relative;cursor:pointer;flex:none}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:var(--faint);transition:.18s}
+.tog.on{background:rgba(62,224,143,.2);border-color:rgba(62,224,143,.45)}
+.tog.on::after{left:15px;background:var(--ok)}
+.hint{font-size:9.5px;color:var(--faint);line-height:1.5}
+.box{background:rgba(0,0,0,.24);border:1px solid var(--stroke);border-radius:7px;padding:8px}
+.marg{border:1px dashed rgba(139,124,246,.4);border-radius:5px;padding:14px 7px 7px;display:grid;grid-template-columns:auto 1fr auto;gap:3px;align-items:center;position:relative}
+.pad{border:1px dashed rgba(79,216,232,.4);border-radius:4px;padding:13px 7px 7px;display:grid;grid-template-columns:auto 1fr auto;gap:3px;align-items:center;position:relative}
+.lbl2{position:absolute;top:3px;left:6px;font-family:var(--mono);font-size:7.5px;color:var(--faint)}
+.bi{width:30px;background:rgba(0,0,0,.4);border:1px solid var(--stroke);border-radius:3px;color:var(--ink);font-family:var(--mono);font-size:9px;text-align:center;padding:2px 0;outline:none}
+.vs{display:flex;flex-direction:column;gap:3px;align-items:center}
+/* diff */
+.diff{position:relative;height:250px;overflow:hidden;cursor:ew-resize;background:#0a0c13;border-radius:8px;border:1px solid var(--stroke)}
+.dp{position:absolute;inset:0;overflow:hidden}
+.dp .in{width:880px;transform:scale(.52);transform-origin:top left}
+.dclip{position:absolute;inset:0;overflow:hidden}
+.dh{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(var(--shay),var(--cy));box-shadow:0 0 9px rgba(139,124,246,.7);z-index:5}
+.dg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:27px;height:27px;border-radius:50%;background:#131627;border:1.5px solid var(--shay);display:flex;align-items:center;justify-content:center;color:var(--shay);font-size:9px}
+/* status bar */
+.sbar{grid-column:1/3;display:flex;align-items:center;gap:0;border-top:1px solid var(--stroke);background:rgba(11,13,21,.85);font-family:var(--mono);font-size:9.5px;color:var(--dim);padding:0 12px}
+.sbar .f{padding:0 11px;border-right:1px solid var(--stroke);height:100%;display:flex;align-items:center;gap:6px}
+.sbar .f:last-child{border:none;margin-left:auto}
+.sbar b{color:var(--ink);font-weight:500}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok)}
+/* toast */
+.toast{position:fixed;bottom:44px;left:50%;transform:translateX(-50%) translateY(14px);background:rgba(15,17,28,.96);border:1px solid var(--stroke2);border-radius:9px;padding:9px 16px;font-size:11.5px;opacity:0;pointer-events:none;transition:.22s;z-index:90;display:flex;align-items:center;gap:8px}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast i{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.mtile{border:1px solid var(--stroke);border-radius:8px;overflow:hidden;background:var(--glass)}
+.mimg{height:82px}
+.mmeta{padding:7px 9px;font-family:var(--mono);font-size:8.5px;color:var(--dim)}
+.mmeta b{display:block;font-family:var(--sans);font-size:11px;color:var(--ink);font-weight:500;margin-bottom:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div class="orb"></div>SITE STUDIO <small>powered by Shay</small></div>
+    <div class="sp"></div>
+    <div class="chip">sites: <b>~/FAMtastic/sites</b></div>
+    <div class="chip">recipe: <b>full-site-build-v2</b></div>
+    <button class="btn pri sm" onclick="nav('build')">＋ New build</button>
+  </div>
+
+  <nav class="nav">
+    <div class="nlab">Operate</div>
+    <button class="ni on" data-p="work" onclick="nav('work',this)"><span class="ic">▤</span>Work<span class="bg hot">3</span></button>
+    <button class="ni" data-p="sites" onclick="nav('sites',this)"><span class="ic">◉</span>Sites<span class="bg ok">9</span></button>
+    <button class="ni" data-p="site" onclick="nav('site',this)"><span class="ic">▣</span>Editor</button>
+    <button class="ni" data-p="proofs" onclick="nav('proofs',this)"><span class="ic">✉</span>Proofs<span class="bg cool">2</span></button>
+    <div class="nlab">Produce</div>
+    <button class="ni" data-p="build" onclick="nav('build',this)"><span class="ic">✦</span>Build run</button>
+    <button class="ni" data-p="gate" onclick="nav('gate',this)"><span class="ic">◎</span>Quality gate<span class="bg hot">1</span></button>
+    <button class="ni" data-p="recipes" onclick="nav('recipes',this)"><span class="ic">⚙</span>Recipes + DNA</button>
+    <button class="ni" data-p="media" onclick="nav('media',this)"><span class="ic">▩</span>Media</button>
+    <button class="ni" data-p="comp" onclick="nav('comp',this)"><span class="ic">◫</span>Components</button>
+    <button class="ni" data-p="deploy" onclick="nav('deploy',this)"><span class="ic">↑</span>Deployments</button>
+    <div class="nlab">Know</div>
+    <button class="ni" data-p="op" onclick="nav('op',this)"><span class="ic">◆</span>System truth</button>
+    <button class="ni" data-p="learn" onclick="nav('learn',this)"><span class="ic">✧</span>Learning<span class="bg cool">4</span></button>
+    <button class="ni" data-p="set" onclick="nav('set',this)"><span class="ic">⚒</span>Settings</button>
+  </nav>
+
+  <main class="main">
+
+  <!-- ================= WORK ================= -->
+  <section class="pg on" id="p-work">
+    <div class="head"><h1>Work</h1><span class="d">what needs you, and what is broken. Nothing else on open.</span></div>
+    <div class="grid4">
+      <div class="stat"><div class="k" style="color:var(--ok)">8<span style="font-size:12px;color:var(--faint)">/9</span></div><div class="l">sites healthy</div><div class="sub">verified 06:00 today</div></div>
+      <div class="stat"><div class="k" style="color:var(--bad)">1</div><div class="l">build blocked by quality gate</div><div class="sub">fresh-cuts · 3 codes</div></div>
+      <div class="stat"><div class="k" style="color:var(--shay)">2</div><div class="l">proposals awaiting your gate</div><div class="sub">working copies, live untouched</div></div>
+      <div class="stat"><div class="k" style="color:var(--warn)">$4.18</div><div class="l">spend this week</div><div class="sub">6 builds · 41 images</div></div>
+    </div>
+    <div class="cols2">
+      <div class="panel">
+        <div class="ph">Needs me <span class="route">GET /api/work?state=needs_operator</span></div>
+        <div class="row"><span class="dot"></span><span class="who">now</span><span class="what">Hero warmth pass ready to review<small>mbsh96reunion · 4 changes · aesthetic critic: pass</small></span><button class="btn sm pri" onclick="nav('site')">Review</button></div>
+        <div class="row"><span class="dot" style="background:var(--bad)"></span><span class="who">12m</span><span class="what">Fresh Cuts build BLOCKED by visual critic<small>token adherence 11% · no imagery · contrast fail</small></span><button class="btn sm bad" onclick="nav('gate')">Open gate</button></div>
+        <div class="row"><span class="dot" style="background:var(--warn)"></span><span class="who">1h</span><span class="what">Starlight: 3 media slots unfilled<small>budget cap reached at 12 images</small></span><button class="btn sm">Raise cap</button></div>
+      </div>
+      <div class="panel">
+        <div class="ph">Broken now <span class="route">GET /api/health/findings</span></div>
+        <div class="row"><span class="dot" style="background:var(--warn)"></span><span class="who">06:00</span><span class="what">Drop The Beat: 7 broken image links<small>crawler · assets moved during last deploy</small></span><button class="btn sm">Ask Shay</button></div>
+        <div class="row"><span class="dot" style="background:var(--ok)"></span><span class="who">05:30</span><span class="what">All 9 certificates valid<small>soonest expiry 61 days · littlehaiti</small></span></div>
+        <div class="row"><span class="dot" style="background:var(--cy)"></span><span class="who">baseline</span><span class="what">No visual regressions across 9 sites<small>screenshot baselines matched at 1440 and 390</small></span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph">Shay readback <span class="route">GET /api/shay/readback?site=mbsh96reunion</span></div>
+      <div class="ib" style="display:flex;gap:12px;align-items:flex-start">
+        <div class="orb" style="width:22px;height:22px;margin-top:2px"></div>
+        <div style="flex:1;font-size:12px;line-height:1.6">
+          <b>What I understood from your last instruction:</b> warm the reunion hero using the 1996 school colours, change nothing live.
+          <div style="margin-top:7px;font-family:var(--mono);font-size:10.5px;color:var(--dim)">
+            → target: mbsh96reunion / index / section[0]<br>
+            → authority: working copy only, publish withheld<br>
+            → sources: 4 verified facts, palette derived from gallery assets (rp_8f2a)<br>
+            → I did NOT: touch other pages, alter the RSVP form, or deploy
+          </div>
+          <div style="margin-top:9px;display:flex;gap:7px"><button class="btn sm">That's right</button><button class="btn sm gh">Correct me</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SITES ================= -->
+  <section class="pg" id="p-sites">
+    <div class="head"><h1>Sites</h1><span class="d">9 real properties · test builds flagged separately</span></div>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Site</th><th>Health</th><th>Token adherence</th><th>SEO</th><th>Target</th><th>Baseline</th><th>Last touch</th></tr></thead>
+        <tbody>
+          <tr onclick="nav('site')" style="cursor:pointer"><td>MBSH Class of '96<div class="mono">mbsh96reunion.com</div></td><td><span class="pill b">proposal open</span></td><td><span class="pill ok">94%</span></td><td class="mono" style="color:var(--ok)">91</td><td class="mono">◆ Netlify</td><td><span class="pill ok">✓ matched</span></td><td class="mono">2h · Shay</td></tr>
+          <tr><td>FAMtastic Designs<div class="mono">famtasticdesigns.com</div></td><td><span class="pill ok">healthy</span></td><td><span class="pill ok">97%</span></td><td class="mono" style="color:var(--ok)">94</td><td class="mono">● GoDaddy</td><td><span class="pill ok">✓ matched</span></td><td class="mono">1d · you</td></tr>
+          <tr><td>Starlight Skin Bar<div class="mono">starlightskinbar.com</div></td><td><span class="pill b">working copy</span></td><td><span class="pill ok">89%</span></td><td class="mono" style="color:var(--warn)">74</td><td class="mono">▲ Vercel</td><td><span class="pill g">no baseline yet</span></td><td class="mono">18m · Shay</td></tr>
+          <tr><td>Drop The Beat<div class="mono">site-drop-the-beat</div></td><td><span class="pill warn">7 broken links</span></td><td><span class="pill ok">91%</span></td><td class="mono" style="color:var(--ok)">85</td><td class="mono">◆ Netlify</td><td><span class="pill ok">✓ matched</span></td><td class="mono">6h · Shay</td></tr>
+          <tr onclick="nav('gate')" style="cursor:pointer"><td>Fresh Cuts Atlanta<div class="mono">site-fresh-cuts-in-atlanta</div></td><td><span class="pill bad">gate: BLOCK</span></td><td><span class="pill bad">11%</span></td><td class="mono" style="color:var(--faint)">—</td><td class="mono">not deployed</td><td><span class="pill g">—</span></td><td class="mono">12m · Shay</td></tr>
+          <tr><td>Auntie Gale's<div class="mono">site-auntie-gale</div></td><td><span class="pill ok">healthy</span></td><td><span class="pill warn">78%</span></td><td class="mono" style="color:var(--warn)">78</td><td class="mono">● GoDaddy</td><td><span class="pill ok">✓ matched</span></td><td class="mono">3d · Shay</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel"><div class="ph">Counts, and what they mean <span class="route">GET /api/sites/denominators</span></div>
+      <div class="ib mono" style="line-height:1.9;font-size:10.5px">
+        <b style="color:var(--ink)">9</b> directories with a valid spec &nbsp;·&nbsp; <b style="color:var(--ink)">6</b> have customer identity set &nbsp;·&nbsp; <b style="color:var(--ink)">5</b> deployable &nbsp;·&nbsp; <b style="color:var(--ink)">4</b> live with a verified probe inside the freshness window<br>
+        <span style="color:var(--faint)">2 test builds excluded from all counts. Nothing here is inferred from the filesystem.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EDITOR ================= -->
+  <section class="pg" id="p-site">
+    <div class="head"><h1>MBSH Class of '96</h1><span class="d mono">mbsh96reunion.com / index · working copy</span>
+      <div class="sp"></div>
+      <div style="display:flex;gap:4px"><button class="icb on" onclick="dev('',this)">▭</button><button class="icb" onclick="dev('mob',this)">▮</button></div>
+      <button class="icb" onclick="undo()">↶</button>
+      <button class="btn gh sm" onclick="toast('Preview opened')">Preview</button>
+      <button class="btn pri sm" onclick="toast(dirty+' change(s) saved to working copy · nothing published')">Save</button>
+    </div>
+    <div class="edwrap">
+      <div>
+        <div class="panel" style="margin-bottom:12px">
+          <div class="stagebar"><span class="mono" style="font-size:9.5px;color:var(--faint)">click a section to select · click text to edit · ⌘Z undo · every mutation journaled</span><div class="sp"></div><span class="pill b" id="dstate">Published</span></div>
+          <div class="frame">
+            <div class="canvas" id="canvas">
+              <div class="sec" id="hero" onclick="pick('hero',event)">
+                <div class="sectag">Hero Section</div>
+                <div class="fltbar"><button>✥</button><button onclick="event.stopPropagation();toast('Section settings')">⚙</button><button onclick="event.stopPropagation();toast('Duplicated')">⧉</button><button onclick="event.stopPropagation();toast('Removed · undo available')">🗑</button></div>
+                <div class="g-hero" style="min-height:210px">
+                  <h2 data-ed id="hH">30 Years.<br><em>One Weekend.</em></h2>
+                  <p data-ed id="hP">Miami Beach Senior High, Class of 1996. October 16–18, 2026 on the sand where it started.</p>
+                  <div class="g-btn" data-ed id="hB">Reserve your spot</div>
+                </div>
+              </div>
+              <div class="sec" id="grid" onclick="pick('grid',event)">
+                <div class="sectag">Feature Grid — 3up</div>
+                <div class="fltbar"><button>✥</button><button>⚙</button><button>⧉</button><button>🗑</button></div>
+                <div class="g-strip" id="gi">
+                  <div class="g-card"><h3 data-ed>Friday Mixer</h3><p data-ed>Rooftop at The Betsy, 7pm.</p></div>
+                  <div class="g-card"><h3 data-ed>Saturday Gala</h3><p data-ed>Dinner, awards, class photo.</p></div>
+                  <div class="g-card"><h3 data-ed>Sunday Beach Day</h3><p data-ed>10th &amp; Ocean, families welcome.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph">Review changes · visual diff <span class="route">GET /api/sites/:id/proposal/diff</span></div>
+          <div class="ib">
+            <div class="diff" id="diff">
+              <div class="dp"><div class="in"><div class="good" style="height:250px"><div class="g-hero" style="background:linear-gradient(135deg,#2a1a3e,#4a2d6e 55%,#1d1230)"><h2>Still the Class<br><em style="color:#f0b8d0">That Set the Standard.</em></h2><p>Three decades. One weekend on the sand where it started.</p><div class="g-btn" style="background:#f0b8d0">Claim your seat</div></div><div class="g-strip"><div class="g-card"><h3 style="color:#f0b8d0">Friday Mixer</h3><p>Rooftop at The Betsy.</p></div><div class="g-card"><h3 style="color:#f0b8d0">Saturday Gala</h3><p>Dinner and awards.</p></div><div class="g-card"><h3 style="color:#f0b8d0">Beach Day</h3><p>10th &amp; Ocean.</p></div></div></div></div></div>
+              <div class="dclip" id="dclip"><div class="dp"><div class="in"><div class="good" style="height:250px"><div class="g-hero"><h2>30 Years.<br><em>One Weekend.</em></h2><p>Miami Beach Senior High, Class of 1996.</p><div class="g-btn">Reserve your spot</div></div><div class="g-strip"><div class="g-card"><h3>Friday Mixer</h3><p>Rooftop at The Betsy.</p></div><div class="g-card"><h3>Saturday Gala</h3><p>Dinner and awards.</p></div><div class="g-card"><h3>Beach Day</h3><p>10th &amp; Ocean.</p></div></div></div></div></div></div>
+              <div class="dh" id="dh"><div class="dg">◂▸</div></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:11px;align-items:flex-start">
+              <div style="flex:1;font-family:var(--mono);font-size:10.5px;color:var(--dim);line-height:1.8">
+                <div><span style="color:var(--warn)">~</span> headline → "Still the Class That Set the Standard."</div>
+                <div><span style="color:var(--warn)">~</span> palette → plum + rose gold (1996 yearbook, verified)</div>
+                <div><span style="color:var(--ok)">+</span> hero image regenerated · 214 KB WebP · $0.045</div>
+              </div>
+              <div style="display:flex;gap:7px"><button class="btn sm" onclick="toast('Rejected · working copy discarded')">Reject</button><button class="btn sm" onclick="toast('Applied to working copy')">Apply</button><button class="btn sm pri" onclick="toast('Published · deploy #219 verified')">Publish</button></div>
+            </div>
+            <div style="margin-top:9px;display:flex;gap:5px;flex-wrap:wrap">
+              <span class="pill ok">✓ geometry 1440</span><span class="pill ok">✓ geometry 390</span><span class="pill ok">✓ tokens 94%</span><span class="pill ok">✓ contrast AA</span><span class="pill ok">✓ RSVP posts</span><span class="pill cy">aesthetic critic: pass (7.8/10)</span><span class="pill g">baseline diff: intentional</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="position:sticky;top:0">
+        <div class="ph" style="padding:9px 12px"><span id="iName">Hero Section</span><span class="pill g" style="margin-left:auto">Hero split</span></div>
+        <div class="itabs">
+          <button class="itab on" onclick="itab('content',this)">Content</button>
+          <button class="itab" onclick="itab('style',this)">Style</button>
+          <button class="itab" onclick="itab('adv',this)">Advanced</button>
+        </div>
+        <div id="iBody" style="max-height:520px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BUILD RUN ================= -->
+  <section class="pg" id="p-build">
+    <div class="head"><h1>Build run</h1><span class="d">27 stages · 4 use judgement · 23 are reproducible machinery</span>
+      <div class="sp"></div><span class="mono" id="bt" style="color:var(--dim)"></span>
+      <button class="btn pri sm" onclick="runBuild()">Start build</button></div>
+    <div class="cols2" style="align-items:start">
+      <div class="panel" style="margin:0">
+        <div class="ph">Pipeline · full-site-build-v2 <span class="route">POST /api/builds</span></div>
+        <div class="dag" id="dag"></div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="ph">Live preview <span class="route">ws /api/events/stream</span></div>
+          <div class="frame" style="height:250px;padding:10px" id="bprev"><div style="align-self:center;color:var(--faint);font-size:11.5px">Preview appears as stages complete.</div></div>
+        </div>
+        <div class="panel">
+          <div class="ph">Cost + routing this run</div>
+          <div class="ib">
+            <div style="display:flex;gap:16px;font-family:var(--mono);font-size:11px">
+              <div><div style="color:var(--faint);font-size:9px">JUDGEMENT</div><div style="color:var(--shay);font-size:16px">4</div><div style="color:var(--faint);font-size:9px">claude · $0.28</div></div>
+              <div><div style="color:var(--faint);font-size:9px">DETERMINISTIC</div><div style="color:var(--ink);font-size:16px">23</div><div style="color:var(--faint);font-size:9px">code · $0.00</div></div>
+              <div><div style="color:var(--faint);font-size:9px">IMAGES</div><div style="color:var(--cy);font-size:16px">4</div><div style="color:var(--faint);font-size:9px">gemini · $0.18</div></div>
+              <div><div style="color:var(--faint);font-size:9px">TOTAL</div><div style="color:var(--ok);font-size:16px">$0.46</div><div style="color:var(--faint);font-size:9px">cap $0.60</div></div>
+            </div>
+            <div class="hint" style="margin-top:9px">Brains are assigned per stage by the recipe, not globally. Every DNA record carries routing_source so a run can be audited rather than assumed.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUALITY GATE ================= -->
+  <section class="pg" id="p-gate">
+    <div class="head"><h1>Quality gate</h1><span class="d">Fresh Cuts Atlanta · run_bb91q · the gate can say no</span></div>
+    <div class="verdict block">
+      <div class="big">BLOCK</div>
+      <div class="txt"><b>This build is not customer-eligible.</b>Three blocking codes. The page is structurally valid and every functional test passed, which is exactly why structural tests alone were never enough. Judgement is on the render, never the markup that produced it.</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn pri sm" onclick="repair()">Run bounded repair (1 of 3)</button>
+        <button class="btn sm" onclick="toast('Marked as known gap, not shipped')">Log as gap instead</button>
+      </div>
+    </div>
+    <div class="cols2" style="align-items:start">
+      <div>
+        <div class="panel">
+          <div class="ph">Lanes <span class="route">GET /api/builds/:id/qa</span></div>
+          <div class="lane"><span class="st p">✓</span><div class="body"><b>Structural</b><span>one h1, nav present, links resolve, 6 pages</span></div><span class="kind">deterministic</span></div>
+          <div class="lane"><span class="st f">✕</span><div class="body"><b>Token adherence · 11%</b><span>computed styles walked and mapped back to brand tokens</span></div><span class="kind">deterministic</span></div>
+          <div class="lane"><span class="st f">✕</span><div class="body"><b>Geometry · 1440 and 390</b><span>every section renders as heading + paragraph · zero imagery · no laid-out hierarchy</span></div><span class="kind">deterministic</span></div>
+          <div class="lane"><span class="st f">✕</span><div class="body"><b>Contrast</b><span>body text 3.1:1 against background · AA needs 4.5:1</span></div><span class="kind">deterministic</span></div>
+          <div class="lane"><span class="st w">!</span><div class="body"><b>Aesthetic critic · 2.1 / 10</b><span>instructional alignment 1 · visual elements 2 · layout and cohesion 3 · reviewer: claude</span></div><span class="kind">vlm rubric</span></div>
+          <div class="lane"><span class="st p">✓</span><div class="body"><b>Content truth</b><span>0 unverified claims promoted · 6 open questions preserved</span></div><span class="kind">deterministic</span></div>
+        </div>
+        <div class="panel">
+          <div class="ph">Token audit <span class="route">GET /api/builds/:id/tokens</span></div>
+          <div class="ib">
+            <div class="tbar"><div style="width:11%;background:var(--ok)"></div><div style="width:6%;background:var(--warn)"></div><div style="width:83%;background:#3a3f52"></div></div>
+            <div class="legend"><span><i style="background:var(--ok)"></i>11% on brand tokens</span><span><i style="background:var(--warn)"></i>6% near a token</span><span><i style="background:#3a3f52"></i>83% generic defaults</span></div>
+            <div class="hint" style="margin-top:9px">The research packet specified bone, espresso, and terracotta with a serif display face. The rendered page uses Times, black, and white. The direction was computed, stored, and read by nothing. <b style="color:var(--warn)">This is the root cause of the other three failures.</b></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph">Repair queue · instruction-driven, bounded <span class="route">POST /api/builds/:id/repair</span></div>
+          <div class="rep"><span class="code">TOKEN-01</span><div class="ins">Rebind compose to tokens.json. Direction must enter the data path, not sit beside it.<small>structural · not repairable by regeneration · escalates to operator</small></div></div>
+          <div class="rep"><span class="code">MEDIA-03</span><div class="ins">Zero imagery on a page whose plan declared 4 media slots. Fill from the image worker or declare unfilled with prompts attached.<small>repairable · attempt 1 of 3</small></div></div>
+          <div class="rep"><span class="code w">CONTRAST-02</span><div class="ins">Raise body text contrast to at least 4.5:1 against its computed background.<small>repairable · deterministic fix, no model needed</small></div></div>
+          <div class="rep"><span class="code w">COPY-07</span><div class="ins">Section copy restates the business name three times without saying what it offers.<small>repairable · copy defect · one pass</small></div></div>
+          <div class="ib hint">Repair never regenerates the page blindly. Every code maps to a written instruction, structural codes escalate instead of rerolling, and the loop is capped at three.</div>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="ph">What the critic saw · 1440 <span class="route">GET /api/builds/:id/evidence/desktop.png</span></div>
+          <div class="shotwrap">
+            <div class="shot">
+              <div class="plain">
+                <h1>Fresh Cuts Atlanta</h1>
+                <p>Fresh Cuts Atlanta is a barbershop. We offer haircuts and grooming services to customers in the Atlanta area.</p>
+                <h2>Services</h2><p>We offer a range of services for our customers. Fresh Cuts Atlanta provides quality service.</p>
+                <h2>About</h2><p>Fresh Cuts Atlanta has been serving the community. Contact Fresh Cuts Atlanta today.</p>
+                <h2>Contact</h2><p>Contact us to book an appointment.</p>
+              </div>
+              <div class="bbox" style="left:22px;top:14px;width:300px;height:52px"><b>MEDIA-03 · no hero imagery where the plan declared one</b></div>
+              <div class="bbox warn" style="left:22px;top:78px;width:430px;height:34px"><b>CONTRAST-02 · 3.1:1</b></div>
+              <div class="bbox" style="left:22px;top:126px;width:470px;height:150px"><b>LAYOUT · every section is heading + paragraph, no hierarchy</b></div>
+            </div>
+          </div>
+          <div class="ib hint">Critiques carry regions, not adjectives, so repair knows where to look. Evidence is captured at 1440 and 390 and the run fails closed if the evidence path is missing.</div>
+        </div>
+        <div class="panel">
+          <div class="ph">Gaps · separate from failures <span class="route">GET /api/builds/:id/gaps</span></div>
+          <div class="row"><span class="dot" style="background:var(--warn)"></span><span class="what">No verified hours or phone<small>research returned not_found · never promoted to fact</small></span></div>
+          <div class="row"><span class="dot" style="background:var(--warn)"></span><span class="what">No booking system detected<small>component library has no match for this vertical</small></span></div>
+          <div class="ib hint">What failed and what is missing are different questions. A build may ship with recorded gaps. It may not ship pretending completeness.</div>
+        </div>
+        <div class="panel">
+          <div class="ph">What this proof does NOT establish</div>
+          <div class="ib mono" style="font-size:10px;line-height:1.8;color:var(--dim)">customer acceptance · live hosting behaviour · domain availability<br>form delivery to a real inbox · analytics wiring · legal review<br><span style="color:var(--faint)">A proof system that states its own limits is rarer than one that passes.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SYSTEM TRUTH ================= -->
+  <section class="pg" id="p-op">
+    <div class="head"><h1>System truth</h1><span class="d">what this system can actually do right now, what it costs, and what is blocking</span></div>
+    <div class="cols3" style="align-items:start">
+      <div>
+        <div class="panel"><div class="ph">Capability truth <span class="route">/api/capabilities</span></div>
+          <div class="row"><span class="what">Research with source verification</span><span class="pill ok">live</span></div>
+          <div class="row"><span class="what">Image generation</span><span class="pill ok">live</span></div>
+          <div class="row"><span class="what">Deploy · GoDaddy path</span><span class="pill ok">live</span></div>
+          <div class="row"><span class="what">Deploy · Netlify, Vercel</span><span class="pill warn">adapter stub</span></div>
+          <div class="row"><span class="what">Component Studio</span><span class="pill g">seam only</span></div>
+          <div class="row"><span class="what">Marketing Studio</span><span class="pill g">planned</span></div>
+          <div class="ib hint">Claims are computed from what answered a probe, never from what is written in a document.</div>
+        </div>
+        <div class="panel"><div class="ph">Blockers <span class="route">/api/blockers</span></div>
+          <div class="row"><span class="dot" style="background:var(--bad)"></span><span class="what">Fresh Cuts gate: BLOCK<small>needs TOKEN-01, operator decision</small></span></div>
+          <div class="ib" style="border-top:1px solid var(--stroke)"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px">Non-blockers</div>
+            <div class="mono" style="font-size:10px;line-height:1.7;color:var(--dim)">3 unfilled media slots (declared)<br>Auntie Gale token drift 78%<br>1 unreproducible test failure, recorded</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="panel"><div class="ph">Cost + approval <span class="route">/api/cost</span></div>
+          <div class="ib">
+            <div style="display:flex;gap:14px;font-family:var(--mono)">
+              <div><div style="font-size:9px;color:var(--faint)">THIS WEEK</div><div style="font-size:19px;color:var(--ok)">$4.18</div></div>
+              <div><div style="font-size:9px;color:var(--faint)">PER PROOF</div><div style="font-size:19px;color:var(--ink)">$0.46</div></div>
+              <div><div style="font-size:9px;color:var(--faint)">AWAITING YOU</div><div style="font-size:19px;color:var(--warn)">2</div></div>
+            </div>
+            <div class="hint" style="margin-top:8px">Subscription CLI stages report provider_did_not_report rather than claiming zero.</div>
+          </div>
+        </div>
+        <div class="panel"><div class="ph">Run ledger <span class="route">/api/runs</span></div>
+          <div class="row"><span class="who">run_mt6b8</span><span class="what">Starlight · 6 pages<small>3m 01s · $0.40 · gate PASS</small></span><span class="pill ok">shipped</span></div>
+          <div class="row"><span class="who">run_kp2xz</span><span class="what">Kim Chang Suk<small>2m 12s · $0.31 · gate REPAIR→PASS</small></span><span class="pill warn">edited</span></div>
+          <div class="row"><span class="who">run_bb91q</span><span class="what">Fresh Cuts<small>1m 58s · $0.09 · gate BLOCK</small></span><span class="pill bad">held</span></div>
+        </div>
+        <div class="panel"><div class="ph">Artifact provenance <span class="route">/api/artifacts</span></div>
+          <div class="row"><span class="what">reunion-hero.webp<small>gemini · prompt hash 8f2a · $0.045 · used on 1 site</small></span></div>
+          <div class="row"><span class="what">tokens.json · mbsh<small>creative-director run_mt6b8 · W3C format · 34 tokens</small></span></div>
+          <div class="row"><span class="what">spec.json · mbsh<small>packet rp_8f2a · 4 verified facts · 3 mutable:false</small></span></div>
+        </div>
+      </div>
+      <div>
+        <div class="panel"><div class="ph">Proof packet <span class="route">/api/runs/:id/proof</span></div>
+          <div class="ib mono" style="font-size:10px;line-height:1.9;color:var(--dim)">
+            <span style="color:var(--ok)">✓</span> runner exit 0<br>
+            <span style="color:var(--ok)">✓</span> three PASS markers<br>
+            <span style="color:var(--ok)">✓</span> absolute Evidence: path present<br>
+            <span style="color:var(--ok)">✓</span> screenshots · 1440 + 390 per page<br>
+            <span style="color:var(--ok)">✓</span> one trace per invoked stage<br>
+            <span style="color:var(--ok)">✓</span> no invented prices or facts<br>
+            <span style="color:var(--ok)">✓</span> no external mutation<br>
+            <span style="color:var(--ok)">✓</span> request identity preserved end to end<br>
+            <span style="color:var(--warn)">!</span> 4 skipped with reason, not counted as pass
+          </div>
+          <div class="ib hint" style="border-top:1px solid var(--stroke)">Fails closed. A missing evidence path is a failure, never a silent pass.</div>
+        </div>
+        <div class="panel"><div class="ph">Gap + workaround log <span class="route">/api/gaps</span></div>
+          <div class="row"><span class="what">Booking components missing<small>workaround: external link card · 3 sites affected</small></span></div>
+          <div class="row"><span class="what">No video slot renderer<small>workaround: poster image · 1 site</small></span></div>
+        </div>
+        <div class="panel"><div class="ph">Deferred decisions <span class="route">/api/decisions?state=paused</span></div>
+          <div class="row"><span class="what">Designs webhook migration<small>POST-SHIP #1 · owner decision pending</small></span></div>
+          <div class="row"><span class="what">SQLite adoption<small>trigger: query pain not yet demonstrated</small></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LEARNING ================= -->
+  <section class="pg" id="p-learn">
+    <div class="head"><h1>Learning</h1><span class="d">the system proposes; you decide what becomes doctrine</span></div>
+    <div class="panel">
+      <div class="ph">Candidates <span class="route">GET /api/learning/candidates</span></div>
+      <div class="row"><span class="dot" style="background:var(--cy)"></span><span class="what"><b>Critic miss:</b> you rejected run_kp2xz which the aesthetic critic passed at 6.4<small>proposed: raise the pass threshold to 7.0 and add a rubric line for "hero carries a real image"</small></span><button class="btn sm pri" onclick="toast('Rubric amended · critic recalibrated')">Adopt</button><button class="btn sm gh">Dismiss</button></div>
+      <div class="row"><span class="dot" style="background:var(--cy)"></span><span class="what"><b>Routing:</b> alt-text stage passes its gate on a local model at 1/40th the cost<small>proposed: default alt-text to ollama in full-site-build-v2</small></span><button class="btn sm pri" onclick="toast('Recipe updated')">Adopt</button><button class="btn sm gh">Dismiss</button></div>
+      <div class="row"><span class="dot" style="background:var(--cy)"></span><span class="what"><b>Pattern:</b> 3 of 3 builds you shipped had token adherence above 88%<small>proposed: promote token adherence to a blocking lane at 85%</small></span><button class="btn sm pri" onclick="toast('Threshold promoted to blocking')">Adopt</button><button class="btn sm gh">Dismiss</button></div>
+      <div class="row"><span class="dot" style="background:var(--cy)"></span><span class="what"><b>Repair:</b> CONTRAST codes resolved deterministically 7 of 7 times<small>proposed: auto-repair CONTRAST before the critic runs, saving a model pass</small></span><button class="btn sm pri" onclick="toast('Auto-repair enabled for CONTRAST')">Adopt</button><button class="btn sm gh">Dismiss</button></div>
+    </div>
+    <div class="cols2">
+      <div class="panel"><div class="ph">Ground truth · your decisions <span class="route">/api/learning/outcomes</span></div>
+        <div class="ib"><div style="display:flex;gap:16px;font-family:var(--mono)">
+          <div><div style="font-size:9px;color:var(--faint)">SHIPPED</div><div style="font-size:19px;color:var(--ok)">7</div></div>
+          <div><div style="font-size:9px;color:var(--faint)">EDITED THEN SHIPPED</div><div style="font-size:19px;color:var(--warn)">3</div></div>
+          <div><div style="font-size:9px;color:var(--faint)">REJECTED</div><div style="font-size:19px;color:var(--bad)">2</div></div>
+          <div><div style="font-size:9px;color:var(--faint)">CRITIC AGREEMENT</div><div style="font-size:19px;color:var(--cy)">83%</div></div>
+        </div><div class="hint" style="margin-top:8px">Your ship or reject decision is the only ground truth in this system. Every disagreement with the critic is logged as a critic failure and amends the rubric.</div></div>
+      </div>
+      <div class="panel"><div class="ph">Efficiency trend <span class="route">/api/efficiency</span></div>
+        <div class="ib"><div class="mono" style="font-size:10.5px;line-height:2;color:var(--dim)">
+          cost per proof &nbsp;<span style="color:var(--ok)">$0.71 → $0.46</span> &nbsp;(−35%)<br>
+          wall time &nbsp;<span style="color:var(--ok)">3m 04s → 1m 58s</span><br>
+          premium share of stages &nbsp;<span style="color:var(--ok)">26% → 15%</span><br>
+          blocked at gate &nbsp;<span style="color:var(--warn)">1 of 6</span> &nbsp;(was 4 of 6)<br>
+          images per dollar &nbsp;<span style="color:var(--ok)">22</span>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECIPES ================= -->
+  <section class="pg" id="p-recipes">
+    <div class="head"><h1>Recipes + DNA</h1><span class="d">a recipe is a runnable template · a brain change is an edit, not a code change</span></div>
+    <div class="panel">
+      <div class="ph">full-site-build-v2 <span class="route">GET /api/recipes/full-site-build-v2</span></div>
+      <table><thead><tr><th>Stage</th><th>Family</th><th>Provider</th><th>Brain</th><th>Needs</th><th>Avg</th><th>Cost</th></tr></thead><tbody>
+        <tr><td class="mono">research</td><td class="mono">research</td><td><span class="prov shay">shay</span></td><td><select style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--ink);border-radius:5px;padding:2px 5px;font-family:var(--mono);font-size:10px" onchange="toast('research → '+this.value+' · recipe edited')"><option>claude</option><option>kimi</option></select></td><td class="mono">sitemap-planner</td><td class="mono">113s</td><td class="mono">$0.19</td></tr>
+        <tr><td class="mono">creative-director</td><td class="mono">direction</td><td><span class="prov shay">shay</span></td><td><select style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--ink);border-radius:5px;padding:2px 5px;font-family:var(--mono);font-size:10px"><option>claude</option><option>kimi</option></select></td><td class="mono">research, sitemap</td><td class="mono">21s</td><td class="mono">$0.06</td></tr>
+        <tr><td class="mono">page-copy</td><td class="mono">copy</td><td><span class="prov shay">shay</span></td><td><select style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--ink);border-radius:5px;padding:2px 5px;font-family:var(--mono);font-size:10px"><option>claude</option><option>kimi</option></select></td><td class="mono">creative-director</td><td class="mono">18s</td><td class="mono">$0.03</td></tr>
+        <tr><td class="mono">alt-text</td><td class="mono">copy</td><td><span class="prov shay">shay</span></td><td><select style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--ink);border-radius:5px;padding:2px 5px;font-family:var(--mono);font-size:10px"><option>ollama · local</option><option>claude</option></select></td><td class="mono">media</td><td class="mono">17s</td><td class="mono">$0.00</td></tr>
+        <tr><td class="mono">design-token</td><td class="mono">tokens</td><td><span class="prov det">deterministic</span></td><td class="mono" style="color:var(--faint)">code</td><td class="mono">creative-director</td><td class="mono">0.4s</td><td class="mono">$0.00</td></tr>
+        <tr><td class="mono">page-builder</td><td class="mono">assembly</td><td><span class="prov det">deterministic</span></td><td class="mono" style="color:var(--faint)">code</td><td class="mono">8 inputs</td><td class="mono">1.1s</td><td class="mono">$0.00</td></tr>
+        <tr><td class="mono">visual-critic</td><td class="mono">qa</td><td><span class="prov shay">shay</span></td><td><select style="background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--ink);border-radius:5px;padding:2px 5px;font-family:var(--mono);font-size:10px"><option>claude · rubric</option><option>kimi · rubric</option></select></td><td class="mono">browser-qa, tokens</td><td class="mono">14s</td><td class="mono">$0.04</td></tr>
+      </tbody></table>
+      <div class="ib hint">Only stages that need judgement carry a brain. Everything else is reproducible machinery, which is why the same brief twice produces the same site twice.</div>
+    </div>
+    <div class="panel"><div class="ph">Build DNA · run_mt6b8hw4n64nj7ug <span class="route">GET /api/runs/:id/dna</span></div>
+      <div class="ib mono" style="font-size:10.5px;line-height:1.9;color:var(--dim)">
+        packet <span style="color:var(--cy)">rp_8f2a</span> · adapter shay-native · 6 verified facts, 10 open questions<br>
+        27 stages · 4 judgement · routing_source: recipe (7), default (20)<br>
+        repair loop: 1 pass · codes cleared CONTRAST-02, COPY-07 · TOKEN-01 not triggered<br>
+        gate: PASS · geometry ✓ · tokens 89% ✓ · contrast ✓ · aesthetic 7.4 ✓<br>
+        outcome: <span style="color:var(--ok)">shipped</span> by operator, 0 edits before publish<br>
+        <span style="color:var(--faint)">saved as recipe "suite-service-business-v1" · reused 2 times</span>
+      </div>
+      <div class="ib" style="border-top:1px solid var(--stroke);display:flex;gap:7px"><button class="btn sm">Save as recipe</button><button class="btn sm">Re-run against a new brief</button><button class="btn sm gh">Compare to another run</button></div>
+    </div>
+  </section>
+
+  <!-- lighter pages -->
+  <section class="pg" id="p-proofs"><div class="head"><h1>Proofs</h1><span class="d">read-only · owned by FAMtastic Designs</span></div>
+    <div class="panel"><div class="ph">Pipeline <span class="route">GET /api/integrations/designs/proofs</span></div>
+      <div class="row"><span class="dot" style="background:var(--warn)"></span><span class="who">#4412</span><span class="what">Coastal Realty · 3 directions ready<small>customer status: Ready for You · studio status: delivered · owner: customer</small></span><button class="btn sm" onclick="toast('Opening in Designs ↗')">Open in Designs ↗</button></div>
+      <div class="row"><span class="dot" style="background:var(--cy)"></span><span class="who">#4413</span><span class="what">PSL Youth Sports · generating<small>customer status: In Studio · studio status: 2 of 3 rendered · last sync 40s ago</small></span></div>
+      <div class="ib hint">Two statuses always, never one. Customer language stays simple; internal states stay internal. Approval never implies execution.</div>
+    </div></section>
+  <section class="pg" id="p-media"><div class="head"><h1>Media</h1><span class="d">provenance on every asset</span><div class="sp"></div><button class="btn sm" onclick="toast('Opening Media Studio ↗')">Media Studio ↗</button></div>
+    <div class="mgrid">
+      <div class="mtile"><div class="mimg" style="background:linear-gradient(135deg,#16325c,#f0c460)"></div><div class="mmeta"><b>reunion-hero.webp</b>gemini · $0.045 · 1 site<br>prompt hash 8f2a</div></div>
+      <div class="mtile"><div class="mimg" style="background:linear-gradient(140deg,#241c4d,#e8cfa0)"></div><div class="mmeta"><b>starlight-hero.webp</b>gemini · $0.045 · 1 site<br>prompt hash 3c19</div></div>
+      <div class="mtile"><div class="mimg" style="background:linear-gradient(135deg,#2a1608,#f0c460)"></div><div class="mmeta"><b>gale-kitchen.webp</b>gemini · $0.045 · 2 sites<br>prompt hash 77ab</div></div>
+      <div class="mtile"><div class="mimg" style="background:repeating-linear-gradient(45deg,#1a1d2b,#1a1d2b 9px,#222634 9px,#222634 18px);display:flex;align-items:center;justify-content:center"><span class="mono" style="font-size:8.5px;color:var(--warn)">UNFILLED</span></div><div class="mmeta"><b>gallery-3 slot</b>prompt attached<br>budget cap reached</div></div>
+    </div></section>
+  <section class="pg" id="p-comp"><div class="head"><h1>Components</h1><span class="d">shared across the ecosystem</span><div class="sp"></div><button class="btn sm" onclick="toast('Opening Component Studio ↗')">Component Studio ↗</button></div>
+    <div class="panel"><table><thead><tr><th>Component</th><th>Kind</th><th>Used on</th><th>Responsive</th><th>Contrast</th></tr></thead><tbody>
+      <tr><td>Hero — Split Gold</td><td class="mono">hero</td><td class="mono">3 sites</td><td><span class="pill ok">✓</span></td><td><span class="pill ok">AA</span></td></tr>
+      <tr><td>Feature Grid — 3up</td><td class="mono">content</td><td class="mono">7 sites</td><td><span class="pill ok">✓</span></td><td><span class="pill ok">AA</span></td></tr>
+      <tr><td>RSVP Form — Netlify</td><td class="mono">form</td><td class="mono">2 sites</td><td><span class="pill ok">✓</span></td><td><span class="pill ok">AA</span></td></tr>
+      <tr><td>CTA — Pill Centered</td><td class="mono">cta</td><td class="mono">6 sites</td><td><span class="pill ok">✓</span></td><td><span class="pill warn">AA large only</span></td></tr>
+    </tbody></table></div></section>
+  <section class="pg" id="p-deploy"><div class="head"><h1>Deployments</h1><span class="d">rollback rehearsed, not assumed</span></div>
+    <div class="panel"><div class="ph">mbsh96reunion.com</div>
+      <div class="ib" style="display:flex;align-items:center;gap:16px">
+        <div><div style="font-size:10px;color:var(--dim)">Production</div><div class="mono" style="color:var(--ok);margin-top:3px">● live · #218 · 2h ago</div></div>
+        <div><div style="font-size:10px;color:var(--dim)">Working copy</div><div class="mono" style="color:var(--shay);margin-top:3px">4 unpublished changes</div></div>
+        <div><div style="font-size:10px;color:var(--dim)">Baseline</div><div class="mono" style="color:var(--ok);margin-top:3px">✓ captured, matched</div></div>
+        <div class="sp"></div>
+        <button class="btn bad sm" onclick="toast('Rolled back to #217 · bytes verified identical')">↶ Roll back</button>
+        <button class="btn pri sm" onclick="toast('Deployed · verified in 41s · baseline updated')">Deploy</button>
+      </div></div>
+    <div class="panel"><div class="ph">Recent</div>
+      <div class="row"><span class="dot" style="background:var(--ok)"></span><span class="who">#218</span><span class="what">mbsh96reunion → Netlify<small>incremental · 41s · gate PASS · baseline updated</small></span><span class="pill ok">live</span></div>
+      <div class="row"><span class="dot" style="background:var(--warn)"></span><span class="who">#216</span><span class="what">bythenumbers → Netlify<small>auto rolled back · 7 assets 404 post-deploy · baseline mismatch caught it</small></span><span class="pill warn">reverted</span></div>
+    </div></section>
+  <section class="pg" id="p-set"><div class="head"><h1>Settings</h1></div>
+    <div class="panel" style="max-width:620px"><div class="ph">Roots + providers <span class="route">GET /api/admin/config</span></div>
+      <div class="ib">
+        <div class="fld"><label>Sites root</label><input value="~/Development/FAMtastic/sites"></div>
+        <div class="fld"><label>Apps root</label><input value="~/Development/FAMtastic/Apps"></div>
+        <div class="fld"><label>Shay brain (default)</label><select><option>claude CLI · subscription</option><option>kimi CLI · subscription</option><option>ollama · local</option></select></div>
+        <div class="fld"><label>Image worker</label><select><option>FAMtastic Designs worker · keychain credential</option></select></div>
+        <div class="fld"><label>Per-build image budget</label><input value="12 images · $0.60"></div>
+        <div class="fld"><label>Gate thresholds</label><input value="tokens ≥ 85% · contrast AA · aesthetic ≥ 7.0 · repair cap 3"></div>
+        <button class="btn pri sm" onclick="toast('Saved')">Save</button>
+      </div></div></section>
+  </main>
+
+  <div class="sbar">
+    <div class="f"><span class="sdot"></span>ready</div>
+    <div class="f">site <b>mbsh96reunion</b></div>
+    <div class="f">packet <b>rp_8f2a</b></div>
+    <div class="f">capabilities <b>11/14</b></div>
+    <div class="f">runs today <b>6</b></div>
+    <div class="f">spend <b>$4.18</b></div>
+    <div class="f">gate <b style="color:var(--bad)">1 BLOCK</b></div>
+    <div class="f">brain <b>claude · subscription</b></div>
+    <div class="f" id="clock">—</div>
+  </div>
+</div>
+<div class="toast" id="toast"><i></i><span id="tmsg"></span></div>
+
+<script>
+function nav(p,el){document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));document.getElementById('p-'+p).classList.add('on');
+ document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('on',n.dataset.p===p));document.querySelector('.main').scrollTop=0}
+/* editor */
+let cur='hero',tab='content',hist=[],dirty=0;
+const meta={hero:'Hero Section',grid:'Feature Grid — 3up'};
+function pick(id,e){if(e&&e.target.hasAttribute('data-ed'))return;cur=id;
+ document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('sel',s.id===id));
+ document.getElementById('iName').textContent=meta[id];render()}
+function itab(t,el){tab=t;document.querySelectorAll('.itab').forEach(b=>b.classList.remove('on'));el.classList.add('on');render()}
+document.querySelectorAll('[data-ed]').forEach(el=>{el.addEventListener('click',e=>{e.stopPropagation();const b=el.innerHTML;
+ el.setAttribute('contenteditable','true');el.focus();el.onblur=()=>{el.removeAttribute('contenteditable');
+ if(el.innerHTML!==b){hist.push({el,before:b});mark();toast('Edited · journaled · 12ms · live untouched')}}})});
+function mark(){dirty++;const d=document.getElementById('dstate');d.textContent=dirty+' unpublished change'+(dirty>1?'s':'');d.className='pill b'}
+function undo(){const h=hist.pop();if(!h){toast('Nothing to undo');return}h.el.innerHTML=h.before;dirty=Math.max(0,dirty-1);
+ const d=document.getElementById('dstate');d.textContent=dirty?dirty+' unpublished changes':'Published';toast('Undone')}
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='z'){e.preventDefault();undo()}});
+function g(t,b,c){return `<div class="grp${c?' cl':''}"><div class="gh2" onclick="this.parentElement.classList.toggle('cl')">${t}<span class="car">▼</span></div><div class="gb">${b}</div></div>`}
+function render(){const b=document.getElementById('iBody');
+ if(tab==='content'){
+  if(cur==='hero'){b.innerHTML=
+   g('Heading',`<div class="fld"><textarea oninput="document.getElementById('hH').innerHTML=this.value.replace(/\\n/g,'<br>');mark()">30 Years.\nOne Weekend.</textarea></div>`)
+  +g('Subheading',`<div class="fld"><textarea oninput="document.getElementById('hP').textContent=this.value;mark()">Miami Beach Senior High, Class of 1996. October 16–18, 2026 on the sand where it started.</textarea></div>
+   <div class="lock">🔒 "Class of 1996" is a verified fact (mutable:false)</div>`)
+  +g('Primary button',`<div class="fld"><label>Label</label><input value="Reserve your spot" oninput="document.getElementById('hB').textContent=this.value;mark()"></div><div class="fld"><label>Link</label><input value="/tickets"></div>`)
+  +g('Background',`<div class="fld"><label>Palette · from tokens.json</label><div class="swrow">
+    <div class="sw on" style="background:linear-gradient(135deg,#16325c,#f0c460)" onclick="pal(this,'#0b1e3a','#16325c','#0d2440','#f0c460')"></div>
+    <div class="sw" style="background:linear-gradient(135deg,#4a2d6e,#f0b8d0)" onclick="pal(this,'#2a1a3e','#4a2d6e','#1d1230','#f0b8d0')"></div>
+    <div class="sw" style="background:linear-gradient(135deg,#0f3d33,#e8d9a0)" onclick="pal(this,'#0b2b25','#0f3d33','#08211c','#e8d9a0')"></div></div>
+   <div class="hint" style="margin-top:6px">Changing a token here changes it everywhere this token is used, on this site.</div></div>
+   <div class="fld"><label>Hero image</label><button class="btn sm" style="width:100%" onclick="toast('Media library · 6 assets')">Choose from Media ▩</button></div>`)}
+  else{b.innerHTML=g('Cards',`<div class="hint" style="margin-bottom:8px">3 cards · click card text on the canvas to edit</div><button class="btn sm" style="width:100%" onclick="addCard()">＋ Add card</button>`)
+  +g('Layout',`<div class="fld"><label>Columns</label><select onchange="cols(this.value)"><option>3</option><option>2</option><option>1</option></select></div>`)
+  +g('Component',`<div class="hint">Feature Grid — 3up · used on 7 sites<br><span style="color:var(--cy);cursor:pointer" onclick="toast('Component Studio ↗')">Open in Component Studio ↗</span></div>`,1)}
+ } else if(tab==='style'){
+  b.innerHTML=g('Typography',`<div class="fld"><label>Display face<span class="c">token</span></label><select><option>Playfair Display</option><option>Space Grotesk</option></select></div>
+   <div class="fld"><label>Size<span class="c">30px</span></label><input type="range" min="18" max="56" value="30" oninput="document.querySelector('#hero h2').style.fontSize=this.value+'px';mark()"></div>`)
+  +g('Spacing',`<div class="box"><div class="marg"><span class="lbl2">MARGIN</span><span></span><div class="vs"><input class="bi" value="0"></div><span></span>
+    <input class="bi" value="0"><div class="pad"><span class="lbl2">PADDING</span><input class="bi" value="34" oninput="document.querySelector('#hero .g-hero').style.paddingLeft=this.value+'px';mark()">
+    <div class="vs"><input class="bi" value="26" oninput="document.querySelector('#hero .g-hero').style.paddingTop=this.value+'px';mark()"><div style="width:100%;height:22px;background:rgba(139,124,246,.16);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8px;color:var(--dim)">content</div><input class="bi" value="26"></div>
+    <input class="bi" value="34"></div><input class="bi" value="0"><span></span><div class="vs"><input class="bi" value="0"></div><span></span></div></div>`)
+  +g('Live checks',`<div class="hint" style="line-height:1.9"><span style="color:var(--ok)">✓</span> contrast 8.2:1 · AA and AAA<br><span style="color:var(--ok)">✓</span> token adherence 94%<br><span style="color:var(--ok)">✓</span> no overflow at 390px<br><span style="color:var(--faint)">checks run on every edit, deterministic, ~12ms</span></div>`);
+ } else {
+  b.innerHTML=g('Visibility',`<div class="tg">Desktop<span class="tog on" onclick="this.classList.toggle('on')"></span></div><div class="tg">Tablet<span class="tog on" onclick="this.classList.toggle('on')"></span></div><div class="tg">Mobile<span class="tog on" onclick="this.classList.toggle('on')"></span></div>`)
+  +g('Provenance',`<div class="hint" style="line-height:1.85">packet <span style="color:var(--cy)">rp_8f2a</span> · direction: 1996 yearbook palette<br>verified facts used: 4 · locked fields: 3<br>generated by run_mt6b8 · stage page-builder<br>last mutation: you, 12ms, journaled</div>
+   <button class="btn sm" style="width:100%;margin-top:8px" onclick="nav('recipes')">View build DNA</button>`)
+  +g('Identity',`<div class="fld"><label>Section id</label><input value="hero" class="mono"></div><div class="fld"><label>Spec path</label><input value="pages.home.sections[0]" readonly style="color:var(--faint)"></div>`,1);
+ }}
+function pal(el,a,b2,c,acc){document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));el.classList.add('on');
+ const h=document.querySelector('#hero .g-hero');h.style.background=`linear-gradient(135deg,${a},${b2} 55%,${c})`;
+ document.querySelectorAll('#hero em').forEach(e=>e.style.color=acc);
+ const btn=document.querySelector('#hero .g-btn');btn.style.background=acc;btn.style.color=a;
+ document.querySelectorAll('#gi h3').forEach(x=>x.style.color=acc);mark();toast('Token updated · propagated to 3 sections · journaled')}
+function cols(n){document.querySelectorAll('#gi .g-card').forEach(c=>c.style.flex=n==='1'?'1 1 100%':n==='2'?'1 1 44%':'1');
+ document.getElementById('gi').style.flexWrap='wrap';mark();toast(n+'-column layout')}
+function addCard(){const d=document.createElement('div');d.className='g-card';d.innerHTML='<h3>New card</h3><p>Click to edit.</p>';document.getElementById('gi').appendChild(d);mark();toast('Card added · journaled')}
+function dev(m,el){document.querySelectorAll('.head .icb').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+ document.getElementById('canvas').className='canvas'+(m?' '+m:'')}
+/* diff */
+const dif=document.getElementById('diff'),dc=document.getElementById('dclip'),dh=document.getElementById('dh');
+function ds(p){p=Math.max(.03,Math.min(.97,p));dc.style.width=(p*100)+'%';dh.style.left='calc('+(p*100)+'% - 1px)'}ds(.5);
+let dd=false;dif.addEventListener('pointerdown',e=>{dd=true;dm(e)});window.addEventListener('pointermove',e=>{if(dd)dm(e)});
+window.addEventListener('pointerup',()=>dd=false);function dm(e){const r=dif.getBoundingClientRect();ds((e.clientX-r.left)/r.width)}
+/* DAG */
+const STAGES=[
+ ['Bootstrap',[['repo-bootstrap','det','build request'],['config-scaffold','det','repo-bootstrap']]],
+ ['Architecture',[['architecture-decider','det','config-scaffold'],['sitemap-planner','det','architecture-decider']]],
+ ['Research first, so content is true not plausible',[['research','shay','sitemap-planner']]],
+ ['Creative direction, rewritten into the data path',[['creative-director','shay','research, sitemap'],['logo','shay','config-scaffold']]],
+ ['Design and content',[['design-token','det','creative-director'],['js-behavior','det','creative-director'],['page-copy','shay','creative-director'],['component-selector','det','creative-director'],['media-planner','det','creative-director'],['media-generation','det','media-planner']]],
+ ['Assembly',[['shared-assets','det','design-token'],['pwa','det','shared-assets'],['page-builder','det','8 inputs'],['assembly','det','page-builder'],['seo-pack','det','assembly, page-copy']]],
+ ['Quality — lanes that can say no',[['structural-qa','det','assembly'],['content-qa','det','structural-qa'],['browser-qa','det','structural-qa'],['token-audit','det','assembly, design-token'],['contrast-qa','det','browser-qa'],['visual-critic','shay','browser-qa, token-audit'],['content-repair','det','codes, bounded 3']]],
+ ['Proof and gaps',[['proof-curator','det','all qa lanes'],['gap-logger','det','proof-curator']]],
+ ['Deploy',[['staging-deploy','det','proof-curator'],['prod-deploy-router','det','staging, proof']]]
+];
+function drawDag(){const d=document.getElementById('dag');let h='',n=0;
+ STAGES.forEach(([grp,rows])=>{h+=`<div class="grp-lab">${grp}</div>`;
+  rows.forEach(([nm,pv,needs])=>{n++;h+=`<div class="stg" data-i="${n-1}"><span class="n">${n}</span><span class="nm">${nm}</span><span class="prov ${pv==='shay'?'shay':'det'}">${pv==='shay'?'shay':'code'}</span><span class="needs">needs ${needs}</span><span class="meta">—</span></div>`})});
+ d.innerHTML=h}
+drawDag();
+function runBuild(){const rows=[...document.querySelectorAll('#dag .stg')];rows.forEach(r=>{r.className='stg';r.querySelector('.meta').textContent='—'});
+ document.getElementById('bprev').innerHTML='<div style="align-self:center;color:var(--faint);font-size:11.5px">Researching…</div>';
+ let i=0,t0=Date.now();const tk=setInterval(()=>{document.getElementById('bt').textContent=((Date.now()-t0)/1000).toFixed(1)+'s'},100);
+ (function step(){
+  if(i>0){rows[i-1].className='stg done';rows[i-1].querySelector('.meta').textContent=(Math.random()*2+.3).toFixed(1)+'s'}
+  if(i>=rows.length){clearInterval(tk);
+   document.getElementById('bprev').innerHTML=`<div style="transform:scale(.62);transform-origin:top center;width:880px;margin-bottom:-120px"><div class="good" style="height:330px"><div class="g-hero" style="background:linear-gradient(140deg,#2b241d,#453a2c 50%,#221c16)"><h2 style="font-size:34px">Acupuncture that treats<br><em style="color:#d99a6c">the whole picture.</em></h2><p style="color:#c3b5a4">Licensed acupuncture physician in Port St. Lucie. Pain, stress, fertility, recovery.</p><div class="g-btn" style="background:#d99a6c;color:#2b241d">Book a consultation</div></div><div class="g-strip" style="background:#1c1813"><div class="g-card" style="background:#25201a;border-color:#3a3126"><h3 style="color:#d99a6c">Treatments</h3><p style="color:#b0a493">Pain, stress, fertility support, sports recovery.</p></div><div class="g-card" style="background:#25201a;border-color:#3a3126"><h3 style="color:#d99a6c">Your first visit</h3><p style="color:#b0a493">What to wear, what to expect, session length.</p></div><div class="g-card" style="background:#25201a;border-color:#3a3126"><h3 style="color:#d99a6c">Insurance</h3><p style="color:#b0a493">We bill most plans. Transparent self-pay rates.</p></div></div></div></div>`;
+   toast('Gate PASS · tokens 91% · contrast AA · aesthetic 7.6 · $0.44');return}
+  const r=rows[i];r.className='stg run';r.querySelector('.meta').textContent='running';
+  i++;setTimeout(step,r.querySelector('.prov').classList.contains('shay')?900:260)})()}
+function repair(){toast('Repair pass 1: CONTRAST-02 fixed deterministically, COPY-07 rewritten. TOKEN-01 escalated — structural, cannot be rerolled.')}
+let tt;function toast(m){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3000)}
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})},1000);
+render();pick('hero');
+</script>
+</body>
+</html>

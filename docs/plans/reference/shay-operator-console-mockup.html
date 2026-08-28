@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Studio — Powered by Shay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080d;
+  --bg-2:#0b0d15;
+  --glass:rgba(255,255,255,0.035);
+  --glass-2:rgba(255,255,255,0.06);
+  --stroke:rgba(255,255,255,0.08);
+  --stroke-2:rgba(255,255,255,0.14);
+  --ink:#e8eaf2;
+  --ink-dim:#8b90a3;
+  --ink-faint:#565b6e;
+  --shay:#8b7cf6;
+  --shay-2:#4fd8e8;
+  --ok:#3ee08f;
+  --warn:#f5b73d;
+  --bad:#f5564f;
+  --radius:14px;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  overflow:hidden;
+  font-size:14px;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 500px at 78% -10%, rgba(139,124,246,0.13), transparent 60%),
+    radial-gradient(700px 420px at -5% 105%, rgba(79,216,232,0.07), transparent 60%);
+}
+.app{position:relative;z-index:1;display:grid;grid-template-columns:216px 1fr 320px;grid-template-rows:56px 1fr 52px;height:100vh;gap:0}
+
+/* ============ TOP BAR ============ */
+.topbar{
+  grid-column:1/4;display:flex;align-items:center;gap:14px;padding:0 18px;
+  border-bottom:1px solid var(--stroke);background:rgba(11,13,21,0.7);backdrop-filter:blur(14px);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:0.02em}
+.orb{
+  width:22px;height:22px;border-radius:50%;position:relative;flex:none;
+  background:radial-gradient(circle at 32% 30%, #cfc6ff, var(--shay) 45%, #3a2f8f 100%);
+  box-shadow:0 0 14px rgba(139,124,246,0.7), 0 0 30px rgba(79,216,232,0.25);
+  animation:breathe 3.2s ease-in-out infinite;
+}
+.orb::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(139,124,246,0.35);animation:ring 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes ring{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:0.7;transform:scale(1.1)}}
+.brand .sub{font-size:11px;color:var(--ink-dim);font-weight:500}
+.topbar .spacer{flex:1}
+.env-chip{
+  font-family:var(--mono);font-size:11px;color:var(--ink-dim);
+  border:1px solid var(--stroke);border-radius:20px;padding:4px 12px;background:var(--glass);
+}
+.env-chip b{color:var(--ok);font-weight:600}
+.cmdk-hint{
+  display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-dim);
+  border:1px solid var(--stroke);border-radius:10px;padding:6px 12px;background:var(--glass);cursor:pointer;
+  transition:border-color .15s;
+}
+.cmdk-hint:hover{border-color:var(--shay)}
+kbd{font-family:var(--mono);font-size:10px;background:var(--glass-2);border:1px solid var(--stroke-2);border-radius:5px;padding:2px 6px;color:var(--ink)}
+
+/* ============ NAV ============ */
+.nav{
+  border-right:1px solid var(--stroke);padding:16px 10px;display:flex;flex-direction:column;gap:2px;
+  background:rgba(11,13,21,0.5);
+}
+.nav-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);padding:8px 12px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:var(--ink-dim);
+  cursor:pointer;font-weight:500;font-size:13px;transition:all .15s;border:1px solid transparent;background:none;text-align:left;font-family:var(--sans);width:100%;
+}
+.nav-item svg{width:16px;height:16px;flex:none;opacity:0.8}
+.nav-item:hover{color:var(--ink);background:var(--glass)}
+.nav-item.active{color:var(--ink);background:var(--glass-2);border-color:var(--stroke)}
+.nav-item.active svg{color:var(--shay)}
+.nav-item .badge{
+  margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;border-radius:9px;padding:1px 7px;
+}
+.badge.hot{background:rgba(245,86,79,0.16);color:var(--bad)}
+.badge.warm{background:rgba(245,183,61,0.14);color:var(--warn)}
+.badge.cool{background:rgba(139,124,246,0.16);color:var(--shay)}
+.nav .grow{flex:1}
+.killcard{
+  margin:6px 4px 0;border:1px solid rgba(245,86,79,0.25);border-radius:12px;padding:12px;background:rgba(245,86,79,0.05);
+}
+.killcard .t{font-size:11px;font-weight:600;color:var(--bad);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px}
+.killcard p{font-size:11px;color:var(--ink-dim);line-height:1.45;margin-bottom:10px}
+.killbtn{
+  width:100%;font-family:var(--sans);font-weight:600;font-size:12px;color:#fff;background:rgba(245,86,79,0.85);
+  border:none;border-radius:8px;padding:8px;cursor:pointer;transition:background .15s;
+}
+.killbtn:hover{background:var(--bad)}
+.killbtn.frozen{background:var(--glass-2);color:var(--warn);border:1px solid rgba(245,183,61,0.4)}
+
+/* ============ MAIN ============ */
+.main{overflow-y:auto;padding:22px 26px 30px;scrollbar-width:thin;scrollbar-color:var(--stroke-2) transparent}
+.main::-webkit-scrollbar{width:8px}
+.main::-webkit-scrollbar-thumb{background:var(--stroke-2);border-radius:4px}
+.page{display:none}
+.page.active{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.page-head h1{font-size:20px;font-weight:700;letter-spacing:-0.01em}
+.page-head .desc{font-size:12px;color:var(--ink-dim)}
+
+/* health radar row */
+.radar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{
+  border:1px solid var(--stroke);border-radius:var(--radius);padding:14px 16px;background:var(--glass);
+  backdrop-filter:blur(10px);position:relative;overflow:hidden;
+}
+.stat .k{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1.1}
+.stat .l{font-size:11px;color:var(--ink-dim);margin-top:4px}
+.stat.ok .k{color:var(--ok)} .stat.warn .k{color:var(--warn)} .stat.bad .k{color:var(--bad)} .stat.shay .k{color:var(--shay)}
+.stat .dot{position:absolute;top:14px;right:14px;width:7px;height:7px;border-radius:50%}
+.stat.ok .dot{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.stat.warn .dot{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+.stat.bad .dot{background:var(--bad);box-shadow:0 0 8px var(--bad);animation:pulse 1.6s infinite}
+.stat.shay .dot{background:var(--shay);box-shadow:0 0 8px var(--shay)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.panel{
+  border:1px solid var(--stroke);border-radius:var(--radius);background:var(--glass);backdrop-filter:blur(10px);
+  overflow:hidden;
+}
+.panel-head{
+  display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--stroke);
+  font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-dim);
+}
+.panel-head .cnt{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:500}
+
+.qitem{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--stroke);transition:background .15s}
+.qitem:last-child{border-bottom:none}
+.qitem:hover{background:var(--glass)}
+.qitem .sig{width:8px;height:8px;border-radius:50%;flex:none}
+.sig.bad{background:var(--bad);box-shadow:0 0 7px var(--bad)}
+.sig.warn{background:var(--warn);box-shadow:0 0 7px var(--warn)}
+.sig.shay{background:var(--shay);box-shadow:0 0 7px var(--shay)}
+.qitem .body{flex:1;min-width:0}
+.qitem .body .t{font-size:13px;font-weight:500}
+.qitem .body .m{font-family:var(--mono);font-size:11px;color:var(--ink-dim);margin-top:2px}
+.qbtn{
+  font-family:var(--sans);font-size:11px;font-weight:600;border-radius:8px;padding:6px 12px;cursor:pointer;flex:none;
+  border:1px solid var(--stroke-2);background:var(--glass-2);color:var(--ink);transition:all .15s;
+}
+.qbtn:hover{border-color:var(--shay);color:var(--shay)}
+.qbtn.primary{background:var(--shay);border-color:transparent;color:#fff}
+.qbtn.primary:hover{background:#9c8ffa;color:#fff}
+
+/* ============ DIFF CANVAS ============ */
+.diffwrap{border:1px solid var(--stroke);border-radius:var(--radius);background:var(--glass);backdrop-filter:blur(10px);overflow:hidden;margin-bottom:20px}
+.diff-meta{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--stroke);flex-wrap:wrap}
+.diff-meta .title{font-size:13px;font-weight:600}
+.diff-meta .chip{font-family:var(--mono);font-size:10px;color:var(--shay);background:rgba(139,124,246,0.12);border-radius:6px;padding:3px 8px}
+.diff-meta .right{margin-left:auto;display:flex;gap:8px}
+.diff{position:relative;height:340px;user-select:none;cursor:ew-resize;background:#0a0c13}
+.pane{position:absolute;inset:0;padding:0}
+.pane .site{height:100%;display:flex;flex-direction:column}
+.pane .browser{display:flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--stroke);font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+.bdot{width:8px;height:8px;border-radius:50%;background:var(--stroke-2)}
+/* CURRENT site — dated look */
+.site-old .hero{flex:1;background:linear-gradient(160deg,#3a3428,#211d16);display:flex;flex-direction:column;justify-content:center;padding:34px 40px;gap:12px}
+.site-old h2{font-family:Georgia,serif;font-size:30px;color:#e4d9be;font-weight:700}
+.site-old p{font-size:13px;color:#a89c80;max-width:340px;line-height:1.5}
+.site-old .btn{width:fit-content;background:#8a6f3c;color:#fff;font-size:12px;padding:9px 18px;border-radius:3px;margin-top:6px}
+.site-old .strip{display:flex;gap:10px;padding:16px 40px;background:#1a1712}
+.site-old .strip div{flex:1;height:52px;background:#2a251c;border-radius:3px}
+/* PROPOSED site — Shay's modern draft */
+.site-new .hero{flex:1;background:radial-gradient(600px 300px at 80% 20%, rgba(79,216,232,0.18), transparent),linear-gradient(150deg,#101725,#0a0f1a);display:flex;flex-direction:column;justify-content:center;padding:34px 40px;gap:12px}
+.site-new h2{font-size:32px;font-weight:700;letter-spacing:-0.02em;background:linear-gradient(90deg,#fff,#9fd9ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-new p{font-size:13px;color:#8fa3bd;max-width:340px;line-height:1.55}
+.site-new .btn{width:fit-content;background:linear-gradient(90deg,var(--shay),var(--shay-2));color:#fff;font-size:12px;font-weight:600;padding:10px 20px;border-radius:24px;margin-top:6px}
+.site-new .strip{display:flex;gap:10px;padding:16px 40px;background:#0c111c}
+.site-new .strip div{flex:1;height:52px;background:rgba(139,124,246,0.1);border:1px solid rgba(139,124,246,0.2);border-radius:10px}
+.clip{position:absolute;inset:0;overflow:hidden}
+.clip .pane{width:200%}
+.handle{
+  position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(var(--shay),var(--shay-2));z-index:5;
+  box-shadow:0 0 12px rgba(139,124,246,0.8);
+}
+.handle .grip{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:34px;height:34px;border-radius:50%;background:#131627;border:1.5px solid var(--shay);
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--shay);
+  box-shadow:0 0 16px rgba(139,124,246,0.6);font-family:var(--mono);
+}
+.pane-tag{position:absolute;top:44px;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;padding:4px 9px;border-radius:5px;z-index:4}
+.tag-live{left:14px;background:rgba(0,0,0,0.55);color:var(--ink-dim);border:1px solid var(--stroke-2)}
+.tag-prop{right:14px;background:rgba(139,124,246,0.2);color:#cfc6ff;border:1px solid rgba(139,124,246,0.4)}
+.diff-foot{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--stroke)}
+.changelog{flex:1;font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.7}
+.changelog .add{color:var(--ok)} .changelog .mod{color:var(--warn)}
+.gate-btn{
+  font-family:var(--sans);font-weight:600;font-size:13px;border-radius:10px;padding:10px 18px;cursor:pointer;border:none;transition:all .15s;
+}
+.gate-reject{background:var(--glass-2);color:var(--ink-dim);border:1px solid var(--stroke-2)}
+.gate-reject:hover{color:var(--bad);border-color:rgba(245,86,79,0.5)}
+.gate-approve{background:linear-gradient(90deg,var(--shay),#6ea8f0);color:#fff;box-shadow:0 4px 18px rgba(139,124,246,0.35)}
+.gate-approve:hover{filter:brightness(1.12)}
+
+/* ============ RIGHT RAIL: SHAY BRAIN ============ */
+.brain{
+  border-left:1px solid var(--stroke);background:rgba(11,13,21,0.6);backdrop-filter:blur(14px);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.brain-head{padding:16px 16px 12px;border-bottom:1px solid var(--stroke)}
+.brain-head .row{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.brain-head .row b{font-size:13px;letter-spacing:0.03em}
+.status-pill{
+  margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ok);background:rgba(62,224,143,0.1);
+  border:1px solid rgba(62,224,143,0.3);border-radius:12px;padding:3px 9px;
+}
+.now{border:1px solid var(--stroke);border-radius:10px;background:var(--glass);padding:10px 12px}
+.now .lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+.now .task{font-family:var(--mono);font-size:12px;color:var(--ink)}
+.now .tgt{font-family:var(--mono);font-size:10px;color:var(--shay-2);margin-top:3px}
+.steps{padding:12px 16px;border-bottom:1px solid var(--stroke)}
+.steps .lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
+.step{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;padding:4px 0;color:var(--ink-dim)}
+.step .ic{width:15px;height:15px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:9px}
+.step.done .ic{background:rgba(62,224,143,0.15);color:var(--ok)}
+.step.done{color:var(--ink-dim)}
+.step.live .ic{border:1.5px solid var(--shay);color:var(--shay);animation:spin 1.4s linear infinite}
+.step.live{color:var(--ink)}
+.step.wait .ic{border:1px solid var(--stroke-2);color:var(--ink-faint)}
+.step .ms{margin-left:auto;font-size:10px;color:var(--ink-faint)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stream{flex:1;overflow-y:auto;padding:12px 16px;scrollbar-width:thin;scrollbar-color:var(--stroke-2) transparent}
+.stream .lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;position:sticky;top:0;background:rgba(11,13,21,0.95);padding-bottom:4px}
+.log{font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--ink-dim);word-break:break-word}
+.log .ts{color:var(--ink-faint)}
+.log .ok{color:var(--ok)} .log .sh{color:var(--shay)} .log .wn{color:var(--warn)} .log .cy{color:var(--shay-2)}
+.log div{animation:fadein .3s ease}
+
+/* ============ CMD BAR ============ */
+.cmdbar{
+  grid-column:1/4;display:flex;align-items:center;gap:12px;padding:0 18px;border-top:1px solid var(--stroke);
+  background:rgba(11,13,21,0.75);backdrop-filter:blur(14px);
+}
+.cmdbar .prompt{font-family:var(--mono);color:var(--shay);font-size:13px}
+.cmdbar input{
+  flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:var(--sans);font-size:13px;
+}
+.cmdbar input::placeholder{color:var(--ink-faint)}
+.cmdbar .hint{font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+
+/* ============ CMD PALETTE OVERLAY ============ */
+.overlay{
+  position:fixed;inset:0;background:rgba(4,5,9,0.6);backdrop-filter:blur(6px);z-index:60;
+  display:none;align-items:flex-start;justify-content:center;padding-top:14vh;
+}
+.overlay.open{display:flex;animation:fadein .18s ease}
+.palette{
+  width:560px;max-width:92vw;border:1px solid var(--stroke-2);border-radius:16px;background:rgba(15,17,28,0.92);
+  backdrop-filter:blur(20px);box-shadow:0 24px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,124,246,0.12);overflow:hidden;
+}
+.palette .pin{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--stroke)}
+.palette .pin input{flex:1;background:none;border:none;outline:none;color:var(--ink);font-size:15px;font-family:var(--sans)}
+.palette .sect{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);padding:12px 18px 6px}
+.pcmd{display:flex;align-items:center;gap:12px;padding:10px 18px;cursor:pointer;transition:background .1s}
+.pcmd:hover,.pcmd.sel{background:var(--glass-2)}
+.pcmd .ic{width:26px;height:26px;border-radius:8px;background:var(--glass-2);border:1px solid var(--stroke);display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.pcmd .t{font-size:13px;font-weight:500}
+.pcmd .d{font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+.pcmd .cap{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--shay);background:rgba(139,124,246,0.1);border-radius:5px;padding:2px 7px}
+
+/* plan preview inside palette */
+.planprev{border-top:1px solid var(--stroke);padding:14px 18px;background:rgba(139,124,246,0.04)}
+.planprev .h{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--shay);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px}
+.planprev ul{list-style:none;font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.9}
+.planprev ul .cap2{color:var(--shay-2)}
+.planprev .acts{display:flex;gap:8px;margin-top:10px}
+
+/* ============ SITES TABLE ============ */
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:10px 16px;border-bottom:1px solid var(--stroke);font-weight:600}
+td{padding:12px 16px;border-bottom:1px solid var(--stroke);font-size:13px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--glass)}
+td .dom{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+.pill{font-family:var(--mono);font-size:10px;border-radius:12px;padding:3px 10px;font-weight:500}
+.pill.ok{background:rgba(62,224,143,0.1);color:var(--ok)}
+.pill.warn{background:rgba(245,183,61,0.12);color:var(--warn)}
+.pill.bad{background:rgba(245,86,79,0.12);color:var(--bad)}
+.pill.build{background:rgba(139,124,246,0.14);color:var(--shay)}
+.deploy-tgt{font-family:var(--mono);font-size:10px;color:var(--ink-dim)}
+.tgt-v{color:#fff} .tgt-n{color:#2dd4bf} .tgt-g{color:#4ade80}
+
+/* segmented control */
+.seg{display:inline-flex;border:1px solid var(--stroke-2);border-radius:10px;overflow:hidden;background:var(--glass)}
+.seg button{
+  font-family:var(--sans);font-size:11px;font-weight:600;color:var(--ink-dim);background:none;border:none;
+  padding:7px 14px;cursor:pointer;transition:all .15s;border-right:1px solid var(--stroke);
+}
+.seg button:last-child{border-right:none}
+.seg button.on{background:rgba(139,124,246,0.18);color:var(--ink)}
+
+/* ingestion cards */
+.brieflist{display:flex;flex-direction:column;gap:12px}
+.brief{
+  border:1px solid var(--stroke);border-radius:var(--radius);background:var(--glass);padding:16px;
+  display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;
+}
+.brief .from{font-size:13px;font-weight:600}
+.brief .src{font-family:var(--mono);font-size:10px;color:var(--shay-2);margin-left:8px}
+.brief .prompt{font-size:12px;color:var(--ink-dim);line-height:1.55;margin-top:6px;max-width:640px}
+.brief .meta{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:8px}
+.brief .proofs{display:flex;gap:8px;margin-top:12px}
+.proof{
+  width:96px;height:60px;border-radius:8px;border:1px solid var(--stroke-2);position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s;
+}
+.proof:hover{border-color:var(--shay)}
+.proof span{position:absolute;bottom:3px;left:6px;font-family:var(--mono);font-size:8px;color:rgba(255,255,255,0.75)}
+.p1{background:linear-gradient(140deg,#1c2a4a,#0e1526)}
+.p2{background:linear-gradient(140deg,#2b1e3f,#150e24)}
+.p3{background:linear-gradient(140deg,#0f2f2a,#0a1a17)}
+.brief .stack{display:flex;flex-direction:column;gap:8px;min-width:150px}
+.bstate{font-family:var(--mono);font-size:10px;text-align:center;border-radius:8px;padding:4px 8px}
+.bstate.review{background:rgba(245,183,61,0.12);color:var(--warn)}
+.bstate.gen{background:rgba(139,124,246,0.14);color:var(--shay)}
+.bstate.ing{background:rgba(79,216,232,0.1);color:var(--shay-2)}
+
+/* automations */
+.skillgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.skill{border:1px solid var(--stroke);border-radius:var(--radius);background:var(--glass);padding:14px 16px}
+.skill .top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.skill .name{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--shay-2)}
+.skill p{font-size:11.5px;color:var(--ink-dim);line-height:1.5;margin-bottom:10px}
+.skill .foot{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+.toggle{margin-left:auto;width:34px;height:19px;border-radius:12px;background:var(--glass-2);border:1px solid var(--stroke-2);position:relative;cursor:pointer;transition:all .2s;flex:none}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:var(--ink-faint);transition:all .2s}
+.toggle.on{background:rgba(62,224,143,0.2);border-color:rgba(62,224,143,0.5)}
+.toggle.on::after{left:17px;background:var(--ok)}
+
+/* toast */
+.toast{
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);z-index:80;
+  background:rgba(15,17,28,0.95);border:1px solid var(--stroke-2);border-radius:12px;padding:12px 20px;
+  font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;backdrop-filter:blur(14px);
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);display:flex;align-items:center;gap:10px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .tdot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:1100px){.app{grid-template-columns:200px 1fr}.brain{display:none}.radar{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}.skillgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= TOP BAR ================= -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="orb"></div>
+      <div>SITE STUDIO <span class="sub">powered by Shay</span></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="env-chip">single-operator · <b>fritz@famtastic</b> · local</div>
+    <div class="cmdk-hint" onclick="openPalette()">Ask Shay anything <kbd>⌘K</kbd></div>
+  </div>
+
+  <!-- ================= NAV ================= -->
+  <nav class="nav">
+    <div class="nav-label">Console</div>
+    <button class="nav-item active" data-page="overview" onclick="go(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      Overview <span class="badge hot">3</span>
+    </button>
+    <button class="nav-item" data-page="sites" onclick="go(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 4 5.7 4 9s-1.5 6.4-4 9c-2.5-2.6-4-5.7-4-9s1.5-6.4 4-9z"/></svg>
+      Sites <span class="badge warm">17</span>
+    </button>
+    <button class="nav-item" data-page="ingestion" onclick="go(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9 6-9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+      Ingestion hub <span class="badge cool">2</span>
+    </button>
+    <button class="nav-item" data-page="deployments" onclick="go(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      Deployments
+    </button>
+    <button class="nav-item" data-page="automations" onclick="go(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.2 2.2M16.2 16.2l2.2 2.2M5.6 18.4l2.2-2.2M16.2 7.8l2.2-2.2"/><circle cx="12" cy="12" r="3.5"/></svg>
+      Shay's skills
+    </button>
+    <div class="grow"></div>
+    <div class="killcard">
+      <div class="t">Emergency brake</div>
+      <p>Freezes every background job Shay is running. Nothing gets deleted — jobs resume where they stopped.</p>
+      <button class="killbtn" id="killbtn" onclick="toggleKill()">Freeze all jobs</button>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <!-- ========== OVERVIEW ========== -->
+    <section class="page active" id="page-overview">
+      <div class="page-head">
+        <h1>What needs you right now</h1>
+        <span class="desc">and what is broken right now — nothing else on open.</span>
+      </div>
+
+      <div class="radar">
+        <div class="stat ok"><div class="dot"></div><div class="k">16<span style="font-size:14px;color:var(--ink-faint)">/17</span></div><div class="l">sites healthy</div></div>
+        <div class="stat bad"><div class="dot"></div><div class="k">1</div><div class="l">broken now — SSL expiring</div></div>
+        <div class="stat shay"><div class="dot"></div><div class="k">2</div><div class="l">proposals awaiting your gate</div></div>
+        <div class="stat warn"><div class="dot"></div><div class="k">2</div><div class="l">FAMtastic briefs in queue</div></div>
+      </div>
+
+      <div class="cols">
+        <div class="panel">
+          <div class="panel-head">Needs me <span class="cnt" style="color:var(--shay)">3 items</span></div>
+          <div class="qitem">
+            <div class="sig shay"></div>
+            <div class="body"><div class="t">Homepage redesign proposal ready</div><div class="m">main-street-cafe.com · shadow branch · 14 edits</div></div>
+            <button class="qbtn primary" onclick="scrollDiff()">Review diff</button>
+          </div>
+          <div class="qitem">
+            <div class="sig warn"></div>
+            <div class="body"><div class="t">Proof set generated — needs dispatch</div><div class="m">brief #4412 · Coastal Realty Group · 3 variants</div></div>
+            <button class="qbtn" onclick="toast('Opening triage deck…');go(document.querySelector('[data-page=ingestion]'))">Triage</button>
+          </div>
+          <div class="qitem">
+            <div class="sig shay"></div>
+            <div class="body"><div class="t">Reunion RSVP form copy update drafted</div><div class="m">mbsh96reunion.com · 2 edits · text only</div></div>
+            <button class="qbtn" onclick="toast('Loading proposal…')">Review diff</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Broken now <span class="cnt" style="color:var(--bad)">2 findings</span></div>
+          <div class="qitem">
+            <div class="sig bad"></div>
+            <div class="body"><div class="t">SSL certificate expires in 4 days</div><div class="m">littlehaiti-heritage.org · issued via GoDaddy</div></div>
+            <button class="qbtn" onclick="planFix('Renew SSL certificate','littlehaiti-heritage.org',['deploy.godaddy → renew-cert.sh','crawler.verify → https handshake'])">Ask Shay to fix</button>
+          </div>
+          <div class="qitem">
+            <div class="sig warn"></div>
+            <div class="body"><div class="t">7 broken image links found</div><div class="m">bythenumbers.app · crawler run 06:00 · assets moved</div></div>
+            <button class="qbtn" onclick="planFix('Repair 7 broken image paths','bythenumbers.app',['media.relink → 7 assets','build.incremental → 2 pages','crawler.verify → re-run'])">Ask Shay to fix</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIFF CANVAS -->
+      <div class="diffwrap" id="diffwrap">
+        <div class="diff-meta">
+          <span class="title">Proposed change · main-street-cafe.com / home</span>
+          <span class="chip">shadow branch</span>
+          <span class="chip">nothing written to disk</span>
+          <div class="right">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--ink-faint);align-self:center">drag the handle to compare</span>
+          </div>
+        </div>
+        <div class="diff" id="diff">
+          <!-- proposed (base layer, right side) -->
+          <div class="pane">
+            <div class="site site-new">
+              <div class="browser"><span class="bdot"></span><span class="bdot"></span><span class="bdot"></span>&nbsp; main-street-cafe.com — proposed</div>
+              <div class="hero">
+                <h2>Your cozy neighborhood spot</h2>
+                <p>Fresh roasts, warm plates, and a corner table with your name on it. Open daily from 7am.</p>
+                <div class="btn">Plan your visit</div>
+              </div>
+              <div class="strip"><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <!-- current (clipped layer, left side) -->
+          <div class="clip" id="clip">
+            <div class="pane">
+              <div class="site site-old">
+                <div class="browser"><span class="bdot"></span><span class="bdot"></span><span class="bdot"></span>&nbsp; main-street-cafe.com — live</div>
+                <div class="hero">
+                  <h2>Welcome to Main Street</h2>
+                  <p>We are a cafe located on Main Street. We serve coffee and food. Come visit us today.</p>
+                  <div class="btn">Click here</div>
+                </div>
+                <div class="strip"><div></div><div></div><div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="handle" id="handle"><div class="grip">◂ ▸</div></div>
+          <div class="pane-tag tag-live">LIVE</div>
+          <div class="pane-tag tag-prop">SHAY'S PROPOSAL</div>
+        </div>
+        <div class="diff-foot">
+          <div class="changelog">
+            <div><span class="mod">~</span> hero headline → "Your cozy neighborhood spot"</div>
+            <div><span class="add">+</span> hero image swapped for optimized WebP (−1.9 MB)</div>
+            <div><span class="mod">~</span> primary button → "Plan your visit"</div>
+          </div>
+          <button class="gate-btn gate-reject" onclick="toast('Proposal rejected — shadow branch discarded, live site untouched')">Reject draft</button>
+          <button class="gate-btn gate-approve" onclick="toast('Approved — Shay is pushing to Vercel')">Approve &amp; push to Vercel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SITES ========== -->
+    <section class="page" id="page-sites">
+      <div class="page-head"><h1>Sites</h1><span class="desc">17 live properties · one source of truth on disk</span></div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Site</th><th>Health</th><th>SEO</th><th>Deploys to</th><th>Last touch</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>Main Street Cafe<div class="dom">main-street-cafe.com</div></td><td><span class="pill build">proposal open</span></td><td style="font-family:var(--mono);color:var(--warn)">72</td><td class="deploy-tgt tgt-v">▲ Vercel</td><td class="dom">2m ago · Shay</td><td><button class="qbtn">Open</button></td></tr>
+            <tr><td>MBSH Class of '96 Reunion<div class="dom">mbsh96reunion.com</div></td><td><span class="pill ok">healthy</span></td><td style="font-family:var(--mono);color:var(--ok)">91</td><td class="deploy-tgt tgt-n">◆ Netlify</td><td class="dom">1h ago · you</td><td><button class="qbtn">Open</button></td></tr>
+            <tr><td>Little Haiti Heritage<div class="dom">littlehaiti-heritage.org</div></td><td><span class="pill bad">SSL expiring</span></td><td style="font-family:var(--mono);color:var(--ok)">88</td><td class="deploy-tgt tgt-g">● GoDaddy</td><td class="dom">3d ago · Shay</td><td><button class="qbtn">Open</button></td></tr>
+            <tr><td>By the Numbers<div class="dom">bythenumbers.app</div></td><td><span class="pill warn">7 broken links</span></td><td style="font-family:var(--mono);color:var(--ok)">85</td><td class="deploy-tgt tgt-n">◆ Netlify</td><td class="dom">6h ago · Shay</td><td><button class="qbtn">Open</button></td></tr>
+            <tr><td>FAMtastic Designs<div class="dom">famtasticdesigns.com</div></td><td><span class="pill ok">healthy</span></td><td style="font-family:var(--mono);color:var(--ok)">94</td><td class="deploy-tgt tgt-g">● GoDaddy</td><td class="dom">1d ago · you</td><td><button class="qbtn">Open</button></td></tr>
+            <tr><td>Coastal Realty Group<div class="dom">coastalrealtygrp.com</div></td><td><span class="pill build">proofs pending</span></td><td style="font-family:var(--mono);color:var(--ink-faint)">—</td><td class="deploy-tgt tgt-v">▲ Vercel</td><td class="dom">18m ago · Shay</td><td><button class="qbtn">Open</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== INGESTION ========== -->
+    <section class="page" id="page-ingestion">
+      <div class="page-head"><h1>Ingestion hub</h1><span class="desc">signed briefs from famtasticdesigns.com — your revenue gate. Nothing ships without your approval.</span></div>
+      <div class="brieflist">
+        <div class="brief">
+          <div>
+            <span class="from">Coastal Realty Group</span><span class="src">via famtasticdesigns.com/quote</span>
+            <div class="prompt">"We're a boutique realty office in Stuart, FL. Want something clean and trustworthy — blues, property search up front, agent bios. Nothing flashy."</div>
+            <div class="meta">brief #4412 · signed ✓ verified · received 09:41 · 3 proofs generated in 2m 14s</div>
+            <div class="proofs">
+              <div class="proof p1" onclick="toast('Opening proof A in editor')"><span>A · coastal calm</span></div>
+              <div class="proof p2" onclick="toast('Opening proof B in editor')"><span>B · dusk luxury</span></div>
+              <div class="proof p3" onclick="toast('Opening proof C in editor')"><span>C · palm modern</span></div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="bstate review">PENDING YOUR REVIEW</div>
+            <button class="qbtn primary" onclick="toast('Proofs dispatched to client proof hub')">Approve &amp; dispatch</button>
+            <button class="qbtn" onclick="toast('Opening proof A in the editor')">Edit before sending</button>
+          </div>
+        </div>
+        <div class="brief">
+          <div>
+            <span class="from">Port St. Lucie Youth Sports</span><span class="src">via famtasticdesigns.com/quote</span>
+            <div class="prompt">"Registration site for our fall soccer league. Need schedules, a signup form, and a sponsors page. Green and gold colors."</div>
+            <div class="meta">brief #4413 · signed ✓ verified · received 10:02 · generating proofs…</div>
+          </div>
+          <div class="stack">
+            <div class="bstate gen">SHAY IS GENERATING · 2/3</div>
+            <button class="qbtn" onclick="toast('You will be pinged when proofs are ready')">Notify me</button>
+          </div>
+        </div>
+        <div class="brief" style="opacity:0.55">
+          <div>
+            <span class="from">Incoming webhook</span><span class="src">POST /api/integrations/famtastic/proof-jobs</span>
+            <div class="prompt">Payload received. Signature check in progress — untrusted until verified.</div>
+            <div class="meta">brief #4414 · verifying signature…</div>
+          </div>
+          <div class="stack"><div class="bstate ing">INGESTING</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DEPLOYMENTS ========== -->
+    <section class="page" id="page-deployments">
+      <div class="page-head"><h1>Deployments</h1><span class="desc">one adapter, three targets — swap per site, no code changes</span></div>
+      <div class="panel" style="margin-bottom:14px">
+        <div class="panel-head">Default target for new sites</div>
+        <div style="padding:16px;display:flex;align-items:center;gap:16px">
+          <div class="seg" id="segTgt">
+            <button class="on" onclick="segPick(this,'Vercel')">▲ Vercel</button>
+            <button onclick="segPick(this,'Netlify')">◆ Netlify</button>
+            <button onclick="segPick(this,'GoDaddy')">● GoDaddy</button>
+          </div>
+          <span style="font-size:12px;color:var(--ink-dim)">Per-site overrides live in each site's settings. GoDaddy runs your <span style="font-family:var(--mono);font-size:11px">deploy-*-godaddy.sh</span> scripts unchanged.</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">Recent pushes</div>
+        <div class="qitem"><div class="sig shay"></div><div class="body"><div class="t">mbsh96reunion.com → Netlify</div><div class="m">deploy #218 · 1h ago · 41s · incremental (2 pages)</div></div><span class="pill ok">live</span></div>
+        <div class="qitem"><div class="sig shay"></div><div class="body"><div class="t">famtasticdesigns.com → GoDaddy</div><div class="m">deploy #217 · 1d ago · 2m 06s · full · via deploy-famtastic-godaddy.sh</div></div><span class="pill ok">live</span></div>
+        <div class="qitem"><div class="sig warn"></div><div class="body"><div class="t">bythenumbers.app → Netlify</div><div class="m">deploy #216 · 6h ago · rolled back automatically · 7 assets 404'd post-deploy</div></div><span class="pill warn">rolled back</span></div>
+      </div>
+    </section>
+
+    <!-- ========== AUTOMATIONS / SKILLS ========== -->
+    <section class="page" id="page-automations">
+      <div class="page-head"><h1>Shay's skills</h1><span class="desc">everything she can do in the background — each one has a leash</span></div>
+      <div class="skillgrid">
+        <div class="skill">
+          <div class="top"><span class="name">broken-link-crawler</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <p>Walks every page of every site nightly and flags dead links, missing images, and offline forms. Findings land in "Broken now."</p>
+          <div class="foot">nightly 06:00 · last run 06:00 ✓ · log: crawler-0821.log</div>
+        </div>
+        <div class="skill">
+          <div class="top"><span class="name">famtastic-proof-worker</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <p>Listens for signed briefs from famtasticdesigns.com and drafts three visual proofs per lead. Never dispatches without your approval.</p>
+          <div class="foot">event-driven · 2 jobs today · idempotent + retry-safe</div>
+        </div>
+        <div class="skill">
+          <div class="top"><span class="name">seo-analyzer</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <p>Scores each site weekly and drafts fixes — meta descriptions, alt text, heading order. Fixes arrive as proposals, never direct writes.</p>
+          <div class="foot">weekly sun 05:00 · 3 proposals drafted this week</div>
+        </div>
+        <div class="skill">
+          <div class="top"><span class="name">ssl-watchdog</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <p>Checks certificate expiry across all 17 domains daily. Anything under 14 days shows up red on the radar.</p>
+          <div class="foot">daily 05:30 · 1 finding active (littlehaiti-heritage.org)</div>
+        </div>
+        <div class="skill">
+          <div class="top"><span class="name">asset-optimizer</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <p>Compresses oversized images to WebP and flags anything slowing a build by more than 2 seconds. Currently off — turn on when ready.</p>
+          <div class="foot">off · last enabled Aug 12</div>
+        </div>
+        <div class="skill">
+          <div class="top"><span class="name">nightly-backup</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <p>Snapshots every site's content and config to the archive repo. Restores are one command away.</p>
+          <div class="foot">nightly 03:00 · 17/17 snapshots ✓ · 90-day retention</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= SHAY BRAIN RAIL ================= -->
+  <aside class="brain">
+    <div class="brain-head">
+      <div class="row"><div class="orb" style="width:16px;height:16px"></div><b>SHAY'S WORKSPACE</b><span class="status-pill">● ACTIVE</span></div>
+      <div class="now">
+        <div class="lbl">Currently executing</div>
+        <div class="task">compress + swap hero asset</div>
+        <div class="tgt">→ main-street-cafe.com (shadow branch)</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="lbl">Build steps · homepage proposal</div>
+      <div class="step done"><span class="ic">✓</span> Ingest page structure spec <span class="ms">1.2s</span></div>
+      <div class="step done"><span class="ic">✓</span> Draft hero copy (2 variants) <span class="ms">0.8s</span></div>
+      <div class="step done"><span class="ic">✓</span> Convert hero image → WebP <span class="ms">2.1s</span></div>
+      <div class="step live"><span class="ic">◌</span> Compile CSS primitives</div>
+      <div class="step wait"><span class="ic">·</span> Render shadow preview</div>
+      <div class="step wait"><span class="ic">·</span> Stage diff for your review</div>
+    </div>
+    <div class="stream">
+      <div class="lbl">Live output stream</div>
+      <div class="log" id="log"></div>
+    </div>
+  </aside>
+
+  <!-- ================= COMMAND BAR ================= -->
+  <div class="cmdbar">
+    <span class="prompt">shay ›</span>
+    <input id="cmdinput" placeholder="Tell Shay what to do — she'll show you the plan before touching anything" onkeydown="if(event.key==='Enter'&&this.value){openPalette(this.value);this.value=''}">
+    <span class="hint">↵ to preview plan · nothing executes without your confirm</span>
+  </div>
+</div>
+
+<!-- ================= ⌘K PALETTE ================= -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closePalette()">
+  <div class="palette">
+    <div class="pin">
+      <div class="orb" style="width:16px;height:16px"></div>
+      <input id="palinput" placeholder="Ask Shay, jump to a site, or run a skill…">
+      <kbd>esc</kbd>
+    </div>
+    <div id="palDefault">
+      <div class="sect">Suggested</div>
+      <div class="pcmd" onclick="showPlan('Fix all red SEO items on Main Street Cafe',['page.update → /home (2 fields)','seo.update → meta description, 6 alt texts','build.incremental → 1 page','stage → shadow branch for your review'])">
+        <div class="ic">✦</div><div><div class="t">Fix all red SEO checklist items</div><div class="d">context: main-street-cafe.com · score 72</div></div><span class="cap">seo.update</span>
+      </div>
+      <div class="pcmd" onclick="showPlan('Renew SSL for littlehaiti-heritage.org',['deploy.godaddy → renew-cert.sh','crawler.verify → https handshake','radar.clear → SSL finding'])">
+        <div class="ic">🔒</div><div><div class="t">Renew the expiring SSL certificate</div><div class="d">littlehaiti-heritage.org · 4 days left</div></div><span class="cap">deploy.godaddy</span>
+      </div>
+      <div class="pcmd" onclick="showPlan('Build a new site from a prompt',['site.create → scaffold from template','brain.draft → copy + layout from your prompt','stage → shadow preview before anything is saved'])">
+        <div class="ic">＋</div><div><div class="t">Start a new site from a prompt</div><div class="d">chat-driven build · proposal-first</div></div><span class="cap">site.create</span>
+      </div>
+      <div class="sect">Jump to</div>
+      <div class="pcmd" onclick="closePalette();go(document.querySelector('[data-page=ingestion]'))"><div class="ic">◈</div><div><div class="t">Ingestion hub</div><div class="d">2 briefs waiting</div></div></div>
+      <div class="pcmd" onclick="closePalette();go(document.querySelector('[data-page=sites]'))"><div class="ic">◉</div><div><div class="t">All sites</div><div class="d">17 live</div></div></div>
+    </div>
+    <div class="planprev" id="planPrev" style="display:none">
+      <div class="h">✦ Shay's plan preview — confirm before anything runs</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px" id="planTitle"></div>
+      <ul id="planSteps"></ul>
+      <div class="acts">
+        <button class="gate-btn gate-approve" style="padding:8px 16px;font-size:12px" onclick="confirmPlan()">Confirm — run it</button>
+        <button class="gate-btn gate-reject" style="padding:8px 16px;font-size:12px" onclick="resetPalette()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="tdot"></div><span id="toastMsg"></span></div>
+
+<script>
+/* ---------- nav ---------- */
+function go(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+el.dataset.page).classList.add('active');
+  document.querySelector('.main').scrollTop=0;
+}
+function scrollDiff(){document.getElementById('diffwrap').scrollIntoView({behavior:'smooth'})}
+
+/* ---------- diff slider ---------- */
+const diff=document.getElementById('diff'),clip=document.getElementById('clip'),handle=document.getElementById('handle');
+let pos=0.5;
+function setPos(p){
+  pos=Math.max(0.02,Math.min(0.98,p));
+  clip.style.width=(pos*100)+'%';
+  handle.style.left='calc('+(pos*100)+'% - 1px)';
+}
+setPos(0.5);
+let drag=false;
+diff.addEventListener('pointerdown',e=>{drag=true;move(e)});
+window.addEventListener('pointermove',e=>{if(drag)move(e)});
+window.addEventListener('pointerup',()=>drag=false);
+function move(e){
+  const r=diff.getBoundingClientRect();
+  setPos((e.clientX-r.left)/r.width);
+}
+
+/* ---------- live log stream ---------- */
+const logEl=document.getElementById('log');
+const lines=[
+  ['sh','ingested brief #4413 (Port St. Lucie Youth Sports)'],
+  ['ok','signature verified — payload trusted'],
+  ['cy','drafting proof B · palette: green/gold'],
+  ['ok','hero image → WebP (−1.9 MB, 2.1s)'],
+  ['sh','compiling CSS primitives for main-street-cafe'],
+  ['wn','asset church-hero.png is slowing build by 4.2s — flagged'],
+  ['ok','incremental cache hit: 14/16 pages untouched'],
+  ['cy','proof B rendered · staging for triage'],
+  ['sh','crawler: 0 new broken links across 16 sites'],
+  ['ok','shadow preview ready — diff staged for review'],
+];
+let li=0;
+function tick(){
+  const now=new Date(); 
+  const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  const [cls,msg]=lines[li%lines.length];
+  const d=document.createElement('div');
+  d.innerHTML='<span class="ts">['+ts+']</span> <span class="'+cls+'">'+msg+'</span>';
+  logEl.appendChild(d);
+  if(logEl.children.length>26)logEl.removeChild(logEl.firstChild);
+  logEl.parentElement.scrollTop=logEl.parentElement.scrollHeight;
+  li++;
+}
+for(let i=0;i<6;i++)tick();
+setInterval(tick,2600);
+
+/* ---------- palette ---------- */
+const overlay=document.getElementById('overlay');
+function openPalette(seed){
+  overlay.classList.add('open');
+  resetPalette();
+  const inp=document.getElementById('palinput');
+  inp.value=seed||'';
+  inp.focus();
+  if(seed){showPlan('"'+seed+'"',['brain.parse → intent + target site','plan.build → deterministic step list','stage → shadow branch, diff for your review'])}
+}
+function closePalette(){overlay.classList.remove('open')}
+function resetPalette(){
+  document.getElementById('planPrev').style.display='none';
+  document.getElementById('palDefault').style.display='block';
+}
+function showPlan(title,steps){
+  document.getElementById('palDefault').style.display='none';
+  const pv=document.getElementById('planPrev');
+  pv.style.display='block';
+  document.getElementById('planTitle').textContent=title;
+  document.getElementById('planSteps').innerHTML=steps.map(s=>{
+    const parts=s.split('→');
+    return '<li><span class="cap2">'+parts[0].trim()+'</span>'+(parts[1]?' → '+parts[1].trim():'')+'</li>';
+  }).join('');
+}
+function planFix(title,site,steps){openPalette();showPlan(title+' · '+site,steps)}
+function confirmPlan(){closePalette();toast("Confirmed — Shay is on it. Watch her workspace on the right.")}
+window.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();overlay.classList.contains('open')?closePalette():openPalette()}
+  if(e.key==='Escape')closePalette();
+});
+
+/* ---------- kill switch ---------- */
+let frozen=false;
+function toggleKill(){
+  frozen=!frozen;
+  const b=document.getElementById('killbtn');
+  b.textContent=frozen?'Resume all jobs':'Freeze all jobs';
+  b.classList.toggle('frozen',frozen);
+  toast(frozen?'All background jobs frozen — Shay is standing by':'Jobs resumed — Shay picked up where she left off');
+}
+
+/* ---------- segmented ---------- */
+function segPick(btn,name){
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  toast('Default deploy target set to '+name);
+}
+
+/* ---------- toast ---------- */
+let tmr;
+function toast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  clearTimeout(tmr);
+  tmr=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

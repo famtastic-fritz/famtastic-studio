@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "note": "Operator declarations. These WIN over every inferred signal: the rule infers, the operator rules. Legal values: site | experiment | test | unclassified. An entry may also set variant_of.",
+  "declare": {}
+}

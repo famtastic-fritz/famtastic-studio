@@ -1,0 +1,970 @@
+{
+  "started_at": "2026-08-28T07:28:58.872Z",
+  "page_inventory_check": {
+    "expected": [
+      {
+        "id": "work",
+        "title": "Ingestion Hub",
+        "path": "/",
+        "rail": true,
+        "endpoint": "/api/work/items"
+      },
+      {
+        "id": "sites",
+        "title": "Sites",
+        "path": "/sites",
+        "rail": false,
+        "endpoint": "/api/portfolio"
+      },
+      {
+        "id": "site-view",
+        "title": "Editor",
+        "path": "/site",
+        "rail": true,
+        "endpoint": "/api/sites/current"
+      },
+      {
+        "id": "proofs",
+        "title": "Proofs",
+        "path": "/proofs",
+        "rail": false,
+        "endpoint": "/api/proofs"
+      },
+      {
+        "id": "applications",
+        "title": "Applications",
+        "path": "/applications",
+        "rail": false,
+        "endpoint": "/api/applications"
+      },
+      {
+        "id": "deployments",
+        "title": "Deployments",
+        "path": "/deployments",
+        "rail": true,
+        "endpoint": "/api/deployments"
+      },
+      {
+        "id": "media",
+        "title": "Media",
+        "path": "/media",
+        "rail": false,
+        "endpoint": "/api/media"
+      },
+      {
+        "id": "components",
+        "title": "Components",
+        "path": "/components",
+        "rail": false,
+        "endpoint": "/api/components"
+      },
+      {
+        "id": "seo",
+        "title": "SEO",
+        "path": "/seo",
+        "rail": false,
+        "endpoint": "/api/seo"
+      },
+      {
+        "id": "gate",
+        "title": "Quality Gate",
+        "path": "/gate",
+        "rail": false,
+        "endpoint": "/api/gate"
+      },
+      {
+        "id": "builds",
+        "title": "Build run",
+        "path": "/builds",
+        "rail": true,
+        "endpoint": "/api/builds"
+      },
+      {
+        "id": "automations",
+        "title": "Shay's Skills Leash",
+        "path": "/automations",
+        "rail": false,
+        "endpoint": "/api/automations"
+      },
+      {
+        "id": "shadow",
+        "title": "Shadow Runs",
+        "path": "/shadow",
+        "rail": false,
+        "endpoint": "/api/shadow/runs"
+      },
+      {
+        "id": "settings",
+        "title": "Settings / Admin",
+        "path": "/settings",
+        "rail": false,
+        "endpoint": "/api/admin/paths"
+      }
+    ],
+    "actual": [
+      {
+        "id": "work",
+        "title": "Ingestion Hub",
+        "path": "/",
+        "rail": true,
+        "endpoint": "/api/work/items",
+        "group": "Operate"
+      },
+      {
+        "id": "sites",
+        "title": "Sites",
+        "path": "/sites",
+        "rail": false,
+        "endpoint": "/api/portfolio",
+        "group": "Operate"
+      },
+      {
+        "id": "site-view",
+        "title": "Editor",
+        "path": "/site",
+        "rail": true,
+        "endpoint": "/api/sites/current",
+        "group": "Operate"
+      },
+      {
+        "id": "proofs",
+        "title": "Proofs",
+        "path": "/proofs",
+        "rail": false,
+        "endpoint": "/api/proofs",
+        "group": "Operate"
+      },
+      {
+        "id": "applications",
+        "title": "Applications",
+        "path": "/applications",
+        "rail": false,
+        "endpoint": "/api/applications",
+        "group": "Produce"
+      },
+      {
+        "id": "deployments",
+        "title": "Deployments",
+        "path": "/deployments",
+        "rail": true,
+        "endpoint": "/api/deployments",
+        "group": "Produce"
+      },
+      {
+        "id": "media",
+        "title": "Media",
+        "path": "/media",
+        "rail": false,
+        "endpoint": "/api/media",
+        "group": "Produce"
+      },
+      {
+        "id": "components",
+        "title": "Components",
+        "path": "/components",
+        "rail": false,
+        "endpoint": "/api/components",
+        "group": "Produce"
+      },
+      {
+        "id": "seo",
+        "title": "SEO",
+        "path": "/seo",
+        "rail": false,
+        "endpoint": "/api/seo",
+        "group": "Produce"
+      },
+      {
+        "id": "gate",
+        "title": "Quality Gate",
+        "path": "/gate",
+        "rail": false,
+        "endpoint": "/api/gate",
+        "group": "Produce"
+      },
+      {
+        "id": "builds",
+        "title": "Build run",
+        "path": "/builds",
+        "rail": true,
+        "endpoint": "/api/builds",
+        "group": "Produce"
+      },
+      {
+        "id": "automations",
+        "title": "Shay's Skills Leash",
+        "path": "/automations",
+        "rail": false,
+        "endpoint": "/api/automations",
+        "group": "Produce"
+      },
+      {
+        "id": "shadow",
+        "title": "Shadow Runs",
+        "path": "/shadow",
+        "rail": false,
+        "endpoint": "/api/shadow/runs",
+        "group": "Produce"
+      },
+      {
+        "id": "settings",
+        "title": "Settings / Admin",
+        "path": "/settings",
+        "rail": false,
+        "endpoint": "/api/admin/paths",
+        "group": "Know"
+      }
+    ],
+    "mismatches": [],
+    "ok": true
+  },
+  "playwright_evidence": {
+    "resolved_entry_point": "/Users/famtastic-fritz/Development/FAMtastic/site-studio-next/node_modules/playwright/index.mjs",
+    "package_json": "/Users/famtastic-fritz/Development/FAMtastic/site-studio-next/node_modules/playwright/package.json",
+    "version": "1.62.1",
+    "chromium_executable_path": "/Users/famtastic-fritz/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+  },
+  "playwright_gate_failures": [],
+  "pages": [
+    {
+      "id": "work",
+      "path": "/",
+      "url": "http://127.0.0.1:56468/",
+      "navigation": "direct",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Ingestion Hub",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "not_implemented",
+          "endpoint": "/api/proofs",
+          "collectionKey": "entries"
+        },
+        {
+          "index": 1,
+          "state": "empty",
+          "endpoint": "/api/work/items",
+          "collectionKey": "items"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": true,
+        "present": true
+      },
+      "screenshot": "docs/env/m0-screens/work.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "sites",
+      "path": "/sites",
+      "url": "http://127.0.0.1:56468/sites",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Sites",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/empty-state.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "available",
+          "endpoint": "/api/portfolio",
+          "collectionKey": "sites"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/sites.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "site-view",
+      "path": "/site",
+      "url": "http://127.0.0.1:56468/site",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Editor",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [],
+      "region_exemption_reason": "Reached via the \"Editor\" nav link with no ?site_id= in the URL. public/pages/site-view.js honestly renders \"no site selected\" (a link to /sites) in that case, never a fabricated site. The region-backed tab panels (public/pages/site-view/*.js) only mount with a site_id query param, which this nav-link-click walk does not construct. Re-walking with ?site_id=<id> is a separate, deeper check this script does not perform.",
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": true,
+        "present": true
+      },
+      "screenshot": "docs/env/m0-screens/site-view.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "proofs",
+      "path": "/proofs",
+      "url": "http://127.0.0.1:56468/proofs",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Proofs",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "not_implemented",
+          "endpoint": "/api/proofs",
+          "collectionKey": "entries"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/proofs.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "applications",
+      "path": "/applications",
+      "url": "http://127.0.0.1:56468/applications",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Applications",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/table.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "not_found",
+          "endpoint": "/api/applications",
+          "collectionKey": "items"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/applications.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "deployments",
+      "path": "/deployments",
+      "url": "http://127.0.0.1:56468/deployments",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Deployments",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/table.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "empty",
+          "endpoint": "/api/deployments",
+          "collectionKey": "receipts"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": true,
+        "present": true
+      },
+      "screenshot": "docs/env/m0-screens/deployments.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "media",
+      "path": "/media",
+      "url": "http://127.0.0.1:56468/media",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Media",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "available",
+          "endpoint": "/api/media",
+          "collectionKey": "assets"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/media.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "components",
+      "path": "/components",
+      "url": "http://127.0.0.1:56468/components",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Components",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/table.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "available",
+          "endpoint": "/api/components",
+          "collectionKey": "components"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/components.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "seo",
+      "path": "/seo",
+      "url": "http://127.0.0.1:56468/seo",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "SEO",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/table.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [],
+      "region_exemption_reason": "Reached via the \"SEO\" nav link with no ?site_id= in the URL. public/pages/seo.js honestly renders \"no site selected\" (a link to /sites) in that case, never a fabricated site.",
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/seo.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "gate",
+      "path": "/gate",
+      "url": "http://127.0.0.1:56468/gate",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Quality Gate",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [],
+      "region_exemption_reason": "Reached via the \"Quality Gate\" nav link with no ?site_id= in the URL. public/pages/gate.js honestly renders \"no site selected\" (a link to /sites) in that case, never a fabricated site.",
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/gate.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "builds",
+      "path": "/builds",
+      "url": "http://127.0.0.1:56468/builds",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Build run",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/table.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/recipe-builder.js",
+          "http://127.0.0.1:56468/kit/new-site-builder.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "empty",
+          "endpoint": "/api/builds",
+          "collectionKey": "runs"
+        },
+        {
+          "index": 1,
+          "state": "empty",
+          "endpoint": "/api/recipes",
+          "collectionKey": "recipes"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": true,
+        "present": true
+      },
+      "screenshot": "docs/env/m0-screens/builds.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "automations",
+      "path": "/automations",
+      "url": "http://127.0.0.1:56468/automations",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Shay's Skills Leash",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/panel.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/toggle.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/route-badge.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "available",
+          "endpoint": "/api/automations",
+          "collectionKey": "skills"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/automations.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "shadow",
+      "path": "/shadow",
+      "url": "http://127.0.0.1:56468/shadow",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Shadow Runs",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/table.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "empty",
+          "endpoint": "/api/shadow/runs",
+          "collectionKey": "runs"
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/shadow.png",
+      "pass": true,
+      "reason": null
+    },
+    {
+      "id": "settings",
+      "path": "/settings",
+      "url": "http://127.0.0.1:56468/settings",
+      "navigation": "clicked_nav_link",
+      "http_status": 200,
+      "h1_count": 1,
+      "h1_text": "Settings / Admin",
+      "page_errors": [],
+      "console_errors": [],
+      "failed_requests": [],
+      "undefined_or_nan_hits": [],
+      "asset_checks": {
+        "app_css": {
+          "requested": true,
+          "all_200": true,
+          "responses": [
+            {
+              "url": "http://127.0.0.1:56468/app.css",
+              "status": 200
+            }
+          ]
+        },
+        "kit_js": [
+          "http://127.0.0.1:56468/kit/shell.js",
+          "http://127.0.0.1:56468/kit/region.js",
+          "http://127.0.0.1:56468/kit/pill.js",
+          "http://127.0.0.1:56468/kit/rail.js",
+          "http://127.0.0.1:56468/kit/card.js",
+          "http://127.0.0.1:56468/kit/format.js",
+          "http://127.0.0.1:56468/kit/shay-workspace.js"
+        ],
+        "kit_js_all_200": true
+      },
+      "region_states": [
+        {
+          "index": 0,
+          "state": "available",
+          "endpoint": "/api/admin/paths",
+          "collectionKey": null
+        }
+      ],
+      "region_exemption_reason": null,
+      "region_honesty_mismatches": [],
+      "rail": {
+        "expected": false,
+        "present": false
+      },
+      "screenshot": "docs/env/m0-screens/settings.png",
+      "pass": true,
+      "reason": null
+    }
+  ],
+  "ok": true,
+  "finished_at": "2026-08-28T07:29:17.352Z"
+}

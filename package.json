@@ -1,0 +1,28 @@
+{
+  "name": "site-studio-next",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Site Studio greenfield rebuild: single-operator console and modular site-production engine operated through Shay.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "lint": "node scripts/lint-no-monolith.mjs && node scripts/lint-no-ambient-site.mjs",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "smoke": "node scripts/playwright-smoke.mjs",
+    "gates": "npm run lint && npm test && npm run smoke && npm run gate:g4-0 && npm run gate:g4-1",
+    "gate:g4-0": "node scripts/gate-g4-0-contract.mjs",
+    "gate:g4-1": "node scripts/gate-g4-1-shadow-boundary.mjs"
+  },
+  "dependencies": {
+    "ws": "8.18.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "playwright": "1.62.1",
+    "vitest": "3.2.4"
+  }
+}

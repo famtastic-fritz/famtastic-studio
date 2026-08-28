@@ -1,0 +1,242 @@
+[
+  {
+    "id": "work",
+    "title": "Work",
+    "group": "Operate",
+    "path": "/",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 79028,
+        "horizontalOverflow": true,
+        "file": "work-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 23971,
+        "horizontalOverflow": false,
+        "file": "work-1440.png"
+      }
+    }
+  },
+  {
+    "id": "sites",
+    "title": "Sites",
+    "group": "Operate",
+    "path": "/sites",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 2305,
+        "horizontalOverflow": true,
+        "file": "sites-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 1303,
+        "horizontalOverflow": false,
+        "file": "sites-1440.png"
+      }
+    }
+  },
+  {
+    "id": "site-view",
+    "title": "Editor",
+    "group": "Operate",
+    "path": "/site",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "site-view-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "site-view-1440.png"
+      }
+    }
+  },
+  {
+    "id": "proofs",
+    "title": "Proofs",
+    "group": "Operate",
+    "path": "/proofs",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "proofs-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "proofs-1440.png"
+      }
+    }
+  },
+  {
+    "id": "applications",
+    "title": "Applications",
+    "group": "Produce",
+    "path": "/applications",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "applications-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "applications-1440.png"
+      }
+    }
+  },
+  {
+    "id": "deployments",
+    "title": "Deployments",
+    "group": "Produce",
+    "path": "/deployments",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "deployments-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "deployments-1440.png"
+      }
+    }
+  },
+  {
+    "id": "media",
+    "title": "Media",
+    "group": "Produce",
+    "path": "/media",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "media-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "media-1440.png"
+      }
+    }
+  },
+  {
+    "id": "components",
+    "title": "Components",
+    "group": "Produce",
+    "path": "/components",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "components-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "components-1440.png"
+      }
+    }
+  },
+  {
+    "id": "builds",
+    "title": "Build run",
+    "group": "Produce",
+    "path": "/builds",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 5206,
+        "horizontalOverflow": true,
+        "file": "builds-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 4927,
+        "horizontalOverflow": false,
+        "file": "builds-1440.png"
+      }
+    }
+  },
+  {
+    "id": "automations",
+    "title": "Automations",
+    "group": "Produce",
+    "path": "/automations",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 844,
+        "horizontalOverflow": true,
+        "file": "automations-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "automations-1440.png"
+      }
+    }
+  },
+  {
+    "id": "shadow",
+    "title": "Shadow Runs",
+    "group": "Produce",
+    "path": "/shadow",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 1536,
+        "horizontalOverflow": true,
+        "file": "shadow-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "file": "shadow-1440.png"
+      }
+    }
+  },
+  {
+    "id": "settings",
+    "title": "Settings / Admin",
+    "group": "Know",
+    "path": "/settings",
+    "captures": {
+      "390": {
+        "settled": true,
+        "scrollHeight": 2021,
+        "horizontalOverflow": true,
+        "file": "settings-390.png"
+      },
+      "1440": {
+        "settled": true,
+        "scrollHeight": 1187,
+        "horizontalOverflow": false,
+        "file": "settings-1440.png"
+      }
+    }
+  }
+]

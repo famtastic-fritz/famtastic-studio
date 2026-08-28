@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Studio — Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080d; --glass:rgba(255,255,255,.035); --glass2:rgba(255,255,255,.06);
+  --stroke:rgba(255,255,255,.08); --stroke2:rgba(255,255,255,.15);
+  --ink:#e9ebf3; --dim:#8b90a3; --faint:#5a5f72;
+  --shay:#8b7cf6; --cy:#4fd8e8; --ok:#3ee08f; --warn:#f5b73d; --bad:#f5564f;
+  --mono:'JetBrains Mono',monospace; --sans:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;font-size:13.5px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(800px 400px at 80% -10%,rgba(139,124,246,.12),transparent 60%)}
+.app{position:relative;display:grid;grid-template-columns:196px 1fr;grid-template-rows:52px 1fr;height:100vh}
+/* top */
+.top{grid-column:1/3;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--stroke);background:rgba(11,13,21,.75);backdrop-filter:blur(12px);z-index:20}
+.orb{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#cfc6ff,var(--shay) 45%,#3a2f8f);box-shadow:0 0 12px rgba(139,124,246,.6);flex:none}
+.brand{font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
+.brand small{font-size:10.5px;color:var(--dim);font-weight:500}
+.sp{flex:1}
+.chip{font-family:var(--mono);font-size:10.5px;color:var(--dim);border:1px solid var(--stroke);border-radius:20px;padding:4px 11px;background:var(--glass)}
+.chip b{color:var(--ok)}
+.btn{font-family:var(--sans);font-size:12px;font-weight:600;border-radius:9px;padding:7px 13px;cursor:pointer;border:1px solid var(--stroke2);background:var(--glass2);color:var(--ink);transition:.15s}
+.btn:hover{border-color:var(--shay);color:#cfc6ff}
+.btn.pri{background:linear-gradient(90deg,var(--shay),#6f8ff5);border-color:transparent;color:#fff}
+.btn.pri:hover{filter:brightness(1.12);color:#fff}
+.btn.sm{font-size:11px;padding:5px 10px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+/* nav */
+.nav{border-right:1px solid var(--stroke);padding:12px 8px;display:flex;flex-direction:column;gap:1px;background:rgba(11,13,21,.5);overflow-y:auto}
+.nlab{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:8px 10px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:var(--dim);cursor:pointer;font-weight:500;font-size:12.5px;border:1px solid transparent;background:none;font-family:var(--sans);width:100%;text-align:left;transition:.12s}
+.ni:hover{color:var(--ink);background:var(--glass)}
+.ni.on{color:var(--ink);background:var(--glass2);border-color:var(--stroke)}
+.ni .ic{width:15px;text-align:center;font-size:12px;opacity:.85}
+.ni .bg{margin-left:auto;font-family:var(--mono);font-size:9.5px;border-radius:8px;padding:1px 6px}
+.bg.hot{background:rgba(245,86,79,.16);color:var(--bad)}
+.bg.cool{background:rgba(139,124,246,.16);color:var(--shay)}
+.bg.ok{background:rgba(62,224,143,.12);color:var(--ok)}
+/* main */
+.main{overflow-y:auto;padding:20px 24px 40px}
+.main::-webkit-scrollbar{width:8px}.main::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:4px}
+.pg{display:none}.pg.on{display:block;animation:fade .2s}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.head .d{font-size:11.5px;color:var(--dim)}
+.panel{border:1px solid var(--stroke);border-radius:12px;background:var(--glass);overflow:hidden}
+.ph{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--stroke);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--dim)}
+/* site cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px}
+.card{border:1px solid var(--stroke);border-radius:12px;background:var(--glass);overflow:hidden;cursor:pointer;transition:.15s}
+.card:hover{border-color:var(--stroke2);transform:translateY(-2px)}
+.thumb{height:120px;position:relative;overflow:hidden;border-bottom:1px solid var(--stroke)}
+.thumb .mini{position:absolute;inset:0;transform:scale(.34);transform-origin:top left;width:294%;height:294%;pointer-events:none}
+.cbody{padding:11px 13px}
+.cbody .nm{font-weight:600;font-size:13px}
+.cbody .dm{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:2px}
+.crow{display:flex;align-items:center;gap:7px;margin-top:9px}
+.pill{font-family:var(--mono);font-size:9.5px;border-radius:10px;padding:2px 8px}
+.pill.ok{background:rgba(62,224,143,.1);color:var(--ok)}
+.pill.warn{background:rgba(245,183,61,.12);color:var(--warn)}
+.pill.bad{background:rgba(245,86,79,.12);color:var(--bad)}
+.pill.b{background:rgba(139,124,246,.14);color:var(--shay)}
+.pill.g{background:var(--glass2);color:var(--dim)}
+/* mini site renders (real-ish) */
+.site{width:900px;height:520px;font-family:var(--sans);overflow:hidden}
+/* reunion theme */
+.r-hero{height:230px;background:linear-gradient(135deg,#0b1e3a,#16325c 55%,#0d2440);position:relative;display:flex;flex-direction:column;justify-content:center;padding:0 60px;color:#fff}
+.r-hero::after{content:'';position:absolute;right:-40px;top:-30px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(240,196,96,.32),transparent 65%)}
+.r-nav{position:absolute;top:0;left:0;right:0;display:flex;gap:22px;padding:16px 60px;font-size:12px;color:#c9d6ea;align-items:center}
+.r-nav b{color:#f0c460;font-weight:700;letter-spacing:.04em}
+.r-hero h1{font-family:'Playfair Display',serif;font-size:46px;line-height:1.05;letter-spacing:-.02em}
+.r-hero h1 em{color:#f0c460;font-style:normal}
+.r-hero p{color:#b8c8e0;font-size:14px;margin-top:10px;max-width:430px}
+.r-cta{display:inline-block;margin-top:16px;background:#f0c460;color:#0b1e3a;font-weight:700;font-size:12.5px;padding:11px 22px;border-radius:6px;width:fit-content}
+.r-strip{display:flex;gap:14px;padding:22px 60px;background:#0e1626}
+.r-strip>div{flex:1;background:#16223a;border-radius:8px;padding:14px;border:1px solid #223css}
+.r-card{flex:1;background:#141f34;border-radius:8px;padding:15px;border:1px solid #22314f}
+.r-card h3{font-size:13px;color:#f0c460;margin-bottom:5px}
+.r-card p{font-size:11px;color:#8fa3bd;line-height:1.5}
+.r-band{padding:20px 60px;background:#0b1220;color:#7d8ea6;font-size:11px}
+/* skin bar theme */
+.s-hero{height:230px;background:linear-gradient(140deg,#151233,#241c4d 50%,#12102b);display:flex;flex-direction:column;justify-content:center;padding:0 60px;color:#fff;position:relative}
+.s-hero::after{content:'';position:absolute;right:60px;top:50px;width:200px;height:130px;border-radius:12px;background:linear-gradient(140deg,#d9b877,#8a6f3c);opacity:.65}
+.s-nav{position:absolute;top:0;left:0;right:0;display:flex;gap:20px;padding:16px 60px;font-size:12px;color:#c3bbe0;align-items:center}
+.s-nav b{color:#e8cfa0;letter-spacing:.12em;font-size:11px}
+.s-hero h1{font-family:'Playfair Display',serif;font-size:40px;letter-spacing:-.01em;max-width:420px;line-height:1.1}
+.s-hero p{color:#a99fc9;font-size:13px;margin-top:10px;max-width:380px}
+.s-cta{margin-top:16px;background:#e8cfa0;color:#241c4d;font-weight:700;font-size:12px;padding:10px 20px;border-radius:24px;width:fit-content}
+.s-strip{display:flex;gap:14px;padding:22px 60px;background:#100e26}
+.s-card{flex:1;background:#191536;border:1px solid #2b2456;border-radius:10px;padding:14px}
+.s-card h3{font-size:12.5px;color:#e8cfa0;margin-bottom:4px}
+.s-card p{font-size:11px;color:#9b93bd;line-height:1.5}
+/* plain/text theme (the "before") */
+.t-body{padding:34px 60px;background:#fff;color:#111;height:100%}
+.t-body h1{font-family:Times,serif;font-size:26px;margin-bottom:10px}
+.t-body h2{font-family:Times,serif;font-size:17px;margin:16px 0 6px}
+.t-body p{font-size:12.5px;line-height:1.6;color:#333;max-width:640px}
+/* editor */
+.edwrap{display:grid;grid-template-columns:1fr 268px;gap:13px;align-items:start}
+.stage{border:1px solid var(--stroke);border-radius:12px;background:#0a0c13;overflow:hidden}
+.stagebar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--stroke);background:var(--glass)}
+.dev{display:flex;gap:4px}
+.dev button{background:none;border:1px solid var(--stroke);color:var(--dim);border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:var(--sans)}
+.dev button.on{background:var(--glass2);color:var(--ink);border-color:var(--stroke2)}
+.frame{height:430px;overflow:auto;background:#0a0c13;display:flex;justify-content:center;padding:14px}
+.frame::-webkit-scrollbar{width:6px}.frame::-webkit-scrollbar-thumb{background:var(--stroke2)}
+.canvas{width:900px;transform-origin:top center;transition:width .25s}
+.canvas.mob{width:390px}
+.canvas.mob .r-hero,.canvas.mob .s-hero{padding:0 24px;height:auto;padding-top:60px;padding-bottom:26px}
+.canvas.mob .r-hero h1{font-size:30px}
+.canvas.mob .r-strip,.canvas.mob .s-strip{flex-direction:column;padding:16px 24px}
+.canvas.mob .r-nav,.canvas.mob .s-nav{padding:12px 24px;gap:12px;font-size:10px}
+.sel{outline:2px solid var(--shay);outline-offset:-2px;position:relative;cursor:pointer}
+.selectable{cursor:pointer;transition:outline .1s}
+.selectable:hover{outline:1.5px dashed rgba(139,124,246,.6);outline-offset:-2px}
+.tag{position:absolute;top:0;left:0;background:var(--shay);color:#fff;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:0 0 5px 0;z-index:3}
+[contenteditable="true"]{outline:2px solid var(--cy);outline-offset:2px;background:rgba(79,216,232,.07)}
+/* inspector */
+.insp{border:1px solid var(--stroke);border-radius:12px;background:var(--glass);position:sticky;top:0}
+.ih{padding:11px 13px;border-bottom:1px solid var(--stroke);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);display:flex;align-items:center;gap:8px}
+.ib{padding:13px}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:10.5px;color:var(--dim);margin-bottom:5px}
+.fld input,.fld textarea,.fld select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--stroke);border-radius:7px;padding:7px 9px;color:var(--ink);font-family:var(--sans);font-size:12px;outline:none}
+.fld input:focus,.fld textarea:focus{border-color:var(--shay)}
+.fld textarea{resize:vertical;min-height:56px;line-height:1.45}
+.swatches{display:flex;gap:6px}
+.sw{width:26px;height:26px;border-radius:6px;border:1px solid var(--stroke2);cursor:pointer}
+.sw.on{outline:2px solid var(--shay);outline-offset:1px}
+.hint{font-size:10.5px;color:var(--faint);line-height:1.5}
+/* tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--stroke);margin-bottom:16px}
+.tab{background:none;border:none;color:var(--dim);font-family:var(--sans);font-size:12.5px;font-weight:500;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);border-bottom-color:var(--shay)}
+/* seo */
+.seogrid{display:grid;grid-template-columns:230px 1fr;gap:13px;align-items:start}
+.ring{display:flex;flex-direction:column;align-items:center;padding:20px}
+.ringsvg{width:130px;height:130px;transform:rotate(-90deg)}
+.ringsvg circle{fill:none;stroke-width:9;stroke-linecap:round}
+.rbg{stroke:rgba(255,255,255,.07)}
+.rfg{stroke:var(--warn);transition:stroke-dashoffset .8s ease}
+.rnum{margin-top:-84px;font-family:var(--mono);font-size:30px;font-weight:600;color:var(--warn)}
+.rlab{font-size:10.5px;color:var(--dim);margin-top:44px}
+.chk{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid var(--stroke)}
+.chk:last-child{border:none}
+.chk .st{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex:none}
+.st.pass{background:rgba(62,224,143,.14);color:var(--ok)}
+.st.fail{background:rgba(245,86,79,.14);color:var(--bad)}
+.st.warn{background:rgba(245,183,61,.14);color:var(--warn)}
+.chk .tx{flex:1}
+.chk .tx b{font-size:12.5px;font-weight:500;display:block}
+.chk .tx span{font-size:10.5px;color:var(--dim)}
+.gprev{background:#fff;border-radius:9px;padding:14px 16px;font-family:Arial,sans-serif}
+.gprev .u{color:#202124;font-size:11px}
+.gprev .t{color:#1a0dab;font-size:17px;margin:3px 0;line-height:1.3}
+.gprev .d{color:#4d5156;font-size:12px;line-height:1.5}
+/* build flow */
+.stages{display:flex;flex-direction:column;gap:2px}
+.stg{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--stroke);font-size:12.5px}
+.stg:last-child{border:none}
+.stg .n{width:19px;height:19px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;border:1px solid var(--stroke2);color:var(--faint)}
+.stg.done .n{background:rgba(62,224,143,.15);color:var(--ok);border-color:transparent}
+.stg.run .n{border-color:var(--shay);color:var(--shay);animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stg.done{color:var(--dim)}.stg.run{color:var(--ink)}
+.stg .meta{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.stg .brain{font-family:var(--mono);font-size:9.5px;padding:1px 7px;border-radius:8px;background:var(--glass2);color:var(--cy)}
+/* history */
+.hrow{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--stroke)}
+.hrow:last-child{border:none}
+.hrow .dot{width:7px;height:7px;border-radius:50%;background:var(--shay);flex:none}
+.hrow .who{font-family:var(--mono);font-size:10px;color:var(--faint);width:74px;flex:none}
+.hrow .what{flex:1;font-size:12.5px}
+.hrow .what small{display:block;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px}
+/* diff */
+.diff{position:relative;height:330px;overflow:hidden;cursor:ew-resize;background:#0a0c13;border-radius:9px;border:1px solid var(--stroke)}
+.dp{position:absolute;inset:0;overflow:hidden}
+.dp .inner{width:900px;transform:scale(.62);transform-origin:top left}
+.dclip{position:absolute;inset:0;overflow:hidden;border-right:2px solid var(--shay)}
+.dhandle{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(var(--shay),var(--cy));box-shadow:0 0 10px rgba(139,124,246,.7);z-index:5}
+.dgrip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#131627;border:1.5px solid var(--shay);display:flex;align-items:center;justify-content:center;color:var(--shay);font-size:10px}
+.dtag{position:absolute;top:9px;font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:5px;z-index:4}
+/* media */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px}
+.mtile{border:1px solid var(--stroke);border-radius:9px;overflow:hidden;background:var(--glass)}
+.mimg{height:96px;position:relative}
+.mmeta{padding:8px 10px;font-family:var(--mono);font-size:9.5px;color:var(--dim)}
+.mmeta b{display:block;font-family:var(--sans);font-size:11.5px;color:var(--ink);font-weight:500;margin-bottom:2px}
+/* toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(15,17,28,.96);border:1px solid var(--stroke2);border-radius:10px;padding:11px 18px;font-size:12.5px;opacity:0;pointer-events:none;transition:.22s;z-index:80;display:flex;align-items:center;gap:9px;backdrop-filter:blur(12px)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast i{width:7px;height:7px;border-radius:50%;background:var(--ok);display:block}
+table{width:100%;border-collapse:collapse}
+th{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:left;padding:9px 14px;border-bottom:1px solid var(--stroke)}
+td{padding:11px 14px;border-bottom:1px solid var(--stroke);font-size:12.5px}
+tr:last-child td{border:none}
+tr:hover td{background:var(--glass)}
+.mono{font-family:var(--mono);font-size:11px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div class="orb"></div>SITE STUDIO <small>powered by Shay</small></div>
+    <div class="sp"></div>
+    <div class="chip">sites root: <b>~/FAMtastic/sites</b></div>
+    <button class="btn pri" onclick="nav('build')">＋ New site</button>
+  </div>
+
+  <nav class="nav">
+    <div class="nlab">Console</div>
+    <button class="ni" data-p="work" onclick="nav('work',this)"><span class="ic">▤</span>Work<span class="bg hot">3</span></button>
+    <button class="ni on" data-p="sites" onclick="nav('sites',this)"><span class="ic">◉</span>Sites<span class="bg ok">9</span></button>
+    <button class="ni" data-p="site" onclick="nav('site',this)"><span class="ic">▣</span>Site View</button>
+    <button class="ni" data-p="build" onclick="nav('build',this)"><span class="ic">✦</span>New build</button>
+    <button class="ni" data-p="apps" onclick="nav('apps',this)"><span class="ic">◈</span>Applications<span class="bg ok">3</span></button>
+    <button class="ni" data-p="proofs" onclick="nav('proofs',this)"><span class="ic">✉</span>Proofs<span class="bg cool">2</span></button>
+    <button class="ni" data-p="deploy" onclick="nav('deploy',this)"><span class="ic">↑</span>Deployments</button>
+    <button class="ni" data-p="media" onclick="nav('media',this)"><span class="ic">▩</span>Media</button>
+    <button class="ni" data-p="comp" onclick="nav('comp',this)"><span class="ic">◫</span>Components</button>
+    <button class="ni" data-p="recipes" onclick="nav('recipes',this)"><span class="ic">⚙</span>Builds + Recipes</button>
+    <button class="ni" data-p="auto" onclick="nav('auto',this)"><span class="ic">✧</span>Automations</button>
+    <button class="ni" data-p="set" onclick="nav('set',this)"><span class="ic">⚒</span>Settings</button>
+  </nav>
+
+  <main class="main">
+
+    <!-- ============ SITES ============ -->
+    <section class="pg on" id="p-sites">
+      <div class="head"><h1>Sites</h1><span class="d">9 real properties · ~/Development/FAMtastic/sites · 2 test builds hidden</span></div>
+      <div class="grid">
+        <div class="card" onclick="openSite('reunion')">
+          <div class="thumb"><div class="mini">
+            <div class="site"><div class="r-hero"><div class="r-nav"><b>MBSH '96</b><span>Weekend</span><span>Tickets</span><span>Gallery</span><span>Committee</span></div>
+              <h1>30 Years.<br><em>One Weekend.</em></h1><p>Miami Beach Senior High, Class of 1996. October 16–18, 2026.</p><div class="r-cta">Reserve your spot</div></div>
+              <div class="r-strip"><div class="r-card"><h3>Friday Mixer</h3><p>Kickoff at The Betsy rooftop.</p></div><div class="r-card"><h3>Saturday Gala</h3><p>Dinner, awards, and the class photo.</p></div><div class="r-card"><h3>Sunday Beach Day</h3><p>Families welcome. 10th &amp; Ocean.</p></div></div></div>
+          </div></div>
+          <div class="cbody"><div class="nm">MBSH Class of '96 Reunion</div><div class="dm">mbsh96reunion.com</div>
+            <div class="crow"><span class="pill ok">healthy</span><span class="pill g">◆ Netlify</span><span class="pill g">SEO 91</span></div></div>
+        </div>
+        <div class="card" onclick="openSite('starlight')">
+          <div class="thumb"><div class="mini">
+            <div class="site"><div class="s-hero"><div class="s-nav"><b>STARLIGHT SKIN BAR</b><span>Services</span><span>About</span><span>First visit</span><span>Book</span></div>
+              <h1>Quiet luxury for your skin.</h1><p>Suite 6 · licensed esthetician · results-driven facials in a private studio.</p><div class="s-cta">Book a consultation</div></div>
+              <div class="s-strip"><div class="s-card"><h3>Signature facials</h3><p>Custom protocols for tone and texture.</p></div><div class="s-card"><h3>Meet your esthetician</h3><p>Licensed, suite-based, appointment only.</p></div><div class="s-card"><h3>First visit</h3><p>How to find Studio 6 and what to expect.</p></div></div></div>
+          </div></div>
+          <div class="cbody"><div class="nm">Starlight Skin Bar</div><div class="dm">starlightskinbar.com · new build</div>
+            <div class="crow"><span class="pill b">proposal open</span><span class="pill g">▲ Vercel</span><span class="pill warn">SEO 74</span></div></div>
+        </div>
+        <div class="card" onclick="openSite('plain')">
+          <div class="thumb"><div class="mini"><div class="site"><div class="t-body"><h1>Fresh Cuts Atlanta</h1><p>Fresh Cuts Atlanta is a barbershop. We offer haircuts and grooming services to customers in the Atlanta area.</p><h2>Services</h2><p>We offer a range of services for our customers.</p><h2>Contact</h2><p>Contact us to book an appointment.</p></div></div></div></div>
+          <div class="cbody"><div class="nm">Fresh Cuts Atlanta</div><div class="dm">site-fresh-cuts-in-atlanta · unstyled</div>
+            <div class="crow"><span class="pill bad">needs design pass</span><span class="pill g">not deployed</span></div></div>
+        </div>
+        <div class="card" onclick="toast('Opening FAMtastic Designs')">
+          <div class="thumb" style="background:linear-gradient(135deg,#1a0f2e,#3b1d5e 60%,#120a22);display:flex;align-items:center;justify-content:center">
+            <div style="text-align:center"><div style="font-size:22px;font-weight:700;background:linear-gradient(90deg,#fff,#c9a6ff);-webkit-background-clip:text;background-clip:text;color:transparent">FAMtastic</div><div style="font-family:var(--mono);font-size:9px;color:#9b8bd0;margin-top:4px">BRAND. BUILD. FAMTASTIC.</div></div></div>
+          <div class="cbody"><div class="nm">FAMtastic Designs</div><div class="dm">famtasticdesigns.com</div>
+            <div class="crow"><span class="pill ok">healthy</span><span class="pill g">● GoDaddy</span><span class="pill ok">SEO 94</span></div></div>
+        </div>
+        <div class="card" onclick="toast('Opening Drop The Beat')">
+          <div class="thumb" style="background:linear-gradient(135deg,#0d0d16,#1d1030 55%,#0a0a12);display:flex;align-items:center;justify-content:center">
+            <div style="text-align:center"><div style="font-size:19px;font-weight:700;color:#b6f13a">DROP THE BEAT</div><div style="font-family:var(--mono);font-size:9px;color:#7a7f95;margin-top:4px">South Florida mobile DJ</div></div></div>
+          <div class="cbody"><div class="nm">Drop The Beat Entertainment</div><div class="dm">site-drop-the-beat</div>
+            <div class="crow"><span class="pill warn">7 broken links</span><span class="pill g">◆ Netlify</span><span class="pill ok">SEO 85</span></div></div>
+        </div>
+        <div class="card" onclick="toast('Opening Auntie Gale')">
+          <div class="thumb" style="background:linear-gradient(135deg,#2a1608,#4a2a10 60%,#1a0f06);display:flex;align-items:center;justify-content:center">
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:20px;color:#f0c460">Auntie Gale's</div><div style="font-family:var(--mono);font-size:9px;color:#b89968;margin-top:4px">Caribbean kitchen</div></div></div>
+          <div class="cbody"><div class="nm">Auntie Gale's</div><div class="dm">site-auntie-gale</div>
+            <div class="crow"><span class="pill ok">healthy</span><span class="pill g">● GoDaddy</span><span class="pill warn">SEO 78</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SITE VIEW ============ -->
+    <section class="pg" id="p-site">
+      <div class="head">
+        <h1 id="siteTitle">MBSH Class of '96 Reunion</h1>
+        <span class="d mono" id="siteDomain">mbsh96reunion.com · Netlify · last deploy 2h ago</span>
+        <div class="sp"></div>
+        <button class="btn sm" onclick="toast('Opened live site in new tab')">Open live ↗</button>
+        <button class="btn sm pri" onclick="nav('deploy')">Deploy</button>
+      </div>
+      <div class="tabs">
+        <button class="tab on" onclick="stab('editor',this)">Editor</button>
+        <button class="tab" onclick="stab('seo',this)">SEO</button>
+        <button class="tab" onclick="stab('pages',this)">Pages</button>
+        <button class="tab" onclick="stab('hist',this)">History</button>
+        <button class="tab" onclick="stab('review',this)">Review changes</button>
+        <button class="tab" onclick="stab('conv',this)">Shay</button>
+      </div>
+
+      <!-- EDITOR -->
+      <div class="st on" id="s-editor">
+        <div class="edwrap">
+          <div class="stage">
+            <div class="stagebar">
+              <div class="dev"><button class="on" onclick="dev('desk',this)">Desktop</button><button onclick="dev('mob',this)">Mobile</button></div>
+              <span class="mono" style="color:var(--faint);font-size:10.5px">click a section to select · click text to edit · ⌘Z undo</span>
+              <div class="sp"></div>
+              <button class="btn sm" onclick="undo()">↶ Undo</button>
+              <button class="btn sm pri" onclick="saveEdits()">Save to working copy</button>
+            </div>
+            <div class="frame">
+              <div class="canvas" id="canvas">
+                <div class="site" id="liveSite">
+                  <div class="r-hero selectable" data-sec="Hero">
+                    <div class="r-nav"><b>MBSH '96</b><span>Weekend</span><span>Tickets</span><span>Gallery</span><span>Committee</span></div>
+                    <h1 data-ed="1">30 Years.<br><em>One Weekend.</em></h1>
+                    <p data-ed="1">Miami Beach Senior High, Class of 1996. October 16–18, 2026.</p>
+                    <div class="r-cta" data-ed="1">Reserve your spot</div>
+                  </div>
+                  <div class="r-strip selectable" data-sec="Feature grid">
+                    <div class="r-card"><h3 data-ed="1">Friday Mixer</h3><p data-ed="1">Kickoff at The Betsy rooftop. Cash bar, name tags, and 30 years of catching up.</p></div>
+                    <div class="r-card"><h3 data-ed="1">Saturday Gala</h3><p data-ed="1">Dinner, awards, and the class photo. Semi-formal.</p></div>
+                    <div class="r-card"><h3 data-ed="1">Sunday Beach Day</h3><p data-ed="1">Families welcome. 10th &amp; Ocean, 11am til whenever.</p></div>
+                  </div>
+                  <div class="r-band selectable" data-sec="Footer">© 2026 MBSH Class of 1996 Reunion Committee · Questions? committee@mbsh96reunion.com</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="insp">
+            <div class="ih"><span id="inspName">No selection</span></div>
+            <div class="ib" id="inspBody">
+              <p class="hint">Click any section in the canvas to edit its content, colors, and layout. Every change is journaled and reversible.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEO -->
+      <div class="st" id="s-seo">
+        <div class="seogrid">
+          <div class="panel">
+            <div class="ph">SEO score</div>
+            <div class="ring">
+              <svg class="ringsvg" viewBox="0 0 120 120"><circle class="rbg" cx="60" cy="60" r="52"/><circle class="rfg" id="ringfg" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="98"/></svg>
+              <div class="rnum" id="seoNum">70</div><div class="rlab">4 issues to fix</div>
+              <button class="btn pri" style="margin-top:14px;width:100%" onclick="fixSeo()">Let Shay draft fixes</button>
+            </div>
+          </div>
+          <div>
+            <div class="panel" style="margin-bottom:13px">
+              <div class="ph">Checklist</div>
+              <div id="seoList">
+                <div class="chk" data-k="alt"><span class="st fail">✕</span><div class="tx"><b>6 images missing alt text</b><span>hero.jpg, gala-1.jpg, beach-3.jpg +3</span></div><button class="btn sm" onclick="fixOne(this,'alt')">Fix</button></div>
+                <div class="chk" data-k="meta"><span class="st fail">✕</span><div class="tx"><b>Meta description too short</b><span>38 chars · target 120–158</span></div><button class="btn sm" onclick="fixOne(this,'meta')">Fix</button></div>
+                <div class="chk" data-k="h1"><span class="st warn">!</span><div class="tx"><b>Two H1 tags on /tickets</b><span>Only one H1 per page</span></div><button class="btn sm" onclick="fixOne(this,'h1')">Fix</button></div>
+                <div class="chk" data-k="og"><span class="st warn">!</span><div class="tx"><b>No Open Graph image</b><span>Links share without a preview card</span></div><button class="btn sm" onclick="fixOne(this,'og')">Fix</button></div>
+                <div class="chk"><span class="st pass">✓</span><div class="tx"><b>Mobile responsive</b><span>All 6 pages pass</span></div></div>
+                <div class="chk"><span class="st pass">✓</span><div class="tx"><b>Sitemap + robots.txt</b><span>Present and valid</span></div></div>
+                <div class="chk"><span class="st pass">✓</span><div class="tx"><b>HTTPS + valid certificate</b><span>Expires in 68 days</span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="ph">Metadata · index.html</div>
+              <div class="ib">
+                <div class="fld"><label>Title tag <span class="mono" id="tlen">52 / 60</span></label><input id="metaTitle" value="MBSH Class of '96 · 30 Year Reunion · Miami Beach" oninput="gp()"></div>
+                <div class="fld"><label>Meta description <span class="mono" id="dlen">38 / 158</span></label><textarea id="metaDesc" oninput="gp()">Reunion info and tickets.</textarea></div>
+                <label style="display:block;font-size:10.5px;color:var(--dim);margin-bottom:6px">Google preview</label>
+                <div class="gprev"><div class="u">https://mbsh96reunion.com</div><div class="t" id="gpT">MBSH Class of '96 · 30 Year Reunion · Miami Beach</div><div class="d" id="gpD">Reunion info and tickets.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGES -->
+      <div class="st" id="s-pages">
+        <div class="panel"><table>
+          <thead><tr><th>Page</th><th>Title</th><th>Sections</th><th>SEO</th><th>Modified</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="mono">index.html</td><td>MBSH Class of '96 · 30 Year Reunion</td><td>5</td><td style="color:var(--warn);font-family:var(--mono)">70</td><td class="mono">2h ago</td><td><button class="btn sm" onclick="stab('editor',document.querySelectorAll('.tab')[0])">Edit</button></td></tr>
+            <tr><td class="mono">weekend.html</td><td>The Weekend — Schedule</td><td>4</td><td style="color:var(--ok);font-family:var(--mono)">88</td><td class="mono">2h ago</td><td><button class="btn sm">Edit</button></td></tr>
+            <tr><td class="mono">tickets.html</td><td>Tickets &amp; RSVP</td><td>3</td><td style="color:var(--warn);font-family:var(--mono)">74</td><td class="mono">1d ago</td><td><button class="btn sm">Edit</button></td></tr>
+            <tr><td class="mono">gallery.html</td><td>Then &amp; Now Gallery</td><td>2</td><td style="color:var(--ok);font-family:var(--mono)">91</td><td class="mono">3d ago</td><td><button class="btn sm">Edit</button></td></tr>
+            <tr><td class="mono">committee.html</td><td>The Committee</td><td>3</td><td style="color:var(--ok);font-family:var(--mono)">90</td><td class="mono">3d ago</td><td><button class="btn sm">Edit</button></td></tr>
+          </tbody></table></div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="st" id="s-hist">
+        <div class="panel">
+          <div class="ph">Journal <span class="sp"></span><span class="mono" style="text-transform:none;letter-spacing:0">every mutation, append-only</span></div>
+          <div id="histList">
+            <div class="hrow"><span class="dot"></span><span class="who">you · now</span><span class="what">Opened editor<small>no changes yet</small></span></div>
+            <div class="hrow"><span class="dot" style="background:var(--cy)"></span><span class="who">Shay · 2h</span><span class="what">Compressed 4 gallery images to WebP<small>−3.2 MB · build 41s · deploy #218 verified</small></span><button class="btn sm" onclick="toast('Restored to before this change')">Restore</button></div>
+            <div class="hrow"><span class="dot"></span><span class="who">you · 1d</span><span class="what">Edited hero headline on /index<small>"Class of 96 Reunion" → "30 Years. One Weekend."</small></span><button class="btn sm" onclick="toast('Restored to before this change')">Restore</button></div>
+            <div class="hrow"><span class="dot" style="background:var(--cy)"></span><span class="who">Shay · 3d</span><span class="what">Added Committee page from brief<small>3 sections · 1 media slot filled</small></span><button class="btn sm" onclick="toast('Restored to before this change')">Restore</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEW -->
+      <div class="st" id="s-review">
+        <div class="panel">
+          <div class="ph">Proposed change · /index · hero warmth pass <span class="sp"></span><span class="pill b">working copy</span><span class="pill g">live untouched</span></div>
+          <div style="padding:13px">
+            <div class="diff" id="diff">
+              <div class="dp"><div class="inner"><div class="site">
+                <div class="r-hero" style="background:linear-gradient(135deg,#2a1a3e,#4a2d6e 55%,#1d1230)"><div class="r-nav"><b style="color:#f0b8d0">MBSH '96</b><span>Weekend</span><span>Tickets</span><span>Gallery</span></div>
+                <h1 style="font-size:44px">Still the Class<br><em style="color:#f0b8d0">That Set the Standard.</em></h1><p>Three decades. One weekend on the sand where it started.</p><div class="r-cta" style="background:#f0b8d0">Claim your seat</div></div>
+                <div class="r-strip"><div class="r-card"><h3 style="color:#f0b8d0">Friday Mixer</h3><p>Rooftop at The Betsy, 7pm.</p></div><div class="r-card"><h3 style="color:#f0b8d0">Saturday Gala</h3><p>Dinner, awards, class photo.</p></div><div class="r-card"><h3 style="color:#f0b8d0">Sunday Beach Day</h3><p>Families welcome, 10th &amp; Ocean.</p></div></div>
+              </div></div></div>
+              <div class="dclip" id="dclip"><div class="dp"><div class="inner"><div class="site">
+                <div class="r-hero"><div class="r-nav"><b>MBSH '96</b><span>Weekend</span><span>Tickets</span><span>Gallery</span></div>
+                <h1>30 Years.<br><em>One Weekend.</em></h1><p>Miami Beach Senior High, Class of 1996. October 16–18, 2026.</p><div class="r-cta">Reserve your spot</div></div>
+                <div class="r-strip"><div class="r-card"><h3>Friday Mixer</h3><p>Kickoff at The Betsy rooftop.</p></div><div class="r-card"><h3>Saturday Gala</h3><p>Dinner, awards, and the class photo.</p></div><div class="r-card"><h3>Sunday Beach Day</h3><p>Families welcome. 10th &amp; Ocean.</p></div></div>
+              </div></div></div></div>
+              <div class="dhandle" id="dhandle"><div class="dgrip">◂▸</div></div>
+              <div class="dtag" style="left:10px;background:rgba(0,0,0,.6);color:var(--dim);border:1px solid var(--stroke2)">CURRENT</div>
+              <div class="dtag" style="right:10px;background:rgba(139,124,246,.22);color:#cfc6ff;border:1px solid rgba(139,124,246,.4)">SHAY'S PROPOSAL</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:14px;margin-top:13px">
+              <div style="flex:1;font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.8">
+                <div><span style="color:var(--warn)">~</span> hero headline → "Still the Class That Set the Standard."</div>
+                <div><span style="color:var(--warn)">~</span> palette → deep plum + rose gold (from 1996 yearbook colors)</div>
+                <div><span style="color:var(--ok)">+</span> hero image regenerated, 1600×900 WebP (214 KB)</div>
+                <div><span style="color:var(--warn)">~</span> CTA → "Claim your seat"</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn" onclick="toast('Draft rejected — working copy discarded')">Reject</button>
+                <button class="btn" onclick="toast('Applied to working copy — not published')">Apply to working copy</button>
+                <button class="btn pri" onclick="toast('Published to Netlify · deploy #219 verified')">Publish</button>
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:7px;flex-wrap:wrap">
+              <span class="pill ok">✓ mobile checked</span><span class="pill ok">✓ contrast AA</span><span class="pill ok">✓ links resolve</span><span class="pill ok">✓ RSVP form still posts</span><span class="pill g">aesthetic pass: claude · approved</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHAY -->
+      <div class="st" id="s-conv">
+        <div class="panel" style="max-width:760px">
+          <div class="ph"><div class="orb" style="width:14px;height:14px"></div>Shay · site context: mbsh96reunion.com <span class="sp"></span><span class="pill ok">provider connected</span></div>
+          <div style="padding:16px" id="chat">
+            <div style="text-align:right;margin-bottom:14px"><div style="display:inline-block;background:var(--glass2);border:1px solid var(--stroke);border-radius:12px;padding:10px 14px;max-width:70%;text-align:left">Make the hero feel warmer and use our actual 1996 school colors. Don't touch anything live.</div></div>
+            <div style="display:flex;gap:10px;margin-bottom:12px"><div class="orb" style="width:22px;height:22px;margin-top:2px"></div>
+              <div style="flex:1">
+                <p style="line-height:1.55;margin-bottom:10px">I pulled the 1996 yearbook palette from the gallery assets, warmed the hero to deep plum and rose gold, and rewrote the headline to lean on class pride. Live site untouched.</p>
+                <div style="border:1px solid rgba(139,124,246,.3);border-radius:11px;overflow:hidden;background:rgba(139,124,246,.05)">
+                  <div style="padding:11px 13px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:9px"><b style="font-size:12.5px">Hero warmth pass</b><span class="mono" style="font-size:10px;color:var(--dim)">working copy · 4 changes · 1m 42s</span><span class="sp"></span><span class="pill ok">ready to review</span></div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr">
+                    <div style="padding:10px 13px;border-right:1px solid var(--stroke);border-bottom:1px solid var(--stroke)"><span class="mono" style="font-size:9.5px;color:var(--faint)">01</span><br><b style="font-size:12px;font-weight:500">Hero message</b><br><span style="font-size:11px;color:var(--dim)">Class pride, not just dates</span></div>
+                    <div style="padding:10px 13px;border-bottom:1px solid var(--stroke)"><span class="mono" style="font-size:9.5px;color:var(--faint)">02</span><br><b style="font-size:12px;font-weight:500">Palette</b><br><span style="font-size:11px;color:var(--dim)">Deep plum + rose gold</span></div>
+                    <div style="padding:10px 13px;border-right:1px solid var(--stroke)"><span class="mono" style="font-size:9.5px;color:var(--faint)">03</span><br><b style="font-size:12px;font-weight:500">Hero image</b><br><span style="font-size:11px;color:var(--dim)">Regenerated · 214 KB WebP</span></div>
+                    <div style="padding:10px 13px"><span class="mono" style="font-size:9.5px;color:var(--faint)">04</span><br><b style="font-size:12px;font-weight:500">Primary action</b><br><span style="font-size:11px;color:var(--dim)">"Claim your seat"</span></div>
+                  </div>
+                  <div style="padding:10px 13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="pill ok">✓ mobile</span><span class="pill ok">✓ contrast</span><span class="pill ok">✓ form posts</span>
+                    <span class="sp"></span><button class="btn sm pri" onclick="stab('review',document.querySelectorAll('.tab')[4])">Review 4 changes</button><button class="btn sm" onclick="stab('editor',document.querySelectorAll('.tab')[0])">Open in editor</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:12px 16px;border-top:1px solid var(--stroke);display:flex;gap:9px">
+            <input placeholder="Ask Shay about this site…" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--stroke);border-radius:9px;padding:9px 12px;color:var(--ink);font-family:var(--sans);font-size:12.5px;outline:none" onkeydown="if(event.key==='Enter'){toast('Shay is drafting a plan…');this.value=''}">
+            <button class="btn pri" onclick="toast('Shay is drafting a plan…')">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NEW BUILD ============ -->
+    <section class="pg" id="p-build">
+      <div class="head"><h1>New site</h1><span class="d">brief in · research grounds it · you watch every stage</span></div>
+      <div style="display:grid;grid-template-columns:340px 1fr;gap:14px;align-items:start">
+        <div class="panel">
+          <div class="ph">The brief</div>
+          <div class="ib">
+            <div class="fld"><label>Business name</label><input id="bName" value="Kim Chang Suk Acupuncture"></div>
+            <div class="fld"><label>Location</label><input id="bLoc" value="Port St. Lucie, FL"></div>
+            <div class="fld"><label>Anything else? (optional)</label><textarea id="bNote" placeholder="Leave blank — research will fill the gaps"></textarea></div>
+            <div class="fld"><label>Recipe</label><select><option>standard-static · research → design → build</option><option>drupal + react front end</option><option>shopify backend</option></select></div>
+            <button class="btn pri" style="width:100%" onclick="runBuild()">Start build</button>
+            <p class="hint" style="margin-top:10px">Nothing publishes. The build lands as a working copy you review.</p>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:13px">
+            <div class="ph">Pipeline <span class="sp"></span><span class="mono" id="bTime" style="text-transform:none;letter-spacing:0"></span></div>
+            <div class="stages" id="stages">
+              <div class="stg" data-s="0"><span class="n">1</span>Research the business <span class="brain">claude</span><span class="meta">waiting</span></div>
+              <div class="stg" data-s="1"><span class="n">2</span>Derive site spec <span class="brain">claude</span><span class="meta">waiting</span></div>
+              <div class="stg" data-s="2"><span class="n">3</span>Art direction + palette <span class="brain">designer</span><span class="meta">waiting</span></div>
+              <div class="stg" data-s="3"><span class="n">4</span>Generate imagery <span class="brain">gemini-image</span><span class="meta">waiting</span></div>
+              <div class="stg" data-s="4"><span class="n">5</span>Compose pages <span class="brain">deterministic</span><span class="meta">waiting</span></div>
+              <div class="stg" data-s="5"><span class="n">6</span>Visual QA · desktop + mobile <span class="brain">verifier</span><span class="meta">waiting</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph">Live preview <span class="sp"></span><span class="mono" id="factCount" style="text-transform:none;letter-spacing:0"></span></div>
+            <div class="frame" style="height:300px" id="buildPrev">
+              <div style="align-self:center;color:var(--faint);font-size:12.5px">Preview appears here as stages complete.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MEDIA ============ -->
+    <section class="pg" id="p-media">
+      <div class="head"><h1>Media</h1><span class="d">generated + uploaded assets across 9 sites · provenance on every file</span>
+        <div class="sp"></div><button class="btn sm" onclick="toast('Opening Media Studio ↗')">Open Media Studio ↗</button></div>
+      <div class="mgrid">
+        <div class="mtile"><div class="mimg" style="background:linear-gradient(135deg,#16325c,#f0c460)"></div><div class="mmeta"><b>reunion-hero.webp</b>1600×900 · 214 KB<br>gemini · $0.0448 · used on 1 site</div></div>
+        <div class="mtile"><div class="mimg" style="background:linear-gradient(140deg,#241c4d,#e8cfa0)"></div><div class="mmeta"><b>starlight-hero.webp</b>1600×900 · 198 KB<br>gemini · $0.0448 · used on 1 site</div></div>
+        <div class="mtile"><div class="mimg" style="background:linear-gradient(135deg,#0d2440,#5b7fa8)"></div><div class="mmeta"><b>beach-day.webp</b>1200×800 · 176 KB<br>uploaded · used on 1 site</div></div>
+        <div class="mtile"><div class="mimg" style="background:linear-gradient(135deg,#2a1608,#f0c460)"></div><div class="mmeta"><b>gale-kitchen.webp</b>1400×900 · 205 KB<br>gemini · $0.0448 · used on 2 sites</div></div>
+        <div class="mtile"><div class="mimg" style="background:repeating-linear-gradient(45deg,#1a1d2b,#1a1d2b 10px,#222634 10px,#222634 20px);display:flex;align-items:center;justify-content:center"><span class="mono" style="font-size:9.5px;color:var(--warn)">UNFILLED</span></div><div class="mmeta"><b>gallery-3 slot</b>prompt attached<br>budget cap reached</div></div>
+        <div class="mtile"><div class="mimg" style="background:linear-gradient(135deg,#1d1030,#b6f13a)"></div><div class="mmeta"><b>dj-booth.webp</b>1600×900 · 231 KB<br>gemini · $0.0448 · used on 1 site</div></div>
+      </div>
+    </section>
+
+    <!-- ============ COMPONENTS ============ -->
+    <section class="pg" id="p-comp">
+      <div class="head"><h1>Components</h1><span class="d">reusable across the FAMtastic ecosystem</span>
+        <div class="sp"></div><button class="btn sm" onclick="toast('Opening Component Studio ↗')">Open Component Studio ↗</button></div>
+      <div class="grid">
+        <div class="card"><div class="thumb" style="background:linear-gradient(135deg,#16325c,#0d2440);display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:17px;color:#f0c460">Hero · Split gold</span></div><div class="cbody"><div class="nm">Hero — Split Gold</div><div class="dm">used on 3 sites</div><div class="crow"><span class="pill g">hero</span><span class="pill ok">responsive ✓</span></div></div></div>
+        <div class="card"><div class="thumb" style="background:#141f34;display:flex;align-items:center;justify-content:center;gap:6px"><div style="width:44px;height:56px;background:#1c2a45;border-radius:5px"></div><div style="width:44px;height:56px;background:#1c2a45;border-radius:5px"></div><div style="width:44px;height:56px;background:#1c2a45;border-radius:5px"></div></div><div class="cbody"><div class="nm">Feature Grid — 3up</div><div class="dm">used on 7 sites</div><div class="crow"><span class="pill g">content</span><span class="pill ok">responsive ✓</span></div></div></div>
+        <div class="card"><div class="thumb" style="background:#191536;display:flex;align-items:center;justify-content:center"><div style="background:#e8cfa0;color:#241c4d;font-weight:700;font-size:11px;padding:8px 18px;border-radius:20px">Book now</div></div><div class="cbody"><div class="nm">CTA — Pill Centered</div><div class="dm">used on 6 sites</div><div class="crow"><span class="pill g">cta</span><span class="pill ok">responsive ✓</span></div></div></div>
+        <div class="card"><div class="thumb" style="background:#0e1626;display:flex;align-items:center;justify-content:center"><div style="width:150px;background:#16223a;border:1px solid #22314f;border-radius:6px;padding:9px"><div style="height:7px;background:#22314f;border-radius:3px;margin-bottom:6px"></div><div style="height:7px;background:#22314f;border-radius:3px;width:70%"></div></div></div><div class="cbody"><div class="nm">RSVP Form — Netlify</div><div class="dm">used on 2 sites</div><div class="crow"><span class="pill g">form</span><span class="pill ok">posts ✓</span></div></div></div>
+      </div>
+    </section>
+
+    <!-- ============ DEPLOY ============ -->
+    <section class="pg" id="p-deploy">
+      <div class="head"><h1>Deployments</h1><span class="d">one adapter · per-site target · rollback rehearsed</span></div>
+      <div class="panel" style="margin-bottom:13px">
+        <div class="ph">mbsh96reunion.com</div>
+        <div class="ib" style="display:flex;align-items:center;gap:16px">
+          <div><div style="font-size:11px;color:var(--dim)">Production</div><div style="font-family:var(--mono);font-size:12.5px;color:var(--ok);margin-top:3px">● live · deploy #218 · 2h ago</div></div>
+          <div><div style="font-size:11px;color:var(--dim)">Target</div><div style="font-family:var(--mono);font-size:12.5px;margin-top:3px">◆ Netlify</div></div>
+          <div><div style="font-size:11px;color:var(--dim)">Working copy</div><div style="font-family:var(--mono);font-size:12.5px;color:var(--shay);margin-top:3px">4 unpublished changes</div></div>
+          <div class="sp"></div>
+          <button class="btn danger" onclick="toast('Rolled back to #217 · bytes verified identical')">↶ Roll back to #217</button>
+          <button class="btn pri" onclick="toast('Deploying to Netlify… verified in 41s')">Deploy working copy</button>
+        </div>
+      </div>
+      <div class="panel"><div class="ph">Recent</div>
+        <div class="hrow"><span class="dot" style="background:var(--ok)"></span><span class="who">#218 · 2h</span><span class="what">mbsh96reunion.com → Netlify<small>incremental · 2 pages · 41s · verified</small></span><span class="pill ok">live</span></div>
+        <div class="hrow"><span class="dot" style="background:var(--ok)"></span><span class="who">#217 · 1d</span><span class="what">famtasticdesigns.com → GoDaddy<small>full · 2m 06s · deploy-famtastic-godaddy.sh</small></span><span class="pill ok">live</span></div>
+        <div class="hrow"><span class="dot" style="background:var(--warn)"></span><span class="who">#216 · 6h</span><span class="what">bythenumbers.app → Netlify<small>auto rolled back · 7 assets 404'd post-deploy</small></span><span class="pill warn">rolled back</span></div>
+      </div>
+    </section>
+
+    <!-- stubs -->
+    <section class="pg" id="p-work"><div class="head"><h1>Work</h1><span class="d">what needs you right now</span></div>
+      <div class="panel"><div class="ph">Needs me <span class="sp"></span><span class="mono" style="text-transform:none">3 items</span></div>
+        <div class="hrow"><span class="dot"></span><span class="who">now</span><span class="what">Hero warmth pass ready to review<small>mbsh96reunion.com · 4 changes · working copy</small></span><button class="btn sm pri" onclick="openSite('reunion');stab('review',document.querySelectorAll('.tab')[4])">Review</button></div>
+        <div class="hrow"><span class="dot" style="background:var(--warn)"></span><span class="who">18m</span><span class="what">Starlight Skin Bar build finished<small>6 pages · 9 of 15 media slots filled · visual QA passed</small></span><button class="btn sm" onclick="openSite('starlight')">Open</button></div>
+        <div class="hrow"><span class="dot" style="background:var(--bad)"></span><span class="who">1h</span><span class="what">Fresh Cuts Atlanta has no design pass<small>unstyled text output · not customer-eligible</small></span><button class="btn sm" onclick="openSite('plain')">Fix</button></div>
+      </div></section>
+    <section class="pg" id="p-apps"><div class="head"><h1>Applications</h1><span class="d">~/Development/FAMtastic/Apps</span></div>
+      <div class="panel"><table><thead><tr><th>App</th><th>Stack</th><th>State</th><th>Last build</th></tr></thead><tbody>
+        <tr><td>FAMtastic By The Numbers<div class="mono">bythenumbers.app</div></td><td class="mono">PWA · React</td><td><span class="pill warn">beta</span></td><td class="mono">6h ago</td></tr>
+        <tr><td>AgentSim<div class="mono">famtastic-fritz/agentsim</div></td><td class="mono">Python · FastAPI</td><td><span class="pill ok">running</span></td><td class="mono">2d ago</td></tr>
+        <tr><td>Volunteer Connect<div class="mono">internal</div></td><td class="mono">Drupal 11 + React</td><td><span class="pill g">draft</span></td><td class="mono">—</td></tr>
+      </tbody></table></div></section>
+    <section class="pg" id="p-proofs"><div class="head"><h1>Proofs</h1><span class="d">read-only · owned by FAMtastic Designs</span></div>
+      <div class="panel"><div class="ph">Pipeline</div>
+        <div class="hrow"><span class="dot" style="background:var(--warn)"></span><span class="who">#4412</span><span class="what">Coastal Realty Group — 3 proofs ready for client<small>generated 09:41 · awaiting dispatch in Designs</small></span><button class="btn sm" onclick="toast('Opening in FAMtastic Designs ↗')">Open in Designs ↗</button></div>
+        <div class="hrow"><span class="dot" style="background:var(--cy)"></span><span class="who">#4413</span><span class="what">Port St. Lucie Youth Sports — generating<small>2 of 3 directions rendered</small></span></div>
+      </div></section>
+    <section class="pg" id="p-recipes"><div class="head"><h1>Builds + Recipes</h1><span class="d">every run's DNA · cost · routing</span></div>
+      <div class="panel"><table><thead><tr><th>Run</th><th>Site</th><th>Recipe</th><th>Duration</th><th>Cost</th><th>Outcome</th></tr></thead><tbody>
+        <tr><td class="mono">run_mt6b8</td><td>Starlight Skin Bar</td><td class="mono">standard-static</td><td class="mono">3m 01s</td><td class="mono">$0.40</td><td><span class="pill ok">shipped</span></td></tr>
+        <tr><td class="mono">run_kp2xz</td><td>Kim Chang Suk</td><td class="mono">standard-static</td><td class="mono">2m 12s</td><td class="mono">$0.31</td><td><span class="pill warn">edited then shipped</span></td></tr>
+        <tr><td class="mono">run_bb91q</td><td>Fresh Cuts Atlanta</td><td class="mono">standard-static</td><td class="mono">1m 58s</td><td class="mono">$0.09</td><td><span class="pill bad">rejected</span></td></tr>
+      </tbody></table></div></section>
+    <section class="pg" id="p-auto"><div class="head"><h1>Automations</h1><span class="d">Shay's background skills</span></div>
+      <div class="panel"><div class="hrow"><span class="dot" style="background:var(--ok)"></span><span class="who">nightly</span><span class="what">broken-link-crawler<small>last run 06:00 · 0 new findings across 9 sites</small></span><span class="pill ok">on</span></div>
+        <div class="hrow"><span class="dot" style="background:var(--ok)"></span><span class="who">daily</span><span class="what">ssl-watchdog<small>all certs &gt; 60 days</small></span><span class="pill ok">on</span></div>
+        <div class="hrow"><span class="dot" style="background:var(--faint)"></span><span class="who">weekly</span><span class="what">seo-analyzer<small>drafts fixes as proposals, never direct writes</small></span><span class="pill g">off</span></div>
+      </div></section>
+    <section class="pg" id="p-set"><div class="head"><h1>Settings</h1><span class="d">paths, providers, budgets</span></div>
+      <div class="panel" style="max-width:640px"><div class="ph">Storage roots</div>
+        <div class="ib">
+          <div class="fld"><label>Sites</label><input value="~/Development/FAMtastic/sites"></div>
+          <div class="fld"><label>Apps</label><input value="~/Development/FAMtastic/Apps"></div>
+          <div class="fld"><label>Previews</label><input value="~/Development/FAMtastic/previews"></div>
+          <div class="fld"><label>Shay provider</label><select><option>claude CLI (subscription)</option><option>kimi CLI (subscription)</option><option>ollama · local</option></select></div>
+          <div class="fld"><label>Image budget per build</label><input value="12 images · $0.60 cap"></div>
+          <button class="btn pri" onclick="toast('Settings saved')">Save</button>
+        </div></div></section>
+
+  </main>
+</div>
+<div class="toast" id="toast"><i></i><span id="tmsg"></span></div>
+
+<script>
+/* nav */
+function nav(p,el){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.toggle('on',n.dataset.p===p));
+  document.querySelector('.main').scrollTop=0;
+}
+function stab(t,el){
+  document.querySelectorAll('.st').forEach(x=>x.classList.remove('on'));
+  document.getElementById('s-'+t).classList.add('on');
+  if(el){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));el.classList.add('on')}
+}
+function openSite(k){
+  nav('site');
+  const m={reunion:["MBSH Class of '96 Reunion","mbsh96reunion.com · Netlify · last deploy 2h ago"],
+           starlight:["Starlight Skin Bar","starlightskinbar.com · Vercel · working copy, not deployed"],
+           plain:["Fresh Cuts Atlanta","site-fresh-cuts-in-atlanta · unstyled · needs design pass"]};
+  document.getElementById('siteTitle').textContent=m[k][0];
+  document.getElementById('siteDomain').textContent=m[k][1];
+  stab('editor',document.querySelectorAll('.tab')[0]);
+}
+/* editor: select + edit */
+let hist=[];
+document.querySelectorAll('.selectable').forEach(s=>{
+  s.addEventListener('click',e=>{
+    if(e.target.dataset.ed)return;
+    document.querySelectorAll('.selectable').forEach(x=>{x.classList.remove('sel');const t=x.querySelector('.tag');if(t)t.remove()});
+    s.classList.add('sel');
+    const tag=document.createElement('div');tag.className='tag';tag.textContent=s.dataset.sec;s.appendChild(tag);
+    inspect(s);
+  });
+});
+document.querySelectorAll('[data-ed]').forEach(el=>{
+  el.addEventListener('click',e=>{
+    e.stopPropagation();
+    const before=el.innerHTML;
+    el.setAttribute('contenteditable','true');el.focus();
+    el.onblur=()=>{
+      el.removeAttribute('contenteditable');
+      if(el.innerHTML!==before){
+        hist.push({el,before});
+        logChange(el.textContent.slice(0,44));
+      }
+    };
+  });
+});
+function logChange(txt){
+  const l=document.getElementById('histList');
+  const d=document.createElement('div');d.className='hrow';
+  const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  d.innerHTML='<span class="dot"></span><span class="who">you · '+t+'</span><span class="what">Edited text on /index<small>"'+txt+'…" · working copy · 12ms</small></span><button class="btn sm" onclick="toast(\'Restored\')">Restore</button>';
+  l.insertBefore(d,l.children[1]);
+  toast('Edited · journaled · 12ms · live site untouched');
+}
+function undo(){
+  const h=hist.pop();
+  if(!h){toast('Nothing to undo');return}
+  h.el.innerHTML=h.before;toast('Undone');
+}
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='z'){e.preventDefault();undo()}});
+function saveEdits(){toast(hist.length?hist.length+' change(s) saved to working copy · nothing published':'No changes to save')}
+function inspect(s){
+  const n=s.dataset.sec;
+  document.getElementById('inspName').textContent=n;
+  const b=document.getElementById('inspBody');
+  if(n==='Hero'){
+    b.innerHTML=`<div class="fld"><label>Headline</label><textarea onblur="toast('Headline updated in working copy')">30 Years. One Weekend.</textarea></div>
+    <div class="fld"><label>Subhead</label><textarea onblur="toast('Subhead updated')">Miami Beach Senior High, Class of 1996. October 16–18, 2026.</textarea></div>
+    <div class="fld"><label>Button label</label><input value="Reserve your spot"></div>
+    <div class="fld"><label>Palette</label><div class="swatches">
+      <div class="sw on" style="background:linear-gradient(135deg,#16325c,#f0c460)" onclick="pal(this,'#16325c','#f0c460')"></div>
+      <div class="sw" style="background:linear-gradient(135deg,#4a2d6e,#f0b8d0)" onclick="pal(this,'#4a2d6e','#f0b8d0')"></div>
+      <div class="sw" style="background:linear-gradient(135deg,#0f3d33,#e8d9a0)" onclick="pal(this,'#0f3d33','#e8d9a0')"></div>
+      <div class="sw" style="background:linear-gradient(135deg,#2a1608,#f0c460)" onclick="pal(this,'#2a1608','#f0c460')"></div></div></div>
+    <div class="fld"><label>Background image</label><button class="btn sm" style="width:100%" onclick="toast('Media library opened · 6 assets for this site')">Choose from Media ▩</button></div>
+    <button class="btn pri" style="width:100%" onclick="toast('Section saved to working copy')">Save section</button>`;
+  } else if(n==='Feature grid'){
+    b.innerHTML=`<div class="fld"><label>Layout</label><select onchange="toast('Layout → '+this.value)"><option>3 columns</option><option>2 columns</option><option>Stacked</option></select></div>
+    <div class="fld"><label>Cards</label><div class="hint">Friday Mixer · Saturday Gala · Sunday Beach Day<br><br>Click any card text in the canvas to edit it directly.</div></div>
+    <div class="fld"><label>Component</label><div class="hint">Feature Grid — 3up<br>used on 7 sites · <span style="color:var(--cy)">open in Component Studio ↗</span></div></div>
+    <button class="btn" style="width:100%" onclick="toast('Section duplicated below')">Duplicate section</button>`;
+  } else {
+    b.innerHTML=`<div class="fld"><label>Footer text</label><textarea>© 2026 MBSH Class of 1996 Reunion Committee</textarea></div>
+    <div class="fld"><label>Contact email</label><input value="committee@mbsh96reunion.com"></div>
+    <button class="btn pri" style="width:100%" onclick="toast('Footer saved')">Save section</button>`;
+  }
+}
+function pal(el,a,b){
+  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));el.classList.add('on');
+  const h=document.querySelector('#liveSite .r-hero');
+  h.style.background='linear-gradient(135deg,'+a+',' +b+'44 55%,'+a+')';
+  document.querySelectorAll('#liveSite .r-cta').forEach(c=>{c.style.background=b;c.style.color=a});
+  document.querySelectorAll('#liveSite .r-hero h1 em, #liveSite .r-card h3').forEach(c=>c.style.color=b);
+  toast('Palette applied to working copy · journaled');
+}
+function dev(m,el){
+  document.querySelectorAll('.dev button').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  document.getElementById('canvas').classList.toggle('mob',m==='mob');
+}
+/* seo */
+function gp(){
+  const t=document.getElementById('metaTitle').value,d=document.getElementById('metaDesc').value;
+  document.getElementById('gpT').textContent=t;document.getElementById('gpD').textContent=d;
+  document.getElementById('tlen').textContent=t.length+' / 60';
+  document.getElementById('dlen').textContent=d.length+' / 158';
+}
+let seo=70;
+function setSeo(v){
+  seo=v;document.getElementById('seoNum').textContent=v;
+  document.getElementById('ringfg').style.strokeDashoffset=327-(327*v/100);
+  const c=v>=85?'var(--ok)':v>=70?'var(--warn)':'var(--bad)';
+  document.getElementById('ringfg').style.stroke=c;document.getElementById('seoNum').style.color=c;
+}
+function fixOne(btn,k){
+  const row=btn.closest('.chk');
+  row.querySelector('.st').className='st pass';row.querySelector('.st').textContent='✓';
+  btn.remove();
+  if(k==='meta'){document.getElementById('metaDesc').value="Miami Beach Senior High Class of 1996 celebrates 30 years October 16–18, 2026. Weekend schedule, tickets, gallery, and committee contacts.";gp()}
+  setSeo(Math.min(97,seo+7));
+  toast('Fixed and journaled · working copy');
+}
+function fixSeo(){
+  const rows=[...document.querySelectorAll('#seoList .chk button')];
+  let i=0;
+  const t=setInterval(()=>{
+    if(i>=rows.length){clearInterval(t);toast('4 fixes drafted · review them in Review changes');return}
+    rows[i].click();i++;
+  },420);
+}
+setSeo(70);
+/* diff slider */
+const dif=document.getElementById('diff'),dclip=document.getElementById('dclip'),dh=document.getElementById('dhandle');
+function dset(p){p=Math.max(.03,Math.min(.97,p));dclip.style.width=(p*100)+'%';dh.style.left='calc('+(p*100)+'% - 1px)'}
+dset(.5);let dd=false;
+dif.addEventListener('pointerdown',e=>{dd=true;dmove(e)});
+window.addEventListener('pointermove',e=>{if(dd)dmove(e)});
+window.addEventListener('pointerup',()=>dd=false);
+function dmove(e){const r=dif.getBoundingClientRect();dset((e.clientX-r.left)/r.width)}
+/* build */
+const stageInfo=[
+  ['Research the business','claude','6 verified facts · 10 open questions','searching + verifying sources'],
+  ['Derive site spec','claude','6 pages · 14 sections',''],
+  ['Art direction + palette','designer','bone · espresso · terracotta',''],
+  ['Generate imagery','gemini-image','4 of 4 slots · $0.18',''],
+  ['Compose pages','deterministic','6 pages · 41 KB',''],
+  ['Visual QA · desktop + mobile','verifier','17 checks pass · aesthetic approved','']
+];
+function runBuild(){
+  const rows=[...document.querySelectorAll('#stages .stg')];
+  rows.forEach(r=>{r.className='stg';r.querySelector('.meta').textContent='waiting'});
+  document.getElementById('buildPrev').innerHTML='<div style="align-self:center;color:var(--faint);font-size:12.5px">Researching…</div>';
+  document.getElementById('factCount').textContent='';
+  let i=0,t0=Date.now();
+  const tick=setInterval(()=>{document.getElementById('bTime').textContent=((Date.now()-t0)/1000).toFixed(1)+'s'},100);
+  function step(){
+    if(i>0){rows[i-1].className='stg done';rows[i-1].querySelector('.meta').textContent=stageInfo[i-1][2]}
+    if(i>=rows.length){
+      clearInterval(tick);
+      document.getElementById('buildPrev').innerHTML=`<div class="canvas" style="transform:scale(.55);transform-origin:top center;margin-bottom:-200px"><div class="site">
+        <div class="s-hero" style="background:linear-gradient(140deg,#2b241d,#453a2c 50%,#221c16)"><div class="s-nav"><b style="color:#d99a6c">KIM CHANG SUK</b><span>Treatments</span><span>Your first visit</span><span>Insurance</span><span>Book</span></div>
+        <h1 style="max-width:460px">Acupuncture that treats the whole picture.</h1><p style="color:#c3b5a4">Licensed acupuncture physician in Port St. Lucie. Pain, stress, fertility, and recovery.</p><div class="s-cta" style="background:#d99a6c;color:#2b241d">Book a consultation</div></div>
+        <div class="s-strip" style="background:#1c1813"><div class="s-card" style="background:#25201a;border-color:#3a3126"><h3 style="color:#d99a6c">Treatments</h3><p style="color:#b0a493">Pain management, stress, fertility support, sports recovery.</p></div>
+        <div class="s-card" style="background:#25201a;border-color:#3a3126"><h3 style="color:#d99a6c">Your first visit</h3><p style="color:#b0a493">What to wear, what to expect, and how long a session runs.</p></div>
+        <div class="s-card" style="background:#25201a;border-color:#3a3126"><h3 style="color:#d99a6c">Insurance &amp; rates</h3><p style="color:#b0a493">We bill most major plans. Transparent self-pay pricing.</p></div></div></div></div>`;
+      document.getElementById('factCount').textContent='6 verified facts · 3 unverified claims flagged';
+      toast('Build complete in 2m 47s · working copy · nothing published');
+      return;
+    }
+    rows[i].className='stg run';rows[i].querySelector('.meta').textContent=stageInfo[i][3]||'running…';
+    if(i===0)document.getElementById('factCount').textContent='verifying sources…';
+    i++;setTimeout(step,i===1?1600:1000);
+  }
+  step();
+}
+/* toast */
+let tt;function toast(m){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
+</script>
+</body>
+</html>

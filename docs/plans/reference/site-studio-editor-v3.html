@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Studio — Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#07080d;--pane:#0b0d15;--glass:rgba(255,255,255,.035);--glass2:rgba(255,255,255,.065);
+ --stroke:rgba(255,255,255,.08);--stroke2:rgba(255,255,255,.15);
+ --ink:#e9ebf3;--dim:#8b90a3;--faint:#5a5f72;
+ --shay:#8b7cf6;--cy:#4fd8e8;--ok:#3ee08f;--warn:#f5b73d;--bad:#f5564f;
+ --mono:'JetBrains Mono',monospace;--sans:'Space Grotesk',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;font-size:13px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(700px 400px at 75% -10%,rgba(139,124,246,.1),transparent 60%)}
+.app{position:relative;display:grid;grid-template-columns:172px 1fr;grid-template-rows:48px 1fr 56px;height:100vh}
+/* top */
+.top{grid-column:1/3;display:flex;align-items:center;gap:11px;padding:0 14px;border-bottom:1px solid var(--stroke);background:rgba(11,13,21,.8);backdrop-filter:blur(12px);z-index:30}
+.orb{width:19px;height:19px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#cfc6ff,var(--shay) 45%,#3a2f8f);box-shadow:0 0 11px rgba(139,124,246,.6);flex:none}
+.brand{font-weight:700;font-size:13px;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.brand small{font-size:10px;color:var(--dim);font-weight:500}
+.sp{flex:1}
+.chip{font-family:var(--mono);font-size:10px;color:var(--dim);border:1px solid var(--stroke);border-radius:20px;padding:3px 10px;background:var(--glass)}
+.chip b{color:var(--ok)}
+.btn{font-family:var(--sans);font-size:11.5px;font-weight:600;border-radius:8px;padding:6px 12px;cursor:pointer;border:1px solid var(--stroke2);background:var(--glass2);color:var(--ink);transition:.14s}
+.btn:hover{border-color:var(--shay);color:#cfc6ff}
+.btn.pri{background:linear-gradient(90deg,var(--shay),#6f8ff5);border-color:transparent;color:#fff}
+.btn.pri:hover{filter:brightness(1.13);color:#fff}
+.btn.sm{font-size:10.5px;padding:4px 9px}
+.btn.gh{background:none;border-color:var(--stroke)}
+.icb{background:none;border:1px solid var(--stroke);color:var(--dim);border-radius:7px;width:28px;height:26px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:.14s}
+.icb:hover{color:var(--ink);border-color:var(--stroke2)}
+.icb.on{background:var(--glass2);color:var(--shay);border-color:var(--stroke2)}
+/* nav */
+.nav{border-right:1px solid var(--stroke);padding:10px 7px;display:flex;flex-direction:column;gap:1px;background:rgba(11,13,21,.5);overflow-y:auto}
+.nlab{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:7px 9px 4px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;color:var(--dim);cursor:pointer;font-weight:500;font-size:12px;border:1px solid transparent;background:none;font-family:var(--sans);width:100%;text-align:left}
+.ni:hover{color:var(--ink);background:var(--glass)}
+.ni.on{color:var(--ink);background:var(--glass2);border-color:var(--stroke)}
+.ni .ic{width:14px;text-align:center;font-size:11px;opacity:.85}
+.ni .bg{margin-left:auto;font-family:var(--mono);font-size:9px;border-radius:8px;padding:1px 6px}
+.bg.hot{background:rgba(245,86,79,.16);color:var(--bad)}
+.bg.ok{background:rgba(62,224,143,.12);color:var(--ok)}
+.bg.cool{background:rgba(139,124,246,.16);color:var(--shay)}
+/* work area */
+.work{display:grid;grid-template-columns:196px 1fr 292px;overflow:hidden}
+/* layers */
+.layers{border-right:1px solid var(--stroke);background:rgba(11,13,21,.35);overflow-y:auto;display:flex;flex-direction:column}
+.lsec{padding:9px 11px;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:7px}
+.lrow{display:flex;align-items:center;gap:8px;padding:7px 11px;font-size:11.5px;color:var(--dim);cursor:pointer;border-left:2px solid transparent}
+.lrow:hover{background:var(--glass);color:var(--ink)}
+.lrow.on{background:rgba(139,124,246,.12);color:var(--ink);border-left-color:var(--shay)}
+.lrow .t{font-family:var(--mono);font-size:9px;color:var(--faint)}
+.lrow.sub{padding-left:24px;font-size:11px}
+.lib{border-top:1px solid var(--stroke);margin-top:auto}
+.libgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:9px 11px}
+.libit{border:1px solid var(--stroke);border-radius:7px;height:44px;cursor:grab;position:relative;overflow:hidden;background:var(--glass)}
+.libit:hover{border-color:var(--shay)}
+.libit span{position:absolute;bottom:2px;left:5px;font-family:var(--mono);font-size:8px;color:var(--dim)}
+/* canvas */
+.stage{display:flex;flex-direction:column;overflow:hidden;background:#06070c}
+.sbar{display:flex;align-items:center;gap:9px;padding:7px 12px;border-bottom:1px solid var(--stroke);background:rgba(11,13,21,.6)}
+.crumb{font-size:12px;display:flex;align-items:center;gap:7px}
+.crumb b{font-weight:600}
+.crumb .path{font-family:var(--mono);font-size:10px;color:var(--faint)}
+.pubpill{font-family:var(--mono);font-size:9px;background:rgba(62,224,143,.13);color:var(--ok);border-radius:10px;padding:2px 8px}
+.pubpill.wc{background:rgba(139,124,246,.15);color:var(--shay)}
+.frame{flex:1;overflow:auto;padding:16px;display:flex;justify-content:center;background:repeating-conic-gradient(#0a0b11 0% 25%,#080910 0% 50%) 50%/16px 16px}
+.frame::-webkit-scrollbar{width:7px}.frame::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:4px}
+.canvas{width:940px;background:#fff;box-shadow:0 10px 50px rgba(0,0,0,.6);transition:width .28s;height:fit-content}
+.canvas.tab{width:768px}.canvas.mob{width:390px}
+/* site render */
+.sec{position:relative;transition:outline .1s}
+.sec:hover{outline:1.5px dashed rgba(139,124,246,.55);outline-offset:-2px;cursor:pointer}
+.sec.sel{outline:2px solid var(--shay);outline-offset:-2px}
+.sectag{position:absolute;top:-1px;left:-1px;background:var(--shay);color:#fff;font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:0 0 6px 0;z-index:6;display:none}
+.sec.sel .sectag{display:block}
+.fltbar{position:absolute;top:-30px;right:0;display:none;gap:3px;background:#151827;border:1px solid var(--stroke2);border-radius:7px;padding:3px;z-index:7;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.sec.sel .fltbar{display:flex}
+.fltbar button{background:none;border:none;color:var(--dim);width:24px;height:22px;border-radius:5px;cursor:pointer;font-size:11px}
+.fltbar button:hover{background:var(--glass2);color:var(--ink)}
+[data-ed]{cursor:text}
+[contenteditable=true]{outline:2px solid var(--cy);outline-offset:2px;background:rgba(79,216,232,.08)}
+.r-hero{padding:64px 60px 56px;background:linear-gradient(135deg,#0b1e3a,#16325c 55%,#0d2440);color:#fff;position:relative;overflow:hidden}
+.r-hero::after{content:'';position:absolute;right:-50px;top:-40px;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(240,196,96,.3),transparent 65%)}
+.r-nav{display:flex;gap:22px;align-items:center;font-size:12px;color:#c9d6ea;margin-bottom:40px;position:relative;z-index:2}
+.r-nav b{color:#f0c460;font-weight:700;letter-spacing:.05em;margin-right:auto}
+.r-hero h1{font-family:'Playfair Display',serif;font-size:52px;line-height:1.04;letter-spacing:-.02em;position:relative;z-index:2}
+.r-hero h1 em{font-style:normal;color:#f0c460}
+.r-hero p{color:#b8c8e0;font-size:15px;margin-top:14px;max-width:440px;position:relative;z-index:2;line-height:1.55}
+.r-btns{display:flex;gap:11px;margin-top:22px;position:relative;z-index:2}
+.r-cta{background:#f0c460;color:#0b1e3a;font-weight:700;font-size:13px;padding:12px 24px;border-radius:6px}
+.r-cta2{border:1px solid rgba(255,255,255,.35);color:#fff;font-weight:600;font-size:13px;padding:12px 22px;border-radius:6px}
+.r-strip{display:flex;gap:16px;padding:38px 60px;background:#0e1626}
+.r-card{flex:1;background:#141f34;border:1px solid #22314f;border-radius:9px;padding:20px}
+.r-card h3{font-size:15px;color:#f0c460;margin-bottom:7px}
+.r-card p{font-size:12.5px;color:#8fa3bd;line-height:1.55}
+.r-band{padding:26px 60px;background:#0b1220;color:#7d8ea6;font-size:12px}
+.canvas.mob .r-hero{padding:34px 24px}
+.canvas.mob .r-hero h1{font-size:32px}
+.canvas.mob .r-nav{gap:11px;font-size:10px;margin-bottom:26px}
+.canvas.mob .r-strip{flex-direction:column;padding:22px 24px}
+.canvas.mob .r-band{padding:20px 24px}
+/* inspector */
+.insp{border-left:1px solid var(--stroke);background:rgba(11,13,21,.55);display:flex;flex-direction:column;overflow:hidden}
+.ihead{padding:10px 13px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:8px}
+.ihead b{font-size:12.5px}
+.ihead .x{margin-left:auto;color:var(--faint);cursor:pointer;font-size:14px}
+.itabs{display:flex;border-bottom:1px solid var(--stroke)}
+.itab{flex:1;background:none;border:none;color:var(--dim);font-family:var(--sans);font-size:11.5px;font-weight:500;padding:8px 0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.itab:hover{color:var(--ink)}
+.itab.on{color:var(--ink);border-bottom-color:var(--shay)}
+.ibody{flex:1;overflow-y:auto;padding:2px 0 20px}
+.ibody::-webkit-scrollbar{width:6px}.ibody::-webkit-scrollbar-thumb{background:var(--stroke2)}
+.grp{border-bottom:1px solid var(--stroke)}
+.gh{display:flex;align-items:center;gap:8px;padding:9px 13px;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--ink);user-select:none}
+.gh .car{margin-left:auto;color:var(--faint);font-size:9px;transition:.18s}
+.grp.cl .car{transform:rotate(-90deg)}
+.gb{padding:2px 13px 13px}
+.grp.cl .gb{display:none}
+.fld{margin-bottom:10px}
+.fld:last-child{margin-bottom:0}
+.fld label{display:flex;align-items:center;font-size:10px;color:var(--dim);margin-bottom:4px}
+.fld label .c{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--faint)}
+.fld input,.fld textarea,.fld select{width:100%;background:rgba(0,0,0,.32);border:1px solid var(--stroke);border-radius:6px;padding:6px 8px;color:var(--ink);font-family:var(--sans);font-size:11.5px;outline:none}
+.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:var(--shay)}
+.fld textarea{resize:vertical;min-height:50px;line-height:1.45}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.linkrow{display:flex;gap:6px;align-items:center}
+.linkrow input{flex:1}
+.dot{width:24px;height:24px;border-radius:6px;border:1px solid var(--stroke2);flex:none;cursor:pointer}
+.swrow{display:flex;gap:6px;flex-wrap:wrap}
+.sw{width:26px;height:26px;border-radius:6px;border:1px solid var(--stroke2);cursor:pointer}
+.sw.on{outline:2px solid var(--shay);outline-offset:1px}
+/* box model */
+.box{background:rgba(0,0,0,.25);border:1px solid var(--stroke);border-radius:8px;padding:9px;position:relative}
+.box .lbl{position:absolute;top:4px;left:8px;font-family:var(--mono);font-size:8px;color:var(--faint)}
+.marg{border:1px dashed rgba(139,124,246,.4);border-radius:6px;padding:16px 8px 8px;display:grid;grid-template-columns:auto 1fr auto;gap:4px;align-items:center}
+.pad{border:1px dashed rgba(79,216,232,.4);border-radius:5px;padding:14px 8px 8px;position:relative;display:grid;grid-template-columns:auto 1fr auto;gap:4px;align-items:center}
+.bi{width:34px;background:rgba(0,0,0,.4);border:1px solid var(--stroke);border-radius:4px;color:var(--ink);font-family:var(--mono);font-size:10px;text-align:center;padding:3px 0;outline:none}
+.bi:focus{border-color:var(--shay)}
+.vstack{display:flex;flex-direction:column;gap:4px;align-items:center}
+/* toggles */
+.tg{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:11.5px;color:var(--dim)}
+.tog{margin-left:auto;width:32px;height:18px;border-radius:12px;background:var(--glass2);border:1px solid var(--stroke2);position:relative;cursor:pointer;transition:.18s;flex:none}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--faint);transition:.18s}
+.tog.on{background:rgba(62,224,143,.2);border-color:rgba(62,224,143,.45)}
+.tog.on::after{left:16px;background:var(--ok)}
+.segs{display:flex;border:1px solid var(--stroke);border-radius:7px;overflow:hidden}
+.segs button{flex:1;background:none;border:none;border-right:1px solid var(--stroke);color:var(--dim);font-family:var(--sans);font-size:10.5px;padding:6px 0;cursor:pointer}
+.segs button:last-child{border-right:none}
+.segs button.on{background:rgba(139,124,246,.18);color:var(--ink)}
+.hint{font-size:10px;color:var(--faint);line-height:1.5}
+.evi{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.pill{font-family:var(--mono);font-size:9px;border-radius:9px;padding:2px 7px}
+.pill.ok{background:rgba(62,224,143,.1);color:var(--ok)}
+.pill.g{background:var(--glass2);color:var(--dim)}
+/* bottom shay bar */
+.bbar{grid-column:1/3;display:flex;align-items:center;gap:10px;padding:0 14px;border-top:1px solid var(--stroke);background:rgba(11,13,21,.82);backdrop-filter:blur(12px)}
+.bbar .inp{flex:1;display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.32);border:1px solid var(--stroke);border-radius:9px;padding:8px 12px}
+.bbar .inp input{flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:var(--sans);font-size:12px}
+.bbar .inp input::placeholder{color:var(--faint)}
+kbd{font-family:var(--mono);font-size:9px;background:var(--glass2);border:1px solid var(--stroke2);border-radius:4px;padding:1px 5px;color:var(--dim)}
+.prod{display:flex;align-items:center;gap:9px;border:1px solid var(--stroke);border-radius:9px;padding:6px 11px;background:var(--glass)}
+.prod .d{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 7px var(--ok)}
+.prod .txt{font-size:11px}
+.prod .txt small{display:block;font-family:var(--mono);font-size:9px;color:var(--faint)}
+/* toast */
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(14px);background:rgba(15,17,28,.96);border:1px solid var(--stroke2);border-radius:10px;padding:10px 17px;font-size:12px;opacity:0;pointer-events:none;transition:.22s;z-index:90;display:flex;align-items:center;gap:9px;backdrop-filter:blur(12px)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div class="orb"></div>SITE STUDIO <small>powered by Shay</small></div>
+    <div class="sp"></div>
+    <div class="chip">sites root: <b>~/FAMtastic/sites</b></div>
+    <div class="chip">mbsh96reunion.com</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nlab">Console</div>
+    <button class="ni"><span class="ic">▤</span>Work<span class="bg hot">3</span></button>
+    <button class="ni"><span class="ic">◉</span>Sites<span class="bg ok">9</span></button>
+    <button class="ni on"><span class="ic">▣</span>Site View</button>
+    <button class="ni"><span class="ic">✦</span>New build</button>
+    <button class="ni"><span class="ic">◈</span>Applications</button>
+    <button class="ni"><span class="ic">✉</span>Proofs<span class="bg cool">2</span></button>
+    <button class="ni"><span class="ic">↑</span>Deployments</button>
+    <button class="ni"><span class="ic">▩</span>Media</button>
+    <button class="ni"><span class="ic">◫</span>Components</button>
+    <button class="ni"><span class="ic">⚙</span>Builds + Recipes</button>
+    <button class="ni"><span class="ic">✧</span>Automations</button>
+    <button class="ni"><span class="ic">⚒</span>Settings</button>
+  </nav>
+
+  <div class="work">
+    <!-- LAYERS / PAGES -->
+    <div class="layers">
+      <div class="lsec">Pages</div>
+      <div class="lrow on"><span>Home</span><span class="t">index</span></div>
+      <div class="lrow"><span>The Weekend</span><span class="t">weekend</span></div>
+      <div class="lrow"><span>Tickets &amp; RSVP</span><span class="t">tickets</span></div>
+      <div class="lrow"><span>Gallery</span><span class="t">gallery</span></div>
+      <div class="lrow"><span>Committee</span><span class="t">committee</span></div>
+      <div class="lsec" style="border-top:1px solid var(--stroke)">Sections · Home</div>
+      <div class="lrow sub" data-jump="hero" onclick="pick('hero')">◧ Hero</div>
+      <div class="lrow sub" data-jump="grid" onclick="pick('grid')">▦ Weekend cards</div>
+      <div class="lrow sub" data-jump="foot" onclick="pick('foot')">▬ Footer</div>
+      <div class="lib">
+        <div class="lsec">Component library <span style="margin-left:auto;font-family:var(--mono);color:var(--faint)">78</span></div>
+        <div class="libgrid">
+          <div class="libit" style="background:linear-gradient(135deg,#16325c,#0d2440)" onclick="toast('Drag onto the canvas to insert')"><span>Hero split</span></div>
+          <div class="libit" style="background:#141f34" onclick="toast('Drag onto the canvas to insert')"><span>Grid 3up</span></div>
+          <div class="libit" style="background:linear-gradient(135deg,#241c4d,#e8cfa0)" onclick="toast('Drag onto the canvas to insert')"><span>CTA pill</span></div>
+          <div class="libit" style="background:#0e1626" onclick="toast('Drag onto the canvas to insert')"><span>RSVP form</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="stage">
+      <div class="sbar">
+        <div class="crumb"><b>Editing: Home</b><span class="pubpill" id="pubState">Published</span><span class="path">mbsh96reunion.com /</span></div>
+        <div class="sp"></div>
+        <div style="display:flex;gap:4px">
+          <button class="icb on" onclick="dev('',this)" title="Desktop">▭</button>
+          <button class="icb" onclick="dev('tab',this)" title="Tablet">▯</button>
+          <button class="icb" onclick="dev('mob',this)" title="Mobile">▮</button>
+        </div>
+        <div style="width:1px;height:18px;background:var(--stroke)"></div>
+        <button class="icb" onclick="undo()" title="Undo">↶</button>
+        <button class="icb" onclick="toast('Redo')" title="Redo">↷</button>
+        <button class="btn gh sm" onclick="toast('Preview opened in new tab')">Preview</button>
+        <button class="btn pri sm" onclick="save()">Save</button>
+      </div>
+      <div class="frame">
+        <div class="canvas" id="canvas">
+          <div class="sec" id="hero" onclick="pick('hero',event)">
+            <div class="sectag">Hero Section</div>
+            <div class="fltbar"><button title="Move">✥</button><button title="Settings" onclick="event.stopPropagation();itab('style',document.querySelectorAll('.itab')[1])">⚙</button><button title="Duplicate" onclick="event.stopPropagation();toast('Section duplicated below')">⧉</button><button title="Delete" onclick="event.stopPropagation();toast('Section removed · undo available')">🗑</button></div>
+            <div class="r-hero">
+              <div class="r-nav"><b>MBSH '96</b><span>Weekend</span><span>Tickets</span><span>Gallery</span><span>Committee</span></div>
+              <h1 data-ed id="hHead">30 Years.<br><em>One Weekend.</em></h1>
+              <p data-ed id="hSub">Miami Beach Senior High, Class of 1996. October 16–18, 2026 on the sand where it started.</p>
+              <div class="r-btns"><div class="r-cta" data-ed id="hBtn1">Reserve your spot</div><div class="r-cta2" data-ed id="hBtn2">See the weekend</div></div>
+            </div>
+          </div>
+          <div class="sec" id="grid" onclick="pick('grid',event)">
+            <div class="sectag">Feature Grid — 3up</div>
+            <div class="fltbar"><button>✥</button><button onclick="event.stopPropagation();toast('Opened in Component Studio ↗')">⚙</button><button onclick="event.stopPropagation();toast('Section duplicated')">⧉</button><button onclick="event.stopPropagation();toast('Section removed')">🗑</button></div>
+            <div class="r-strip" id="gridInner">
+              <div class="r-card"><h3 data-ed>Friday Mixer</h3><p data-ed>Rooftop at The Betsy, 7pm. Cash bar, name tags, and thirty years of catching up.</p></div>
+              <div class="r-card"><h3 data-ed>Saturday Gala</h3><p data-ed>Dinner, awards, and the class photo. Semi-formal, doors at 6.</p></div>
+              <div class="r-card"><h3 data-ed>Sunday Beach Day</h3><p data-ed>Families welcome. 10th &amp; Ocean, 11am until whenever.</p></div>
+            </div>
+          </div>
+          <div class="sec" id="foot" onclick="pick('foot',event)">
+            <div class="sectag">Footer</div>
+            <div class="fltbar"><button>✥</button><button>⚙</button><button>⧉</button><button>🗑</button></div>
+            <div class="r-band" data-ed>© 2026 MBSH Class of 1996 Reunion Committee · committee@mbsh96reunion.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSPECTOR -->
+    <div class="insp">
+      <div class="ihead"><b id="iName">Hero Section</b><span class="pill g" id="iComp">Hero split</span><span class="x" onclick="deselect()">✕</span></div>
+      <div class="itabs">
+        <button class="itab on" onclick="itab('content',this)">Content</button>
+        <button class="itab" onclick="itab('style',this)">Style</button>
+        <button class="itab" onclick="itab('adv',this)">Advanced</button>
+      </div>
+      <div class="ibody" id="iBody"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bbar">
+    <div class="orb" style="width:22px;height:22px"></div>
+    <div class="inp"><input placeholder="What would you like Shay to build or do?" onkeydown="if(event.key==='Enter'&&this.value){shay(this.value);this.value=''}"><kbd>⌘K</kbd></div>
+    <button class="btn gh sm" onclick="shay('build')">Build</button>
+    <button class="btn gh sm" onclick="shay('edit')">Edit</button>
+    <button class="btn gh sm" onclick="shay('optimize')">Optimize</button>
+    <button class="btn gh sm" onclick="shay('analyze')">Analyze</button>
+    <div class="prod"><span class="d"></span><div class="txt">Production <small>deploy #218 · 2h ago</small></div></div>
+    <button class="btn pri" onclick="toast('Deploying working copy to Netlify… verified in 41s')">Deploy Now</button>
+  </div>
+</div>
+<div class="toast" id="toast"><i></i><span id="tmsg"></span></div>
+
+<script>
+let cur='hero',tab='content',hist=[],dirty=0;
+const meta={hero:['Hero Section','Hero split'],grid:['Feature Grid — 3up','Grid 3up'],foot:['Footer','Band footer']};
+
+/* selection */
+function pick(id,e){
+  if(e&&e.target.hasAttribute('data-ed'))return;
+  cur=id;
+  document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('sel',s.id===id));
+  document.querySelectorAll('.lrow.sub').forEach(r=>r.classList.toggle('on',r.dataset.jump===id));
+  document.getElementById('iName').textContent=meta[id][0];
+  document.getElementById('iComp').textContent=meta[id][1];
+  render();
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function deselect(){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('sel'))}
+function itab(t,el){tab=t;document.querySelectorAll('.itab').forEach(b=>b.classList.remove('on'));el.classList.add('on');render()}
+
+/* inline editing */
+document.querySelectorAll('[data-ed]').forEach(el=>{
+  el.addEventListener('click',e=>{
+    e.stopPropagation();
+    const before=el.innerHTML;
+    el.setAttribute('contenteditable','true');el.focus();
+    el.onblur=()=>{
+      el.removeAttribute('contenteditable');
+      if(el.innerHTML!==before){hist.push({el,before});mark();sync();toast('Edited · journaled · 12ms · live untouched')}
+    };
+  });
+});
+function mark(){dirty++;const p=document.getElementById('pubState');p.textContent=dirty+' unpublished change'+(dirty>1?'s':'');p.className='pubpill wc'}
+function undo(){const h=hist.pop();if(!h){toast('Nothing to undo');return}h.el.innerHTML=h.before;dirty=Math.max(0,dirty-1);if(!dirty){const p=document.getElementById('pubState');p.textContent='Published';p.className='pubpill'}else mark();sync();toast('Undone')}
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='z'){e.preventDefault();undo()}});
+function save(){toast(dirty?dirty+' change(s) saved to working copy · nothing published':'No changes to save')}
+function sync(){if(tab==='content')render()}
+
+/* inspector render */
+function g(title,body,closed){return `<div class="grp${closed?' cl':''}"><div class="gh" onclick="this.parentElement.classList.toggle('cl')">${title}<span class="car">▼</span></div><div class="gb">${body}</div></div>`}
+function render(){
+  const b=document.getElementById('iBody');
+  if(tab==='content'){
+    if(cur==='hero'){
+      b.innerHTML=
+      g('Heading',`<div class="fld"><label>Text<span class="c" id="c1"></span></label><textarea oninput="setEl('hHead',this.value)">${txt('hHead')}</textarea></div>
+        <div class="fld"><label>Accent word colour</label><div class="linkrow"><span class="dot" style="background:#f0c460"></span><input value="#f0c460" oninput="accent(this.value)"></div></div>`)
+      +g('Subheading',`<div class="fld"><textarea oninput="setEl('hSub',this.value)">${txt('hSub')}</textarea></div>`)
+      +g('Primary button',`<div class="fld"><label>Label</label><input value="${txt('hBtn1')}" oninput="setEl('hBtn1',this.value)"></div>
+        <div class="fld"><label>Link</label><div class="linkrow"><input value="/tickets"><span class="dot" style="background:#f0c460"></span></div></div>`)
+      +g('Secondary button',`<div class="fld"><label>Label</label><input value="${txt('hBtn2')}" oninput="setEl('hBtn2',this.value)"></div>
+        <div class="fld"><label>Link</label><input value="/weekend"></div>`,1)
+      +g('Background',`<div class="fld"><label>Type</label><select onchange="toast('Background type → '+this.value)"><option>Gradient mesh</option><option>Solid colour</option><option>Image</option><option>Video</option></select></div>
+        <div class="fld"><label>Palette</label><div class="swrow">
+          <div class="sw on" style="background:linear-gradient(135deg,#16325c,#f0c460)" onclick="pal(this,'#0b1e3a','#16325c','#0d2440','#f0c460')"></div>
+          <div class="sw" style="background:linear-gradient(135deg,#4a2d6e,#f0b8d0)" onclick="pal(this,'#2a1a3e','#4a2d6e','#1d1230','#f0b8d0')"></div>
+          <div class="sw" style="background:linear-gradient(135deg,#0f3d33,#e8d9a0)" onclick="pal(this,'#0b2b25','#0f3d33','#08211c','#e8d9a0')"></div>
+          <div class="sw" style="background:linear-gradient(135deg,#2a1608,#f0c460)" onclick="pal(this,'#2a1608','#4a2a10','#1a0f06','#f0c460')"></div>
+          <div class="sw" style="background:linear-gradient(135deg,#111,#888)" onclick="pal(this,'#0d0d0d','#222','#000','#cfcfcf')"></div></div>
+        <div class="hint" style="margin-top:7px">Palettes derive from the site's research packet. Custom values are journaled.</div></div>
+        <div class="fld"><label>Media</label><button class="btn sm" style="width:100%" onclick="toast('Media library · 6 assets for this site')">Choose from Media ▩</button></div>`)
+      +g('Navigation',`<div class="fld"><label>Brand label</label><input value="MBSH '96"></div><div class="hint">5 links · edit in Site settings → Navigation</div>`,1);
+    } else if(cur==='grid'){
+      b.innerHTML=
+      g('Cards',`<div class="hint" style="margin-bottom:9px">3 cards · click any card text on the canvas to edit it directly.</div>
+        <button class="btn sm" style="width:100%;margin-bottom:6px" onclick="addCard()">＋ Add card</button>
+        <button class="btn sm" style="width:100%" onclick="toast('Reorder mode · drag cards on the canvas')">⇅ Reorder</button>`)
+      +g('Layout',`<div class="fld"><label>Columns</label><div class="segs"><button class="on" onclick="cols(3,this)">3</button><button onclick="cols(2,this)">2</button><button onclick="cols(1,this)">1</button></div></div>
+        <div class="fld"><label>Gap<span class="c">16px</span></label><input type="range" min="0" max="48" value="16" oninput="gap(this.value)"></div>`)
+      +g('Component',`<div class="hint">Feature Grid — 3up<br>used on 7 sites across the ecosystem<br><br><span style="color:var(--cy);cursor:pointer" onclick="toast('Opening Component Studio ↗')">Open in Component Studio ↗</span></div>`,1);
+    } else {
+      b.innerHTML=g('Footer text',`<div class="fld"><textarea>© 2026 MBSH Class of 1996 Reunion Committee · committee@mbsh96reunion.com</textarea></div>`)
+      +g('Contact',`<div class="fld"><label>Email</label><input value="committee@mbsh96reunion.com"></div><div class="fld"><label>Instagram</label><input value="@mbsh96"></div>`);
+    }
+  }
+  else if(tab==='style'){
+    b.innerHTML=
+    g('Typography',`<div class="fld"><label>Heading font</label><select onchange="toast('Font → '+this.value)"><option>Playfair Display</option><option>Space Grotesk</option><option>Inter</option></select></div>
+      <div class="two"><div class="fld"><label>Size<span class="c">52px</span></label><input type="range" min="24" max="76" value="52" oninput="fs(this.value)"></div>
+      <div class="fld"><label>Weight</label><select><option>700</option><option>900</option><option>500</option></select></div></div>
+      <div class="fld"><label>Line height<span class="c">1.04</span></label><input type="range" min="90" max="180" value="104" oninput="lh(this.value)"></div>`)
+    +g('Spacing',`<div class="box"><span class="lbl">MARGIN</span><div class="marg">
+        <span></span><div class="vstack"><input class="bi" value="0"></div><span></span>
+        <input class="bi" value="0">
+        <div class="pad"><span class="lbl">PADDING</span>
+          <input class="bi" value="60" oninput="pad('left',this.value)">
+          <div class="vstack"><input class="bi" value="64" oninput="pad('top',this.value)"><div style="width:100%;height:26px;background:rgba(139,124,246,.16);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--dim)">content</div><input class="bi" value="56" oninput="pad('bottom',this.value)"></div>
+          <input class="bi" value="60" oninput="pad('right',this.value)"></div>
+        <input class="bi" value="0">
+        <span></span><div class="vstack"><input class="bi" value="0"></div><span></span>
+      </div></div>`)
+    +g('Alignment',`<div class="fld"><label>Content align</label><div class="segs"><button class="on" onclick="al('left',this)">Left</button><button onclick="al('center',this)">Center</button><button onclick="al('right',this)">Right</button></div></div>
+      <div class="fld"><label>Min height<span class="c">auto</span></label><input value="auto"></div>`)
+    +g('Effects',`<div class="tg">Radial glow<span class="tog on" onclick="this.classList.toggle('on');toast('Glow toggled')"></span></div>
+      <div class="tg">Overlay tint<span class="tog" onclick="this.classList.toggle('on');toast('Overlay toggled')"></span></div>
+      <div class="fld" style="margin-top:8px"><label>Corner radius<span class="c">0px</span></label><input type="range" min="0" max="40" value="0" oninput="rad(this.value)"></div>`,1);
+  }
+  else {
+    b.innerHTML=
+    g('Visibility',`<div class="tg">Desktop<span class="tog on" onclick="this.classList.toggle('on');toast('Desktop visibility toggled')"></span></div>
+      <div class="tg">Tablet<span class="tog on" onclick="this.classList.toggle('on')"></span></div>
+      <div class="tg">Mobile<span class="tog on" onclick="this.classList.toggle('on')"></span></div>`)
+    +g('SEO impact',`<div class="hint">This section provides the page H1 and hero image.</div>
+      <div class="evi"><span class="pill ok">✓ single H1</span><span class="pill ok">✓ alt text set</span><span class="pill ok">✓ contrast AA</span><span class="pill g">LCP 1.2s</span></div>`)
+    +g('Identity',`<div class="fld"><label>Section ID</label><input value="hero" class="mono"></div>
+      <div class="fld"><label>CSS classes</label><input value="r-hero"></div>
+      <div class="fld"><label>Spec path</label><input value="pages.home.sections[0]" readonly style="color:var(--faint)"></div>`)
+    +g('Provenance',`<div class="hint">Generated from research packet <span style="color:var(--cy)">rp_8f2a</span><br>Direction: 1996 yearbook palette<br>Verified facts used: 4<br>Last mutation: you, 12ms, journaled</div>
+      <button class="btn sm" style="width:100%;margin-top:9px" onclick="toast('Opening run DNA · run_mt6b8')">View build DNA</button>`,1);
+  }
+}
+function txt(id){const e=document.getElementById(id);return e.innerHTML.replace(/<br>/g,'\n').replace(/<\/?em>/g,'')}
+function setEl(id,v){document.getElementById(id).innerHTML=v.replace(/\n/g,'<br>');mark()}
+function accent(c){document.querySelectorAll('#hero em').forEach(e=>e.style.color=c);mark()}
+function pal(el,a,b2,c,acc){
+  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));el.classList.add('on');
+  document.querySelector('.r-hero').style.background=`linear-gradient(135deg,${a},${b2} 55%,${c})`;
+  document.querySelectorAll('#hero em').forEach(e=>e.style.color=acc);
+  document.querySelector('.r-cta').style.background=acc;document.querySelector('.r-cta').style.color=a;
+  document.querySelector('.r-nav b').style.color=acc;
+  document.querySelectorAll('.r-card h3').forEach(h=>h.style.color=acc);
+  mark();toast('Palette applied to working copy · journaled');
+}
+function fs(v){document.querySelector('.r-hero h1').style.fontSize=v+'px';mark()}
+function lh(v){document.querySelector('.r-hero h1').style.lineHeight=v/100;mark()}
+function pad(side,v){document.querySelector('.r-hero').style['padding'+side[0].toUpperCase()+side.slice(1)]=v+'px';mark()}
+function al(a){document.querySelectorAll('.segs button').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');
+  const h=document.querySelector('.r-hero');h.style.textAlign=a;h.querySelector('.r-btns').style.justifyContent=a==='center'?'center':a==='right'?'flex-end':'flex-start';mark()}
+function rad(v){document.querySelector('.r-hero').style.borderRadius=v+'px';mark()}
+function cols(n,el){document.querySelectorAll('.segs button').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  const g2=document.getElementById('gridInner');g2.style.flexWrap='wrap';
+  g2.querySelectorAll('.r-card').forEach((c,i)=>{c.style.flex=n===1?'1 1 100%':n===2?'1 1 44%':'1';c.style.display=(n===2&&i>1)?'':'';});mark();toast(n+'-column layout')}
+function gap(v){document.getElementById('gridInner').style.gap=v+'px';mark()}
+function addCard(){const g2=document.getElementById('gridInner');const d=document.createElement('div');d.className='r-card';
+  d.innerHTML='<h3 data-ed>New card</h3><p data-ed>Click to edit this text.</p>';g2.appendChild(d);
+  d.querySelectorAll('[data-ed]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();const b4=el.innerHTML;el.setAttribute('contenteditable','true');el.focus();el.onblur=()=>{el.removeAttribute('contenteditable');if(el.innerHTML!==b4){hist.push({el,before:b4});mark()}}}));
+  mark();toast('Card added · journaled')}
+function dev(m,el){document.querySelectorAll('.sbar .icb').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  const c=document.getElementById('canvas');c.className='canvas'+(m?' '+m:'')}
+function shay(v){toast('Shay: drafting a plan for "'+v+'" · nothing runs until you confirm')}
+let tt;function toast(m){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2500)}
+pick('hero');
+</script>
+</body>
+</html>

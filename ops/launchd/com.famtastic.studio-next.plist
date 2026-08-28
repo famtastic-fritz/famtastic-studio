@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Site Studio (next) LaunchAgent. Installed at cutover, 2026-08-23.
+
+  This runs ALONGSIDE com.famtastic.studio rather than replacing it. The two use
+  different ports (legacy 3340, next 3400), so legacy can go cold without being
+  removed and stays one `launchctl kickstart` away for the 30-day window.
+
+  Install: cp site-studio-next/ops/launchd/com.famtastic.studio-next.plist ~/Library/LaunchAgents/
+  Load:    launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.famtastic.studio-next.plist
+  Unload:  launchctl bootout gui/$UID/com.famtastic.studio-next
+  Status:  launchctl print gui/$UID/com.famtastic.studio-next | head -20
+
+  Key choices are inherited from the legacy plist, whose comments explain the
+  named failure mode behind each one; they are not re-argued here.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.famtastic.studio-next</string>
+
+  <!-- LaunchAgent, never a LaunchDaemon: a daemon cannot reach the login
+       keychain, and the research adapter spawns a CLI that needs it. -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/famtastic-fritz/.local/share/famtastic/bin/node</string>
+    <string>server/index.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/famtastic-fritz/Development/FAMtastic/site-studio-next</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <!-- launchd's PATH is minimal. Without ~/.local/bin the claude CLI is
+         command-not-found and research degrades to adapter_failed on every run. -->
+    <key>PATH</key>
+    <string>/Users/famtastic-fritz/.local/bin:/Users/famtastic-fritz/.local/share/famtastic/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+
+    <key>PORT</key>
+    <string>3400</string>
+
+    <!-- Loopback only. Boot refuses to bind the wildcard unless BIND_LAN is
+         set explicitly; this is belt and braces on top of that. -->
+    <key>BIND_LAN</key>
+    <string>0</string>
+
+    <key>STUDIO_DATA_ROOT</key>
+    <string>/Users/famtastic-fritz/Development/famtastic-wt-phase-0/.studio-next-data</string>
+
+    <key>NODE_ENV</key>
+    <string>production</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Matches legacy: the console's restart control exits 0 and relies on
+       launchd bringing the process straight back. -->
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+
+  <key>StandardOutPath</key>
+  <string>/Users/famtastic-fritz/Development/FAMtastic/platform/ops/logs/studio-next.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/famtastic-fritz/Development/FAMtastic/platform/ops/logs/studio-next.err.log</string>
+
+  <key>ProcessType</key>
+  <string>Interactive</string>
+</dict>
+</plist>
