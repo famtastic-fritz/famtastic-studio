@@ -44,12 +44,22 @@ export function renderNewSiteBuilder(options = {}) {
       <textarea id="ns-bnote" style="width:100%;background:var(--color-bg-sunken);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--color-text);font-size:var(--text-xs);min-height:54px;resize:vertical" placeholder="Leave blank — research will ground and derive the site spec automatically"></textarea>
     </div>
     <div class="insp-field">
-      <label style="display:block;font-size:11px;color:var(--color-text-dim);margin-bottom:4px">Recipe Preset</label>
+      <label style="display:block;font-size:11px;color:var(--color-text-dim);margin-bottom:4px">Recipe Preset & Architecture</label>
       <select id="ns-recipe" style="width:100%;background:var(--color-bg-sunken);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--color-text);font-size:var(--text-sm)">
-        <option value="minimal-hello-world">minimal-hello-world · 1-page blank canvas + tokens</option>
-        <option value="standard-business" selected>standard-business · 3-page brochure (home, about, contact)</option>
-        <option value="lead-gen-landing">lead-gen-landing · single landing page with hero, proof & CTA</option>
-        <option value="creator-portfolio">creator-portfolio · multi-page portfolio, work & contact</option>
+        <optgroup label="📄 Static Web (v1.0.0)">
+          <option value="minimal-hello-world">minimal-hello-world · 1-page blank canvas + tokens</option>
+          <option value="standard-business" selected>standard-business · 3-page brochure (home, about, contact)</option>
+          <option value="lead-gen-landing">lead-gen-landing · single landing page with hero, proof & CTA</option>
+          <option value="creator-portfolio">creator-portfolio · multi-page portfolio, work & contact</option>
+        </optgroup>
+        <optgroup label="💧 Drupal CMS (v1.0.0)">
+          <option value="drupal-standard-v1">drupal-standard-v1 · Standard Drupal + Custom Theme (Twig/CSS) + Docker</option>
+          <option value="drupal-decoupled-tri-tier-v1">drupal-decoupled-tri-tier-v1 · Decoupled Tri-Tier (Drupal JSON:API + React Portal + React Frontend)</option>
+        </optgroup>
+        <optgroup label="🌐 WordPress CMS (v1.0.0)">
+          <option value="wordpress-standard-v1">wordpress-standard-v1 · Standard WordPress + Custom PHP Theme + Docker</option>
+          <option value="wordpress-decoupled-tri-tier-v1">wordpress-decoupled-tri-tier-v1 · Decoupled Tri-Tier (Headless WP + React Portal + React Frontend)</option>
+        </optgroup>
       </select>
     </div>
   `;

@@ -13,6 +13,12 @@
 // both consume only that shape, never how it was produced. pipeline.js's
 // MODEL_ROUTING table records which composer actually ran, per run, in DNA.
 import { tokensToCss, DEFAULT_TOKENS } from './tokens.js';
+import {
+  composeDrupalStandard,
+  composeDrupalDecoupled,
+  composeWordPressStandard,
+  composeWordPressDecoupled,
+} from './compose-cms.js';
 
 export const COMPOSERS = ['deterministic'];
 export const DEFAULT_COMPOSER = 'deterministic';
@@ -333,6 +339,26 @@ export function composeSite({ spec, composer = DEFAULT_COMPOSER } = {}) {
 
   const bName = spec?.brand?.name || 'Site';
   const slug = (spec?.brand?.name || 'site').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'site';
+  const recipeId = spec?.recipe || spec?.archetype;
+
+  // Recipe-specific composers for CMS and Decoupled multi-tier stacks
+  if (recipeId === 'drupal-standard-v1') {
+    const res = composeDrupalStandard({ spec, bName, slug, tokens: spec.tokens });
+    return { composer, ...res, provider: 'drupal-standard', output_stack: 'drupal-cms' };
+  }
+  if (recipeId === 'drupal-decoupled-tri-tier-v1') {
+    const res = composeDrupalDecoupled({ spec, bName, slug, tokens: spec.tokens });
+    return { composer, ...res, provider: 'drupal-decoupled', output_stack: 'drupal-decoupled' };
+  }
+  if (recipeId === 'wordpress-standard-v1') {
+    const res = composeWordPressStandard({ spec, bName, slug, tokens: spec.tokens });
+    return { composer, ...res, provider: 'wordpress-standard', output_stack: 'wordpress-cms' };
+  }
+  if (recipeId === 'wordpress-decoupled-tri-tier-v1') {
+    const res = composeWordPressDecoupled({ spec, bName, slug, tokens: spec.tokens });
+    return { composer, ...res, provider: 'wordpress-decoupled', output_stack: 'wordpress-decoupled' };
+  }
+
   const pageList = (spec?.pages || []).map((p) => `- \`${p.path}\` — ${p.title || p.heading || p.id}`).join('\n');
 
   const mainJs = `/**
