@@ -207,6 +207,89 @@ createRegion(regionEl, {
     const wrap = document.createElement("div");
     wrap.appendChild(grid(assets, assetCard));
 
+    if (Array.isArray(data.presets) && data.presets.length) {
+      const presetsWrap = document.createElement("div");
+      presetsWrap.style.marginTop = "2rem";
+
+      const pHead = document.createElement("h3");
+      pHead.textContent = "Media Studio Presets & Generators";
+      pHead.style.marginBottom = "0.5rem";
+
+      const pMeta = document.createElement("p");
+      pMeta.className = "card__meta";
+      pMeta.textContent = `${data.presets.length} curated style backgrounds & texture presets available from media-studio library.`;
+
+      const pGrid = document.createElement("div");
+      pGrid.style.display = "grid";
+      pGrid.style.gridTemplateColumns = "repeat(auto-fit, minmax(260px, 1fr))";
+      pGrid.style.gap = "1.25rem";
+      pGrid.style.marginTop = "1rem";
+
+      for (const preset of data.presets) {
+        const pCard = document.createElement("div");
+        pCard.className = "card";
+        pCard.style.border = "1px solid var(--border)";
+        pCard.style.borderRadius = "8px";
+        pCard.style.overflow = "hidden";
+        pCard.style.background = "var(--surface)";
+
+        const preview = document.createElement("div");
+        preview.style.height = "120px";
+        preview.style.background = preset.css_background;
+        preview.style.display = "flex";
+        preview.style.alignItems = "flex-end";
+        preview.style.padding = "0.5rem";
+
+        const tag = document.createElement("span");
+        tag.textContent = preset.aspect_ratio;
+        tag.style.background = "rgba(0,0,0,0.6)";
+        tag.style.color = "#fff";
+        tag.style.fontSize = "0.75rem";
+        tag.style.padding = "2px 6px";
+        tag.style.borderRadius = "4px";
+        preview.appendChild(tag);
+        pCard.appendChild(preview);
+
+        const pBody = document.createElement("div");
+        pBody.style.padding = "1rem";
+
+        const nameRow = document.createElement("div");
+        nameRow.style.display = "flex";
+        nameRow.style.justifyContent = "space-between";
+        nameRow.style.alignItems = "center";
+        nameRow.style.marginBottom = "0.5rem";
+
+        const title = document.createElement("b");
+        title.textContent = preset.name;
+        nameRow.appendChild(title);
+        nameRow.appendChild(pill(preset.category, "ok"));
+        pBody.appendChild(nameRow);
+
+        const tagsRow = document.createElement("div");
+        tagsRow.style.display = "flex";
+        tagsRow.style.gap = "4px";
+        tagsRow.style.flexWrap = "wrap";
+        for (const t of (preset.tags || []).slice(0, 3)) {
+          const tp = document.createElement("span");
+          tp.textContent = `#${t}`;
+          tp.style.fontSize = "0.75rem";
+          tp.style.color = "var(--muted)";
+          tagsRow.appendChild(tp);
+        }
+        pBody.appendChild(tagsRow);
+        pCard.appendChild(pBody);
+
+        pGrid.appendChild(pCard);
+      }
+
+      presetsWrap.append(pHead, pMeta, pGrid);
+      wrap.appendChild(panel({
+        title: "Media Studio Library",
+        route: "media-studio",
+        children: presetsWrap,
+      }));
+    }
+
     if (unfilled.length) {
       const h3 = document.createElement("h3");
       h3.textContent = "Unfilled media slots";

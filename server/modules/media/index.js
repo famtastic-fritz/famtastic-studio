@@ -29,6 +29,19 @@ function isRemote(src) {
   return /^([a-z][a-z0-9+.-]*:)?\/\//i.test(src);
 }
 
+async function loadLibraryPresets() {
+  try {
+    const presetsPath = path.resolve(process.cwd(), '..', 'media-studio', 'src', 'presets.js');
+    if (fs.existsSync(presetsPath)) {
+      const mod = await import(pathToFileURL(presetsPath).href);
+      return mod.STOCK_PRESETS || [];
+    }
+  } catch {
+    // Graceful fallback
+  }
+  return [];
+}
+
 export default {
   name: 'media',
   register({ app, paths }) {
@@ -50,12 +63,15 @@ export default {
             },
           };
         }
+        const libraryPresets = await loadLibraryPresets();
+
         return {
           status: 200,
           body: {
             status: 'ok',
             source: 'media inventory (portfolio-specs + page + importer.extractImages)',
             assets: result.assets,
+            presets: libraryPresets,
             unfilled: result.unfilled,
             skipped_sites: result.skipped_sites,
           },

@@ -117,6 +117,71 @@ createRegion(regionEl, {
       children: typeTable,
     }));
 
+    if (Array.isArray(data.catalog) && data.catalog.length) {
+      const catalogWrap = document.createElement("div");
+      catalogWrap.style.marginTop = "2rem";
+
+      const catalogHeading = document.createElement("h3");
+      catalogHeading.textContent = "Component Studio Archetype Library";
+      catalogHeading.style.marginBottom = "0.5rem";
+
+      const catalogMeta = document.createElement("p");
+      catalogMeta.className = "card__meta";
+      catalogMeta.textContent = `${data.catalog.length} production UI component archetypes available from component-studio library.`;
+
+      const gridEl = document.createElement("div");
+      gridEl.style.display = "grid";
+      gridEl.style.gridTemplateColumns = "repeat(auto-fit, minmax(280px, 1fr))";
+      gridEl.style.gap = "1rem";
+      gridEl.style.marginTop = "1rem";
+
+      for (const comp of data.catalog) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.border = "1px solid var(--border)";
+        card.style.borderRadius = "8px";
+        card.style.padding = "1.25rem";
+        card.style.background = "var(--surface)";
+
+        const topRow = document.createElement("div");
+        topRow.style.display = "flex";
+        topRow.style.justifyContent = "space-between";
+        topRow.style.alignItems = "center";
+        topRow.style.marginBottom = "0.5rem";
+
+        const nameEl = document.createElement("b");
+        nameEl.textContent = comp.name;
+        nameEl.style.fontSize = "1.05rem";
+
+        topRow.appendChild(nameEl);
+        topRow.appendChild(pill(comp.category, "ok"));
+        card.appendChild(topRow);
+
+        const desc = document.createElement("p");
+        desc.className = "card__meta";
+        desc.textContent = comp.description;
+        desc.style.marginBottom = "1rem";
+        card.appendChild(desc);
+
+        const idBadge = document.createElement("code");
+        idBadge.textContent = comp.id;
+        idBadge.style.fontSize = "0.8rem";
+        idBadge.style.background = "var(--bg)";
+        idBadge.style.padding = "2px 6px";
+        idBadge.style.borderRadius = "4px";
+        card.appendChild(idBadge);
+
+        gridEl.appendChild(card);
+      }
+
+      catalogWrap.append(catalogHeading, catalogMeta, gridEl);
+      wrap.appendChild(panel({
+        title: "Component Studio Library",
+        route: "component-studio",
+        children: catalogWrap,
+      }));
+    }
+
     return wrap;
   },
 });
