@@ -138,10 +138,10 @@ createRegion(regionEl, {
       for (const comp of data.catalog) {
         const card = document.createElement("div");
         card.className = "card";
-        card.style.border = "1px solid var(--border)";
+        card.style.border = "1px solid var(--color-border)";
         card.style.borderRadius = "8px";
         card.style.padding = "1.25rem";
-        card.style.background = "var(--surface)";
+        card.style.background = "var(--color-bg-raised)";
 
         const topRow = document.createElement("div");
         topRow.style.display = "flex";
@@ -152,6 +152,7 @@ createRegion(regionEl, {
         const nameEl = document.createElement("b");
         nameEl.textContent = comp.name;
         nameEl.style.fontSize = "1.05rem";
+        nameEl.style.color = "var(--color-text)";
 
         topRow.appendChild(nameEl);
         topRow.appendChild(pill(comp.category, "ok"));
@@ -166,7 +167,8 @@ createRegion(regionEl, {
         const idBadge = document.createElement("code");
         idBadge.textContent = comp.id;
         idBadge.style.fontSize = "0.8rem";
-        idBadge.style.background = "var(--bg)";
+        idBadge.style.background = "var(--color-bg-sunken)";
+        idBadge.style.color = "var(--color-accent)";
         idBadge.style.padding = "2px 6px";
         idBadge.style.borderRadius = "4px";
         card.appendChild(idBadge);

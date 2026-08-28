@@ -227,10 +227,10 @@ createRegion(regionEl, {
       for (const preset of data.presets) {
         const pCard = document.createElement("div");
         pCard.className = "card";
-        pCard.style.border = "1px solid var(--border)";
+        pCard.style.border = "1px solid var(--color-border)";
         pCard.style.borderRadius = "8px";
         pCard.style.overflow = "hidden";
-        pCard.style.background = "var(--surface)";
+        pCard.style.background = "var(--color-bg-raised)";
 
         const preview = document.createElement("div");
         preview.style.height = "120px";
@@ -260,6 +260,7 @@ createRegion(regionEl, {
 
         const title = document.createElement("b");
         title.textContent = preset.name;
+        title.style.color = "var(--color-text)";
         nameRow.appendChild(title);
         nameRow.appendChild(pill(preset.category, "ok"));
         pBody.appendChild(nameRow);
@@ -272,7 +273,7 @@ createRegion(regionEl, {
           const tp = document.createElement("span");
           tp.textContent = `#${t}`;
           tp.style.fontSize = "0.75rem";
-          tp.style.color = "var(--muted)";
+          tp.style.color = "var(--color-text-dim)";
           tagsRow.appendChild(tp);
         }
         pBody.appendChild(tagsRow);

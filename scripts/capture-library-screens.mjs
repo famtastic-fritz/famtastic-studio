@@ -16,7 +16,10 @@ await new Promise((r) => setTimeout(r, 1200));
 
 try {
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    colorScheme: 'dark',
+  });
   const page = await context.newPage();
 
   // 1. Components page with Component Studio Archetype Library

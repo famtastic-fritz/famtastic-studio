@@ -314,15 +314,15 @@
 
 /* ---- L3 console kit primitives (2026-08-26) --------------------------- */
 
-.kit-panel { border: 1px solid var(--stroke, #e5e5e5); border-radius: 12px; background: var(--glass, #fff); margin-bottom: 1.25rem; overflow: hidden; }
-.kit-panel-head { display: flex; align-items: center; gap: .75rem; padding: .7rem 1rem; border-bottom: 1px solid var(--stroke, #e5e5e5); }
-.kit-panel-title { font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--dim, #555); margin: 0; }
+.kit-panel { border: 1px solid var(--color-border, rgba(255, 255, 255, 0.09)); border-radius: 12px; background: var(--color-bg-raised, rgba(255, 255, 255, 0.045)); margin-bottom: 1.25rem; overflow: hidden; }
+.kit-panel-head { display: flex; align-items: center; gap: .75rem; padding: .7rem 1rem; border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.09)); }
+.kit-panel-title { font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--color-text-dim, #a7abbd); margin: 0; }
 .kit-panel-actions { margin-left: auto; }
-.kit-panel-note { margin: .6rem 1rem 0; font-size: .8rem; color: var(--dim, #555); }
-.kit-panel-body { padding: 1rem; }
+.kit-panel-note { margin: .6rem 1rem 0; font-size: .8rem; color: var(--color-text-dim, #a7abbd); }
+.kit-panel-body { padding: 1rem; color: var(--color-text, #e8eaf2); }
 
 /* The route a panel reads from is always visible, never a tooltip only. */
-.kit-route { margin-left: auto; font-family: var(--mono, ui-monospace, monospace); font-size: .68rem; color: var(--dim, #666); border: 1px solid var(--stroke, #e5e5e5); border-radius: 20px; padding: .15rem .5rem; white-space: nowrap; }
+.kit-route { margin-left: auto; font-family: var(--font-mono, monospace); font-size: .68rem; color: var(--color-text-dim, #a7abbd); border: 1px solid var(--color-border, rgba(255, 255, 255, 0.12)); border-radius: 20px; padding: .15rem .5rem; white-space: nowrap; }
 .kit-panel-actions ~ .kit-route, .kit-panel-head .kit-route + .kit-panel-actions { margin-left: .5rem; }
 .kit-route-computed { font-style: italic; opacity: .8; }
 
