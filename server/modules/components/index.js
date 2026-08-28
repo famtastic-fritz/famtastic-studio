@@ -16,11 +16,9 @@ function errorResponse(error) {
 
 async function loadLibraryCatalog() {
   try {
-    const catalogPath = path.resolve(process.cwd(), '..', 'component-studio', 'src', 'catalog.js');
-    if (fs.existsSync(catalogPath)) {
-      const mod = await import(pathToFileURL(catalogPath).href);
-      return mod.COMPONENTS_CATALOG || [];
-    }
+    const targetUrl = new URL('../../../../component-studio/src/catalog.js', import.meta.url);
+    const mod = await import(targetUrl.href);
+    return mod.COMPONENTS_CATALOG || [];
   } catch {
     // Graceful fallback
   }

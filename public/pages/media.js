@@ -205,14 +205,13 @@ createRegion(regionEl, {
     count.textContent = `${assets.length} real asset(s) (source: ${data.source || "unknown"})`;
 
     const wrap = document.createElement("div");
-    wrap.appendChild(grid(assets, assetCard));
 
     if (Array.isArray(data.presets) && data.presets.length) {
       const presetsWrap = document.createElement("div");
-      presetsWrap.style.marginTop = "2rem";
+      presetsWrap.style.marginBottom = "2rem";
 
       const pHead = document.createElement("h3");
-      pHead.textContent = "Media Studio Presets & Generators";
+      pHead.textContent = "Media Studio Library Presets & Backgrounds";
       pHead.style.marginBottom = "0.5rem";
 
       const pMeta = document.createElement("p");
@@ -289,6 +288,13 @@ createRegion(regionEl, {
         children: presetsWrap,
       }));
     }
+
+    const portfolioHead = document.createElement("h3");
+    portfolioHead.textContent = "Discovered Portfolio Images";
+    portfolioHead.style.margin = "1.5rem 0 0.5rem";
+    wrap.appendChild(portfolioHead);
+
+    wrap.appendChild(grid(assets, assetCard));
 
     if (unfilled.length) {
       const h3 = document.createElement("h3");

@@ -31,11 +31,9 @@ function isRemote(src) {
 
 async function loadLibraryPresets() {
   try {
-    const presetsPath = path.resolve(process.cwd(), '..', 'media-studio', 'src', 'presets.js');
-    if (fs.existsSync(presetsPath)) {
-      const mod = await import(pathToFileURL(presetsPath).href);
-      return mod.STOCK_PRESETS || [];
-    }
+    const targetUrl = new URL('../../../../media-studio/src/presets.js', import.meta.url);
+    const mod = await import(targetUrl.href);
+    return mod.STOCK_PRESETS || [];
   } catch {
     // Graceful fallback
   }
