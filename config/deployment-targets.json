@@ -7,6 +7,7 @@
       "hosting_class": "shared",
       "transport": "sftp",
       "proof_root": "/home/nineoo/public_html/famtasticinc-landing",
+      "site_subdirectory_template": "{site_id}",
       "repo_mode": "create_or_existing",
       "dns_mode": "owner_authorized_after_payment",
       "notes": "Default Web Basics delivery path. No Netlify fallback."
@@ -16,6 +17,7 @@
       "hosting_class": "vps",
       "transport": "ssh_or_sftp",
       "proof_root": null,
+      "site_subdirectory_template": "{site_id}",
       "repo_mode": "existing_or_bootstrap",
       "dns_mode": "owner_authorized_after_payment",
       "notes": "Higher-bandwidth path; the remote root and transport are selected per contract."
@@ -25,6 +27,7 @@
       "hosting_class": "managed_external",
       "transport": "injected",
       "proof_root": null,
+      "site_subdirectory_template": "{site_id}",
       "repo_mode": "existing",
       "dns_mode": "owner_authorized_after_payment",
       "notes": "Requires an explicit repository URL, branch, deployment target, and receipt callback."

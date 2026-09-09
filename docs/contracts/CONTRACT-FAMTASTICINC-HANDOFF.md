@@ -9,6 +9,11 @@ default is `famtasticinc-shared`, but the same contract supports an explicit VPS
 target or an existing client repository with a URL and branch. A target still
 needs a real transport receipt before it can claim a dispatch.
 
+The default Git-to-hosting layout is a per-site subdirectory under the
+FAMtastic Inc root: `/home/nineoo/public_html/famtasticinc-landing/{site_id}`.
+The root is never a customer site. A different relative subdirectory may be
+selected explicitly, but traversal (`..`) and absolute paths are rejected.
+
 New repository scaffolds include `AGENTS.md`, `CLAUDE.md`, `design.md`, and a
 machine-readable `.famtastic/site-manifest.json`. The scaffold is local and
 deterministic; GitHub repository creation and push are a separate operation so

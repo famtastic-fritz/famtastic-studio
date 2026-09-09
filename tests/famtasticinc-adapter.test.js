@@ -56,6 +56,14 @@ describe('FAMtastic Inc delivery boundary', () => {
     expect(adapter.plan({ ...base }).hosting_class).toBe('shared');
   });
 
+  it('always plans a per-site subdirectory instead of the hosting root', () => {
+    const adapter = createFamtasticIncAdapter({ env: {} });
+    const plan = adapter.plan({ ...base });
+    expect(plan.remote_subdirectory).toBe('shay-tighten-up-your-locs');
+    expect(plan.target_path).toBe('/home/nineoo/public_html/famtasticinc-landing/shay-tighten-up-your-locs');
+    expect(() => adapter.plan({ ...base, remote_subdirectory: '../root' })).toThrow(/remote_subdirectory/i);
+  });
+
   it('does not claim deployment when an injected transport returns a bad receipt', async () => {
     const adapter = createFamtasticIncAdapter({
       env: { FAMTASTICINC_SFTP_HOST: 'host', FAMTASTICINC_SFTP_USER: 'user', FAMTASTICINC_SFTP_KEY: 'key' },

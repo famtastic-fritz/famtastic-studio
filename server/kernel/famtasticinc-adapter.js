@@ -42,6 +42,10 @@ function targetRoot(env) {
   return env.FAMTASTICINC_REMOTE_ROOT || '/home/nineoo/public_html/famtasticinc-landing';
 }
 
+function safeSubdirectory(value) {
+  return !value || (typeof value === 'string' && value.length <= 120 && !value.startsWith('/') && !value.split('/').includes('..') && /^[A-Za-z0-9._/-]+$/.test(value));
+}
+
 function requiredEnv(env, names) {
   return names.filter((name) => !text(env[name]));
 }
@@ -71,7 +75,7 @@ export function createFamtasticIncAdapter({ env = process.env, transport = null,
     };
   }
 
-  function plan({ provider = FAMTASTICINC_PROVIDER, site_id, manifest_hash, repo_url = null, repository_mode = 'create_or_existing', branch = 'main', domain = null, environment = 'staging', target_root, hosting_class = 'shared' } = {}) {
+  function plan({ provider = FAMTASTICINC_PROVIDER, site_id, manifest_hash, repo_url = null, repository_mode = 'create_or_existing', branch = 'main', domain = null, environment = 'staging', target_root, remote_subdirectory = null, hosting_class = 'shared' } = {}) {
     assertProvider(provider);
     if (!safeSiteId(site_id)) throw fail('identity_invalid', 'site_id must be lowercase kebab-case');
     if (!text(manifest_hash)) throw fail('manifest_required', 'manifest_hash is required');
@@ -79,6 +83,7 @@ export function createFamtasticIncAdapter({ env = process.env, transport = null,
     if (!['create_or_existing', 'existing', 'bootstrap', 'fixture'].includes(repository_mode)) throw fail('repository_mode_invalid', `unsupported repository mode: ${repository_mode}`);
     if (!text(branch)) throw fail('branch_required', 'branch is required');
     if (!['shared', 'vps', 'managed_external', 'local'].includes(hosting_class)) throw fail('hosting_class_invalid', `unsupported hosting class: ${hosting_class}`);
+    if (!safeSubdirectory(remote_subdirectory)) throw fail('remote_subdirectory_invalid', 'remote_subdirectory must be a safe relative path');
     const preflightResult = preflight({ provider, site_id, target_root });
     const handoff_id = `finc_${digest({ provider, site_id, manifest_hash, repo_url, repository_mode, branch, domain, environment, hosting_class }).slice(0, 24)}`;
     return {
@@ -91,6 +96,8 @@ export function createFamtasticIncAdapter({ env = process.env, transport = null,
       hosting_class,
       repository: { mode: repository_mode, url: repo_url, branch },
       target_root: preflightResult.target_root,
+      target_path: `${preflightResult.target_root}/${remote_subdirectory || site_id}`,
+      remote_subdirectory: remote_subdirectory || site_id,
       manifest_hash,
       repo_url,
       domain,
