@@ -2,6 +2,7 @@
 // -> compose -> build -> verify -> record). No stage logic lives here; it
 // binds identity (via the router's frozen `identity`, never calling
 // bindIdentity itself), parses the body, calls the kernel, and maps errors.
+import crypto from 'node:crypto';
 import { createDna } from '../../kernel/dna.js';
 import { createMutation } from '../../kernel/mutation.js';
 import { createSpec } from '../../kernel/spec.js';
@@ -30,6 +31,19 @@ function readJsonBody(req) {
   });
 }
 
+function stagingPacketErrors(packet) {
+  const errors = [];
+  if (!packet || packet.schema !== 'famtastic.site-studio.build-packet.v1') errors.push('packet.schema');
+  for (const field of ['packet_id', 'idempotency_key', 'request_id', 'project_id', 'build_class']) {
+    if (typeof packet?.[field] !== 'string' || !packet[field].trim()) errors.push(`packet.${field}`);
+  }
+  if (packet?.build_class !== 'prepayment_selected_direction_staging') errors.push('packet.build_class');
+  if (!Array.isArray(packet?.selected_direction_ids) || packet.selected_direction_ids.length !== 1) errors.push('packet.selected_direction_ids');
+  if (!Array.isArray(packet?.artifacts) || packet.artifacts.length !== 1) errors.push('packet.artifacts');
+  if (packet?.boundary?.deploy_authorized === true) errors.push('packet.boundary.deploy_authorized');
+  return errors;
+}
+
 export default {
   name: 'pipeline',
   register({ app, paths, journal, events }) {
@@ -37,6 +51,40 @@ export default {
     const mutation = createMutation({ paths, journal, events });
     const spec = createSpec({ paths, mutation });
     const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation });
+
+    app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
+      try {
+        const raw = await readJsonBody(req);
+        const secret = process.env.SITE_STUDIO_DISPATCH_SECRET || '';
+        const provided = req.headers?.['x-famtastic-signature'] || '';
+        const body = JSON.stringify(raw);
+        const expected = secret ? `sha256=${crypto.createHmac('sha256', secret).update(body).digest('hex')}` : '';
+        if (!secret || typeof provided !== 'string' || Buffer.byteLength(expected) !== Buffer.byteLength(provided) || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided))) {
+          return { status: 401, body: { error: 'dispatch_signature_invalid' } };
+        }
+        const packet = raw?.packet;
+        const errors = stagingPacketErrors(packet);
+        if (errors.length) return { status: 422, body: { accepted: false, error: 'staging_packet_rejected', errors } };
+        const siteId = `project-${packet.project_id}`;
+        const event = events.emit({
+          type: 'site_studio.staging_accepted',
+          site_id: siteId,
+          idempotency_key: packet.idempotency_key,
+          payload: { packet_id: packet.packet_id, request_id: packet.request_id, project_id: packet.project_id, status: 'accepted_waiting_callback' },
+        });
+        journal.append({
+          site_id: siteId,
+          initiator: 'famtastic-drupal',
+          intent: 'accept_selected_staging_packet',
+          changes: [{ packet_id: packet.packet_id, status: 'accepted_waiting_callback' }],
+          result: { event_id: event.event_id, status: 'accepted_waiting_callback' },
+          evidence: { idempotency_key: packet.idempotency_key },
+        });
+        return { status: 202, body: { accepted: true, status: 'accepted_waiting_callback', receipt: { receipt_id: event.event_id, packet_id: packet.packet_id, idempotency_key: packet.idempotency_key } } };
+      } catch (error) {
+        return { status: error.statusCode || 500, body: { accepted: false, error: error.code || 'staging_accept_failed', message: error.message } };
+      }
+    }, { scope: 'global' });
 
     app.route('POST', '/api/pipeline/run', async ({ req, identity }) => {
       try {
