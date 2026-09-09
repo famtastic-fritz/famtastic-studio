@@ -341,6 +341,14 @@ export function createLearningSpine({ paths }) {
     },
     readSiteManifest(siteId) { return read('sites', siteId); },
     listSiteManifests() { return list('sites'); },
+    listSites({ capability_class, environment, recipe } = {}) {
+      return list('sites').filter((site) => {
+        if (capability_class && site.capability_class !== capability_class) return false;
+        if (environment && !site.environments.includes(environment)) return false;
+        if (recipe && !site.recipes.includes(recipe)) return false;
+        return true;
+      });
+    },
     writeRecipeMetadata(recipe) {
       const result = validateRecipeMetadataRecord(recipe);
       if (!result.ok) throw new Error(`invalid recipe metadata: ${result.errors.join('; ')}`);
@@ -355,6 +363,37 @@ export function createLearningSpine({ paths }) {
     },
     readLesson(lessonId) { return read('lessons', lessonId); },
     listLessons() { return list('lessons'); },
+    findLessons({ site_id, promotion_state, privacy_review } = {}) {
+      return list('lessons').filter((lesson) => {
+        if (site_id && lesson.site_id !== site_id) return false;
+        if (promotion_state && lesson.promotion_state !== promotion_state) return false;
+        if (privacy_review && lesson.privacy_review !== privacy_review) return false;
+        return true;
+      });
+    },
+    promoteLesson({ lesson_id, recipe, validation_receipt_ids = [], owner, resolution } = {}) {
+      const lesson = read('lessons', lesson_id);
+      if (!lesson) throw new Error(`lesson not found: ${lesson_id}`);
+      if (lesson.privacy_review !== 'passed') throw new Error('lesson promotion requires privacy_review=passed');
+      if (lesson.promotion_state !== 'candidate') throw new Error('lesson promotion requires promotion_state=candidate');
+      if (!nonEmpty(owner)) throw new Error('lesson promotion requires an owner');
+      if (!recipe) throw new Error('lesson promotion requires a versioned recipe');
+      const recipeResult = validateRecipeMetadataRecord(recipe);
+      if (!recipeResult.ok) throw new Error(`invalid promoted recipe: ${recipeResult.errors.join('; ')}`);
+      const receipts = validation_receipt_ids.map((receiptId) => read('receipts', receiptId));
+      if (receipts.length !== validation_receipt_ids.length || receipts.some((receipt) => !receipt || receipt.status !== 'passed')) {
+        throw new Error('lesson promotion requires passed validation receipts');
+      }
+      const updatedLesson = createLessonRecord({
+        ...lesson,
+        promotion_state: 'approved',
+        recipe_candidate: `${recipe.id}@${recipe.version}`,
+        owner,
+        resolution: resolution || lesson.resolution || 'Promoted after privacy review and synthetic validation.',
+      });
+      write('recipes', `${recipe.id}@${recipe.version}`, recipe);
+      return write('lessons', updatedLesson.lesson_id, updatedLesson);
+    },
     writeReceipt(receipt) {
       const result = validateEvidenceReceipt(receipt);
       if (!result.ok) throw new Error(`invalid evidence receipt: ${result.errors.join('; ')}`);

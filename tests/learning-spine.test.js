@@ -127,5 +127,28 @@ describe('learning spine persistence', () => {
     const spine = createLearningSpine({ paths });
     expect(() => spine.readSiteManifest('../other')).toThrow(/path traversal|path escapes/);
   });
-});
 
+  it('queries the site catalog and promotes only a privacy-reviewed, validated lesson', () => {
+    const spine = createLearningSpine({ paths });
+    const manifest = createSiteManifest({
+      site_id: 'mbsh96reunion', name: 'MBSH Reunion', owner: 'team/platform', contract: 'design-contract@1',
+      recipes: ['event-cinema@1'], capability_class: 'application', environments: ['local', 'staging'],
+    });
+    const receipt = createEvidenceReceipt({ site_id: 'mbsh96reunion', kind: 'synthetic-recipe-validation', status: 'passed', artifact_refs: ['fixture/report.json'] });
+    const lesson = createLessonRecord({
+      site_id: 'mbsh96reunion', symptom: 'shared shell drifted', root_cause: 'pages owned navigation markup',
+      generalizable_pattern: 'mount one shared shell from a versioned recipe', evidence_refs: [receipt.receipt_id],
+      promotion_state: 'candidate', privacy_review: 'passed', recipe_candidate: 'event-cinema@1',
+    });
+    const recipe = createRecipeMetadata({
+      id: 'event-cinema', version: '1.0.0', name: 'Event Cinema', owner: 'team/platform', maturity: 'standard',
+      capabilities: ['shared-shell'], inputs: ['design-contract'], acceptance_tests: ['shell parity'], contract: 'design-contract@1',
+    });
+    spine.writeSiteManifest(manifest); spine.writeReceipt(receipt); spine.writeLesson(lesson);
+    expect(spine.listSites({ capability_class: 'application', environment: 'staging' })).toHaveLength(1);
+    const promoted = spine.promoteLesson({ lesson_id: lesson.lesson_id, recipe, validation_receipt_ids: [receipt.receipt_id], owner: 'team/platform' });
+    expect(promoted.promotion_state).toBe('approved');
+    expect(spine.readRecipeMetadata('event-cinema', '1.0.0').maturity).toBe('standard');
+    expect(spine.findLessons({ promotion_state: 'approved' })).toHaveLength(1);
+  });
+});
