@@ -15,3 +15,19 @@ The external push is a separate receipt-backed step. Site Studio must not say
 The local proof script intentionally leaves `remote` null and does not call
 GitHub, cPanel, DNS, Netlify, or any provider.
 
+## Required Git sequence
+
+The canonical sequence is:
+
+1. materialize the approved artifact and default operating files into a
+   per-site repository;
+2. initialize or open the declared branch (default `main`);
+3. `git add --all`, commit, and verify a clean worktree;
+4. verify the target is a declared site subdirectory, never the shared root;
+5. configure the explicit repository remote (or use an existing client remote);
+6. after owner approval, push that commit and retain the remote receipt.
+
+An invalid GitHub credential or absent remote is a real readiness failure. It
+must be reported as `remote_not_configured`/`auth_not_ready`; it is not repaired
+by silently switching providers or copying files outside Git. Local bare-repo
+tests prove the Git protocol only and are labeled local evidence.

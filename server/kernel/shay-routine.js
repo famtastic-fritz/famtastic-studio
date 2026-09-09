@@ -4,7 +4,6 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { execSync } from 'node:child_process';
 import { createPipeline } from './pipeline.js';
 import { createConversation } from './conversation.js';
 import { buildCard } from './cards.js';
@@ -14,6 +13,7 @@ import { createDna } from './dna.js';
 import { createMutation } from './mutation.js';
 import { createSpec } from './spec.js';
 import { slugify } from './pipeline-text.js';
+import { createGitDelivery } from './git-delivery.js';
 
 export function parsePromptToBrief(promptText) {
   const text = (promptText || '').trim();
@@ -333,24 +333,34 @@ export function createShayRoutine({ paths, researchOptions = {}, copyOptions = {
         managed_by: 'shay-routine',
       }, null, 2));
 
-      // CLAUDE.md orientation for agent surfaces
+      // Repository operating files are part of the materialized delivery, not
+      // an optional post-build convenience.
       fs.writeFileSync(path.join(siteDir, 'CLAUDE.md'), `# ${brief.business.name}\n\nSite created by Shay Routine for ${brief.business.location}.\n`);
-
-      // Initialize local git repository
-      const gitDir = path.join(siteDir, '.git');
-      if (!fs.existsSync(gitDir)) {
-        fs.writeFileSync(path.join(siteDir, '.gitignore'), '# FAMtastic Site Studio\nnode_modules/\n.DS_Store\n*.log\n', 'utf8');
-        try {
-          execSync(`git init -b main && git config user.name "FAMtastic Operator" && git config user.email "operator@famtastic.dev" && git add -A && git commit -m "Initial commit: ${brief.business.name.replace(/"/g, '')}"`, {
-            cwd: siteDir,
-            stdio: 'ignore',
-          });
-        } catch {
-          // Best effort git init
-        }
-      }
-    } catch {
-      // Best-effort context write
+      fs.writeFileSync(path.join(siteDir, 'AGENTS.md'), '# Site operating contract\n\nPreserve the approved design contract and run the local parity gates before any staging or production handoff.\n', 'utf8');
+      fs.writeFileSync(path.join(siteDir, 'design.md'), `# ${brief.business.name} design doctrine\n\nThis site is materialized from the Site Studio Next contract. Future pages and edits must preserve the approved tokens, typography, responsive rules, and component recipe.\n`, 'utf8');
+      fs.writeFileSync(path.join(siteDir, '.gitignore'), '# FAMtastic Site Studio\nnode_modules/\n.DS_Store\n*.log\n.env\n.env.*\n!.env.example\n', 'utf8');
+      const hostingRoot = '/home/nineoo/public_html/famtasticinc-landing';
+      fs.mkdirSync(path.join(siteDir, '.famtastic'), { recursive: true });
+      fs.writeFileSync(path.join(siteDir, '.famtastic', 'site-manifest.json'), JSON.stringify({
+        schema_version: 1,
+        site_id,
+        provider: 'famtasticinc',
+        target_path: path.posix.join(hostingRoot, site_id),
+        source: 'shay-routine-local-build',
+      }, null, 2) + '\n', 'utf8');
+      // This is the canonical Git seam. It creates a real commit and refuses
+      // the shared hosting root; it never invents a remote or claims a push.
+      createGitDelivery().prepare({
+        repository_path: siteDir,
+        site_id,
+        hosting_root: hostingRoot,
+        target_path: path.posix.join(hostingRoot, site_id),
+        message: `Initial commit: ${brief.business.name.replace(/"/g, '')}`,
+      });
+    } catch (error) {
+      // A site without its required Git commit is not a completed build.
+      // Surface the failure instead of returning a misleading success card.
+      throw Object.assign(new Error(`site repository delivery failed: ${error.message}`), { code: error.code || 'git_delivery_failed', cause: error });
     }
 
     // 5. Append Shay's completion result card
