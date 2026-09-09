@@ -10,6 +10,7 @@ import crypto from 'node:crypto';
 
 export const FAMTASTICINC_ADAPTER_SCHEMA_VERSION = 1;
 export const FAMTASTICINC_PROVIDER = 'famtasticinc';
+export const STAGING_RECEIPT_SCHEMA = 'famtastic.site-studio.staging-receipt.v1';
 const FORBIDDEN_PROVIDERS = new Set(['netlify', 'vercel', 'cloudflare']);
 
 function fail(code, message, details = {}) {
@@ -141,4 +142,50 @@ export function createFamtasticIncAdapter({ env = process.env, transport = null,
   }
 
   return { preflight, plan, dispatch };
+}
+
+/**
+ * Convert a real FAMtastic Inc dispatch result into Drupal's account-bound
+ * pre-payment staging receipt. Dry-run results are intentionally rejected:
+ * checkout must never open from a simulated deployment.
+ */
+export function createStagingReceipt({
+  dispatch_result,
+  website_request_id,
+  project_id = null,
+  packet_id,
+  idempotency_key,
+  artifact_sha256,
+  staging_url,
+  qa,
+  event_id,
+  completed_at = new Date().toISOString(),
+} = {}) {
+  if (!dispatch_result || dispatch_result.status !== 'dispatched' || dispatch_result.dispatched !== true || !text(dispatch_result.receipt_id)) {
+    throw fail('staging_dispatch_required', 'a real FAMtastic Inc dispatch receipt is required before creating a staging receipt');
+  }
+  if (!Number.isInteger(Number(website_request_id)) || Number(website_request_id) < 1) throw fail('website_request_required', 'website_request_id is required');
+  if (!text(packet_id) || !text(idempotency_key) || !text(event_id)) throw fail('staging_identity_required', 'packet, idempotency, and event identities are required');
+  if (!/^[a-f0-9]{64}$/.test(String(artifact_sha256 || ''))) throw fail('artifact_digest_required', 'artifact_sha256 must be a SHA-256 digest');
+  if (!text(staging_url) || !staging_url.startsWith('https://')) throw fail('staging_url_required', 'an HTTPS staging URL is required');
+  if (!Array.isArray(qa) || qa.length === 0 || qa.some((check) => !check || check.status !== 'passed' || !text(check.name))) {
+    throw fail('staging_qa_required', 'every staging QA check must be named and passed');
+  }
+  return {
+    schema: STAGING_RECEIPT_SCHEMA,
+    status: 'deployed',
+    event_id,
+    packet_id,
+    idempotency_key,
+    website_request_id: Number(website_request_id),
+    project_id: project_id === null ? null : Number(project_id),
+    staging_url,
+    repository: dispatch_result.repository,
+    target_path: dispatch_result.target_path,
+    remote_subdirectory: dispatch_result.remote_subdirectory,
+    transport_receipt_id: dispatch_result.receipt_id,
+    artifact_sha256,
+    qa,
+    completed_at,
+  };
 }

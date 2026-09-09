@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createFamtasticIncAdapter } from '../server/kernel/famtasticinc-adapter.js';
+import { createFamtasticIncAdapter, createStagingReceipt } from '../server/kernel/famtasticinc-adapter.js';
 
 const base = {
   site_id: 'shay-tighten-up-your-locs',
@@ -71,5 +71,35 @@ describe('FAMtastic Inc delivery boundary', () => {
     });
     const plan = adapter.plan(base);
     await expect(adapter.dispatch(plan, { dry_run: false })).rejects.toMatchObject({ code: 'external_receipt_invalid' });
+  });
+
+  it('creates a Drupal staging receipt only from a real dispatch receipt', async () => {
+    const adapter = createFamtasticIncAdapter({
+      env: { FAMTASTICINC_SFTP_HOST: 'host', FAMTASTICINC_SFTP_USER: 'user', FAMTASTICINC_SFTP_KEY: 'key' },
+      transport: async () => ({ provider: 'famtasticinc', receipt_id: 'finc-real-1', callback_status: 'accepted' }),
+    });
+    const plan = adapter.plan(base);
+    const dispatched = await adapter.dispatch(plan, { dry_run: false });
+    const receipt = createStagingReceipt({
+      dispatch_result: dispatched,
+      website_request_id: 12,
+      project_id: 7,
+      packet_id: 'packet-12',
+      idempotency_key: 'packet-12-staging',
+      artifact_sha256: 'a'.repeat(64),
+      staging_url: 'https://shay-tighten-up-your-locs.famtasticinc.com',
+      qa: [{ name: 'browser', status: 'passed' }],
+      event_id: 'staging-event-12',
+    });
+    expect(receipt.schema).toBe('famtastic.site-studio.staging-receipt.v1');
+    expect(receipt.status).toBe('deployed');
+    expect(receipt.transport_receipt_id).toBe('finc-real-1');
+    expect(() => createStagingReceipt({
+      dispatch_result: { ...dispatched, status: 'dry_run', dispatched: false },
+      website_request_id: 12,
+      packet_id: 'packet-12', idempotency_key: 'packet-12-staging',
+      artifact_sha256: 'a'.repeat(64), staging_url: 'https://example.test',
+      qa: [{ name: 'browser', status: 'passed' }], event_id: 'staging-event-12',
+    })).toThrow(/real FAMtastic Inc dispatch receipt/i);
   });
 });
