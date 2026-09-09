@@ -51,7 +51,7 @@ function request(body, signature = true) {
 beforeEach(async () => {
   root = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-staging-'));
   process.env.STUDIO_DATA_ROOT = root;
-  process.env.SITE_STUDIO_DISPATCH_SECRET = secret;
+  process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET = secret;
   const paths = createPaths();
   app = createApp();
   const events = createEvents({ paths });
@@ -62,7 +62,7 @@ beforeEach(async () => {
 
 afterEach(() => {
   delete process.env.STUDIO_DATA_ROOT;
-  delete process.env.SITE_STUDIO_DISPATCH_SECRET;
+  delete process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET;
   fs.rmSync(root, { recursive: true, force: true });
 });
 

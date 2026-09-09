@@ -55,7 +55,7 @@ export default {
     app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
       try {
         const raw = await readJsonBody(req);
-        const secret = process.env.SITE_STUDIO_DISPATCH_SECRET || '';
+        const secret = process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET || '';
         const provided = req.headers?.['x-famtastic-signature'] || '';
         const body = JSON.stringify(raw);
         const expected = secret ? `sha256=${crypto.createHmac('sha256', secret).update(body).digest('hex')}` : '';
