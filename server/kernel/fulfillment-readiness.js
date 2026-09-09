@@ -10,6 +10,7 @@
 import crypto from 'node:crypto';
 import { prepareSelectedBuildPacket, packetToBuildBrief } from './selected-build-adapter.js';
 import { createFamtasticIncAdapter } from './famtasticinc-adapter.js';
+import { evaluateSharedQualityGates } from './shared-quality-gates.js';
 
 export const FULFILLMENT_READINESS_SCHEMA_VERSION = 1;
 
@@ -55,6 +56,10 @@ export function prepareFulfillmentReadiness({
     remote_subdirectory: target.remote_subdirectory || site_id,
     hosting_class: target.hosting_class || 'shared',
   });
+  const targetEvidence = {
+    ...deployment,
+    root_target_rejected: deployment.target_path !== deployment.target_root,
+  };
   const external_ready = deployment.preflight.network_dispatch_allowed && Boolean(deployment.repository.repo_url);
   return {
     schema_version: FULFILLMENT_READINESS_SCHEMA_VERSION,
@@ -66,6 +71,7 @@ export function prepareFulfillmentReadiness({
     packet: prepared.packet,
     build_brief: packetToBuildBrief(prepared.packet),
     deployment,
+    quality_gates: evaluateSharedQualityGates({ target: targetEvidence }),
     gates: {
       selected: true,
       paid: true,
@@ -113,5 +119,11 @@ export async function runLocalBuildFromReadiness({ readiness, pipeline, initiato
       pages: result.composed?.pages?.length || 0,
       deploy_authorized: false,
     },
+    quality_gates: evaluateSharedQualityGates({
+      artifact_parity: null,
+      quality_gate: null,
+      behavior: { passed: result.verify.passed, receipt_id: result.run_id },
+      target: { ...readiness.deployment, root_target_rejected: readiness.deployment.target_path !== readiness.deployment.target_root },
+    }),
   };
 }

@@ -48,6 +48,8 @@ describe('post-payment fulfillment readiness', () => {
     expect(result.gates.remote_push).toBe(false);
     expect(result.gates.cpanel_upload).toBe(false);
     expect(result.deployment.target_path).toContain('/synthetic-paid-site');
+    expect(result.quality_gates.status).toBe('not_proven');
+    expect(result.quality_gates.missing).toContain('artifact_parity');
   });
 
   it('can describe the configurable branch, repository, and subdirectory without switching providers', () => {
@@ -74,6 +76,8 @@ describe('post-payment fulfillment readiness', () => {
       expect(built.status).toBe('local_build_verified');
       expect(built.local_build.verified).toBe(true);
       expect(built.packet.boundary.deploy_authorized).toBe(false);
+      expect(built.quality_gates.status).toBe('not_proven');
+      expect(built.quality_gates.missing).toContain('artifact_parity');
       expect(fs.existsSync(paths.within('sites', 'synthetic-paid-site', 'index.html'))).toBe(true);
     } finally {
       if (previous === undefined) delete process.env.STUDIO_DATA_ROOT;
