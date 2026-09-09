@@ -58,6 +58,7 @@ export function prepareFulfillmentReadiness({
   const external_ready = deployment.preflight.network_dispatch_allowed && Boolean(deployment.repository.repo_url);
   return {
     schema_version: FULFILLMENT_READINESS_SCHEMA_VERSION,
+    site_id,
     status: external_ready ? 'ready_for_external_handoff' : 'ready_for_local_build',
     external_ready,
     side_effects_performed: false,
@@ -79,3 +80,38 @@ export function prepareFulfillmentReadiness({
   };
 }
 
+/**
+ * Execute only the local build leg of a readiness plan. The pipeline is
+ * injected so this module cannot accidentally acquire a network transport or
+ * a production deploy capability. The result is a local evidence record; the
+ * FAMtastic Inc plan remains pending until its own receipt-backed operation is
+ * explicitly authorized.
+ */
+export async function runLocalBuildFromReadiness({ readiness, pipeline, initiator = 'fulfillment-readiness-local' } = {}) {
+  if (!readiness || readiness.schema_version !== FULFILLMENT_READINESS_SCHEMA_VERSION) throw fail('readiness_invalid', 'a current fulfillment readiness plan is required');
+  if (!pipeline || typeof pipeline.run !== 'function') throw fail('pipeline_required', 'a local pipeline is required');
+  if (readiness.packet?.boundary?.external_mutation_allowed === true || readiness.packet?.boundary?.deploy_authorized === true) {
+    throw fail('local_boundary_invalid', 'local readiness must keep external mutation and deploy authorization false');
+  }
+  const result = await pipeline.run({
+    site_id: readiness.site_id,
+    brief: readiness.build_brief,
+    initiator,
+    composer: 'artifact',
+  });
+  if (!result || result.outcome !== 'success' || result.verify?.passed !== true) {
+    throw fail('local_build_failed', `local pipeline did not return a verified build (${result?.outcome || 'no-result'}${result?.failed_stage ? ` at ${result.failed_stage}` : ''}: ${result?.error?.message || 'no error detail'})`, { result });
+  }
+  return {
+    ...readiness,
+    status: 'local_build_verified',
+    side_effects_performed: false,
+    local_build: {
+      outcome: result.outcome,
+      run_id: result.run_id,
+      verified: result.verify.passed,
+      pages: result.composed?.pages?.length || 0,
+      deploy_authorized: false,
+    },
+  };
+}

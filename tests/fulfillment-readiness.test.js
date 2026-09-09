@@ -1,6 +1,18 @@
 import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { createArtifactBundle } from '../server/kernel/artifact-bundle.js';
-import { prepareFulfillmentReadiness } from '../server/kernel/fulfillment-readiness.js';
+import { createPaths } from '../server/kernel/paths.js';
+import { createJournal } from '../server/kernel/journal.js';
+import { createEvents } from '../server/kernel/events.js';
+import { createDna } from '../server/kernel/dna.js';
+import { createMutation } from '../server/kernel/mutation.js';
+import { createSpec } from '../server/kernel/spec.js';
+import { createPipeline } from '../server/kernel/pipeline.js';
+import { prepareFulfillmentReadiness, runLocalBuildFromReadiness } from '../server/kernel/fulfillment-readiness.js';
+import { stubResearchOptions } from './research-stub.mjs';
+import { makeCopyStub } from './copy-stub.mjs';
 
 const contract = {
   schema_version: 1,
@@ -12,7 +24,7 @@ const contract = {
   asset_policy: { preserve: true, rights_safe_only: true },
   evolution: { preserve_tokens: true, preserve_typography: true, additions_must_use_recipe: true, parity_required: true },
 };
-const artifact = createArtifactBundle([{ path: 'index.html', contents: '<!doctype html><html><body>fixture</body></html>' }]);
+const artifact = createArtifactBundle([{ path: 'index.html', contents: '<!doctype html><html lang="en"><head><title>Fixture</title></head><body><h1>Fixture</h1></body></html>' }]);
 const common = {
   site_id: 'synthetic-paid-site',
   source: { website_request_public_id: 'req-1', proof_campaign_id: 'proof-1', campaign_id: 'campaign-1', customer_id: 'cust-1', current_proof_hash: 'proof-hash', origin: 'test' },
@@ -44,5 +56,29 @@ describe('post-payment fulfillment readiness', () => {
     expect(result.deployment.remote_subdirectory).toBe('customers/synthetic-paid-site');
     expect(result.deployment.hosting_class).toBe('vps');
   });
-});
 
+  it('runs the paid packet through the real local pipeline while keeping external deploy denied', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'fulfillment-readiness-pipeline-'));
+    const previous = process.env.STUDIO_DATA_ROOT;
+    process.env.STUDIO_DATA_ROOT = root;
+    try {
+      const paths = createPaths();
+      const journal = createJournal({ paths });
+      const events = createEvents({ paths });
+      const dna = createDna({ paths });
+      const mutation = createMutation({ paths, journal, events });
+      const spec = createSpec({ paths, mutation });
+      const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation, researchOptions: stubResearchOptions, copyOptions: makeCopyStub() });
+      const readiness = prepareFulfillmentReadiness(common);
+      const built = await runLocalBuildFromReadiness({ readiness, pipeline, initiator: 'synthetic-paid-handoff-test' });
+      expect(built.status).toBe('local_build_verified');
+      expect(built.local_build.verified).toBe(true);
+      expect(built.packet.boundary.deploy_authorized).toBe(false);
+      expect(fs.existsSync(paths.within('sites', 'synthetic-paid-site', 'index.html'))).toBe(true);
+    } finally {
+      if (previous === undefined) delete process.env.STUDIO_DATA_ROOT;
+      else process.env.STUDIO_DATA_ROOT = previous;
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
