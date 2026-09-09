@@ -15,6 +15,7 @@ import {
   createHandoffReceiptStore,
   packetToBuildBrief,
   prepareSelectedBuildPacket,
+  prepareStagingBuildPacket,
 } from '../server/kernel/selected-build-adapter.js';
 import { createArtifactBundle } from '../server/kernel/artifact-bundle.js';
 
@@ -130,6 +131,34 @@ describe('selected-build adapter: fail-closed source gate', () => {
   it('refuses an unpaid selection before producing a packet', () => {
     expect(() => makePacket({ payment: paymentSnapshot({ payment_status: 'pending' }) }))
       .toThrow(/payment_required/);
+  });
+
+  it('allows an explicit unpaid staging lock-in without weakening the paid path', () => {
+    const packet = prepareStagingBuildPacket({
+      source: sourceSnapshot(),
+      customer: { id: 'cust_test_12', name: 'Synthetic Studio', email: 'test@example.invalid' },
+      selection: selectionSnapshot(),
+      spec: { business: { name: 'Synthetic Studio' }, site_needs: { pages: ['home'] } },
+      brand: {
+        palette: ['#161B2E'],
+        design_contract: {
+          schema_version: 1,
+          tokens: { bg: '#0a0a0a', fg: '#eaeaea', accent: '#7cfc00', muted: '#888888' },
+          typography: { body: 'Inter', headings: 'Space Grotesk' },
+          component_recipe: ['proof-shell'],
+          layout: { max_width: '72rem', gutter: '1rem', grid: '12-column' },
+          responsive: { mobile: 'stack', tablet: 'two-column', desktop: 'max-width' },
+          asset_policy: { preserve: true, rights_safe_only: true },
+          evolution: { preserve_tokens: true, preserve_typography: true, additions_must_use_recipe: true, parity_required: true },
+        },
+      },
+      artifact_bundle: createArtifactBundle([{ path: 'index.html', contents: '<h1>Staging</h1>' }]),
+      research_packet_ref: { packet_id: 'rp_test_12', brief_hash: 'brief-hash-test', source_adapter: 'synthetic-fixture' },
+      origin: 'test',
+    }).packet;
+    expect(packet.lifecycle_stage).toBe('staging');
+    expect(packet.commerce.payment_status).toBe('pending');
+    expect(packet.boundary.deploy_authorized).toBe(false);
   });
 
   it('refuses a selection whose approved proof is no longer current', () => {

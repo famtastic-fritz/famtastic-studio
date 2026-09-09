@@ -31,7 +31,7 @@ export const RECEIPT_STATUSES = ['passed', 'failed', 'pending', 'skipped'];
 // not a record that appears valid but can never be queried or aggregated.
 export const LIFECYCLE_EVENT_TYPES = [
   'request.received', 'research.completed', 'proof.generated', 'proof.revised',
-  'proof.selected', 'payment.confirmed', 'handoff.created', 'build.started',
+  'proof.selected', 'staging.locked', 'payment.confirmed', 'handoff.created', 'build.started',
   'build.succeeded', 'build.failed', 'parity.passed', 'parity.failed',
   'qa.completed', 'staging.deployed', 'launch.completed', 'rollback.completed',
   'incident.opened', 'lesson.proposed', 'recipe.promoted',

@@ -39,7 +39,7 @@ function required(value, label, errors) {
   if (!text(value)) errors.push(`${label}: required`);
 }
 
-function checkSource(source, customer, selection, payment, research) {
+function checkSource(source, customer, selection, payment, research, lifecycle_stage = 'production') {
   const errors = [];
   if (!isObject(source)) {
     errors.push('source: required authoritative FAMtastic snapshot');
@@ -71,13 +71,19 @@ function checkSource(source, customer, selection, payment, research) {
   }
 
   if (!isObject(payment)) {
-    errors.push('commerce: required paid-order snapshot');
+    errors.push(`${lifecycle_stage === 'staging' ? 'staging_payment' : 'commerce'}: required payment-state snapshot`);
   } else {
-    for (const field of ['order_id', 'payment_event_id', 'package_sku', 'terms_version', 'terms_acceptance_hash']) {
-      required(payment[field], `commerce.${field}`, errors);
-    }
-    if (payment.payment_status !== 'paid') {
-      errors.push('payment_required: commerce.payment_status must equal paid');
+    if (lifecycle_stage === 'staging') {
+      if (!['pending', 'unpaid'].includes(payment.payment_status)) {
+        errors.push('staging_payment: payment_status must be pending or unpaid before lock-in');
+      }
+    } else {
+      for (const field of ['order_id', 'payment_event_id', 'package_sku', 'terms_version', 'terms_acceptance_hash']) {
+        required(payment[field], `commerce.${field}`, errors);
+      }
+      if (payment.payment_status !== 'paid') {
+        errors.push('payment_required: commerce.payment_status must equal paid');
+      }
     }
   }
 
@@ -114,6 +120,7 @@ export function prepareSelectedBuildPacket({
   origin = 'test',
   boundary = { external_mutation_allowed: false, deploy_authorized: false },
   callback = null,
+  lifecycle_stage = 'production',
   created = new Date().toISOString(),
 } = {}) {
   const errors = [];
@@ -123,7 +130,8 @@ export function prepareSelectedBuildPacket({
   if (!isObject(brand)) errors.push('brand: required');
   errors.push(...checkDesignContract(brand));
   errors.push(...(artifact_bundle ? validateArtifactBundle(artifact_bundle) : ['artifact_bundle: required approved proof artifact bundle']));
-  errors.push(...checkSource(source, customer, selection, payment, research_packet_ref));
+  if (!['staging', 'production'].includes(lifecycle_stage)) errors.push('lifecycle_stage: must be staging or production');
+  errors.push(...checkSource(source, customer, selection, payment, research_packet_ref, lifecycle_stage));
   if (errors.length) throw fail('handoff_not_ready', errors.join('; '), errors);
 
   const packet = createSelectedBuildPacket({
@@ -148,6 +156,7 @@ export function prepareSelectedBuildPacket({
     source: { ...source },
     commerce: { ...payment },
     callback: callback ? { ...callback } : null,
+    lifecycle_stage,
     adapter: {
       schema_version: SELECTED_BUILD_ADAPTER_SCHEMA_VERSION,
       idempotency_key: `selected-build:${source.website_request_public_id}:${selection.proof_hash}`,
@@ -158,6 +167,22 @@ export function prepareSelectedBuildPacket({
   const accepted = acceptSelectedBuildPacket(packet);
   if (!accepted.accepted) throw fail('packet_invalid', accepted.errors.join('; '), accepted.errors);
   return { packet, accepted, idempotency_key: packet.adapter.idempotency_key };
+}
+
+/**
+ * Lock an accepted proof into a staging build before payment.
+ *
+ * This is intentionally separate from the paid selected-build path. It may
+ * create a local artifact, per-site repository, and staging plan, but it
+ * cannot authorize production or claim that payment exists.
+ */
+export function prepareStagingBuildPacket(fields = {}) {
+  return prepareSelectedBuildPacket({
+    ...fields,
+    payment: fields.payment || { payment_status: 'pending' },
+    lifecycle_stage: 'staging',
+    boundary: { external_mutation_allowed: false, deploy_authorized: false },
+  });
 }
 
 /**

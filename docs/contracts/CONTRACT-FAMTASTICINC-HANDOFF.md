@@ -33,11 +33,24 @@ explicitly injected transport, a durable external receipt, and a callback or
 polling proof from FAMtastic Inc. The default path refuses rather than
 claiming that a local copy reached production.
 
-For Shay, the correct order is:
+## Standard customer lifecycle
 
-1. selected proof and payment remain separate records;
-2. payment confirmation creates the authoritative selected-build packet;
-3. Site Studio Next builds and verifies locally from that packet;
-4. owner reviews a FAMtastic Inc staging receipt and preview;
-5. only after approval does an external FAMtastic Inc transport dispatch; and
-6. domain purchase and DNS point at the confirmed FAMtastic Inc location.
+The normal path is deliberately **staging before payment**:
+
+1. FAMtastic records the customer's accepted proof direction.
+2. Lock-in creates the standalone site repository, immutable manifest, and
+   FAMtastic Inc staging subdirectory/subdomain. This is a working preview,
+   not production and not a payment receipt.
+3. The customer/owner reviews the staging URL and records any final QA notes.
+4. Verified payment promotes the locked staging artifact into the paid
+   fulfillment lane.
+5. Production cutover adds the customer's real domain, DNS, SSL, and email,
+   then records a launch receipt.
+
+The same repository and artifact move through the lifecycle; the system must
+not rebuild a second, visually different site after payment. A higher-tier
+hosting target or an existing client repository is selected through the
+configuration contract, not by changing the lifecycle order.
+
+Shay's build is a recorded pilot exception because it was built before this
+order was formalized. It must not become the template for future customers.

@@ -1,6 +1,10 @@
-# Git delivery contract v1
+# Git delivery contract v2
 
-The approved artifact is first materialized into a per-site Git repository.
+The accepted proof is first locked into a per-site Git repository and a
+FAMtastic Inc staging target. Payment promotes that same repository and
+artifact into production; it must not cause a second visual rebuild.
+
+The approved artifact is materialized into a per-site Git repository.
 The local proof must show:
 
 1. a real `main` branch;
@@ -19,13 +23,15 @@ GitHub, cPanel, DNS, Netlify, or any provider.
 
 The canonical sequence is:
 
-1. materialize the approved artifact and default operating files into a
+1. materialize the accepted artifact and default operating files into a
    per-site repository;
 2. initialize or open the declared branch (default `main`);
 3. `git add --all`, commit, and verify a clean worktree;
 4. verify the target is a declared site subdirectory, never the shared root;
 5. configure the explicit repository remote (or use an existing client remote);
-6. after owner approval, push that commit and retain the remote receipt.
+6. publish the staging target and retain its receipt for customer/owner review;
+7. after verified payment, promote the same commit/artifact to production and
+   retain the production receipt.
 
 An invalid GitHub credential or absent remote is a real readiness failure. It
 must be reported as `remote_not_configured`/`auth_not_ready`; it is not repaired

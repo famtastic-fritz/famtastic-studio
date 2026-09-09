@@ -31,6 +31,18 @@ site catalog is queryable by capability, environment, or recipe. Lesson
 promotion refuses to proceed until privacy review passes, validation receipts
 are passed, and an owner is named.
 
+The lifecycle order is part of the shared doctrine:
+
+```text
+proof.selected -> staging.locked -> staging.deployed -> payment.confirmed
+-> fulfillment.started -> launch.completed
+```
+
+`staging.locked` means the selected direction has been materialized into its
+own repository and target subdirectory/subdomain. It does not mean paid,
+public production, or domain ownership. `payment.confirmed` is the promotion
+gate; no lifecycle event may infer it from a staging receipt.
+
 All records are schema-versioned and fail closed. Identifiers and version
 references are bounded so a typo cannot silently create an unqueryable record.
 Evidence is referenced by path or receipt id; customer uploads, secrets, bearer

@@ -10,7 +10,7 @@ import { createDna } from '../server/kernel/dna.js';
 import { createMutation } from '../server/kernel/mutation.js';
 import { createSpec } from '../server/kernel/spec.js';
 import { createPipeline } from '../server/kernel/pipeline.js';
-import { prepareFulfillmentReadiness, runLocalBuildFromReadiness } from '../server/kernel/fulfillment-readiness.js';
+import { prepareFulfillmentReadiness, prepareStagingLockIn, runLocalBuildFromReadiness } from '../server/kernel/fulfillment-readiness.js';
 import { stubResearchOptions } from './research-stub.mjs';
 import { makeCopyStub } from './copy-stub.mjs';
 
@@ -84,5 +84,18 @@ describe('post-payment fulfillment readiness', () => {
       else process.env.STUDIO_DATA_ROOT = previous;
       fs.rmSync(root, { recursive: true, force: true });
     }
+  });
+});
+
+describe('pre-payment staging lock-in', () => {
+  it('creates a per-site staging plan without claiming payment or production', () => {
+    const result = prepareStagingLockIn({ ...common, payment: undefined });
+    expect(result.status).toBe('ready_for_local_staging');
+    expect(result.packet.lifecycle_stage).toBe('staging');
+    expect(result.packet.commerce.payment_status).toBe('pending');
+    expect(result.gates.staging_locked).toBe(true);
+    expect(result.gates.paid).toBe(false);
+    expect(result.packet.boundary.deploy_authorized).toBe(false);
+    expect(result.deployment.environment).toBe('staging');
   });
 });
