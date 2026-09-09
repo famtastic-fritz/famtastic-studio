@@ -31,8 +31,14 @@ regenerate it. Sites carry `capability_class` and the console shows it.
 cd ~/Development/FAMtastic/site-studio-next && npm run gates
 ```
 
-Expect: lint OK, **529 tests / 36 files**, smoke 11/11, G4-0 PASS, G4-1 PASS,
+Expect: lint OK, **919 tests / 75 files**, smoke 11/11, G4-0 PASS, G4-1 PASS,
 exit 0. Anything less, stop and read before changing anything.
+
+The selected-proof staging ingress is `POST /api/pipeline/staging/accept`.
+It accepts only an HMAC-signed, immutable multi-file artifact manifest bound to
+one selected direction, verifies the exact request bytes, and returns only an
+`accepted_waiting_callback` receipt. Acceptance is not a build or deployment
+claim; the durable deployed-staging callback remains a separate evidence gate.
 
 ## The rules that are not negotiable
 

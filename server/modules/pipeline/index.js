@@ -15,20 +15,24 @@ function errorResponse(error) {
   return { status, body };
 }
 
-function readJsonBody(req) {
+function readJsonEnvelope(req) {
   return new Promise((resolve, reject) => {
     let data = '';
     req.on('data', (chunk) => { data += chunk; });
     req.on('end', () => {
-      if (!data) return resolve({});
+      if (!data) return resolve({ raw: '', body: {} });
       try {
-        resolve(JSON.parse(data));
+        resolve({ raw: data, body: JSON.parse(data) });
       } catch {
         reject(Object.assign(new Error('request body is not valid JSON'), { statusCode: 400, code: 'invalid_body' }));
       }
     });
     req.on('error', reject);
   });
+}
+
+async function readJsonBody(req) {
+  return (await readJsonEnvelope(req)).body;
 }
 
 function stagingPacketErrors(packet) {
@@ -39,9 +43,43 @@ function stagingPacketErrors(packet) {
   }
   if (packet?.build_class !== 'prepayment_selected_direction_staging') errors.push('packet.build_class');
   if (!Array.isArray(packet?.selected_direction_ids) || packet.selected_direction_ids.length !== 1) errors.push('packet.selected_direction_ids');
-  if (!Array.isArray(packet?.artifacts) || packet.artifacts.length !== 1) errors.push('packet.artifacts');
+  const artifacts = Array.isArray(packet?.artifacts) ? packet.artifacts : [];
+  if (!artifacts.length) errors.push('packet.artifacts');
+  const paths = new Set();
+  for (const artifact of artifacts) {
+    const valid = artifact
+      && ['source_material', 'selected_preview', 'render_evidence'].includes(artifact.role)
+      && typeof artifact.path === 'string'
+      && artifact.path.length > 0
+      && !artifact.path.startsWith('/')
+      && !artifact.path.includes('..')
+      && /^[a-f0-9]{64}$/.test(artifact.sha256 || '')
+      && Number.isInteger(artifact.bytes)
+      && artifact.bytes >= 0
+      && !paths.has(artifact.path);
+    if (!valid) errors.push('packet.artifacts');
+    if (artifact?.path) paths.add(artifact.path);
+  }
+  const canonicalManifest = artifacts
+    .map((artifact) => ({ bytes: artifact.bytes, path: artifact.path, role: artifact.role, sha256: artifact.sha256 }))
+    .sort((left, right) => left.path.localeCompare(right.path));
+  const manifestDigest = crypto.createHash('sha256').update(JSON.stringify(canonicalManifest)).digest('hex');
+  if (!/^[a-f0-9]{64}$/.test(packet?.artifact_manifest_sha256 || '') || packet?.artifact_manifest_sha256 !== manifestDigest) {
+    errors.push('packet.artifact_manifest_sha256');
+  }
+  const selected = Array.isArray(packet?.selected_artifacts) ? packet.selected_artifacts : [];
+  if (selected.length !== 1) {
+    errors.push('packet.selected_artifacts');
+  } else {
+    const bound = selected[0];
+    const match = artifacts.filter((artifact) => artifact.role === 'selected_preview'
+      && artifact.path === bound?.source_artifact_path
+      && artifact.sha256 === bound?.source_artifact_sha256
+      && artifact.bytes === bound?.source_artifact_bytes);
+    if (bound?.direction_id !== packet.selected_direction_ids?.[0] || match.length !== 1) errors.push('packet.selected_artifacts');
+  }
   if (packet?.boundary?.deploy_authorized === true) errors.push('packet.boundary.deploy_authorized');
-  return errors;
+  return [...new Set(errors)];
 }
 
 export default {
@@ -54,15 +92,14 @@ export default {
 
     app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
       try {
-        const raw = await readJsonBody(req);
+        const envelope = await readJsonEnvelope(req);
         const secret = process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET || '';
         const provided = req.headers?.['x-famtastic-signature'] || '';
-        const body = JSON.stringify(raw);
-        const expected = secret ? `sha256=${crypto.createHmac('sha256', secret).update(body).digest('hex')}` : '';
+        const expected = secret ? `sha256=${crypto.createHmac('sha256', secret).update(envelope.raw).digest('hex')}` : '';
         if (!secret || typeof provided !== 'string' || Buffer.byteLength(expected) !== Buffer.byteLength(provided) || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided))) {
           return { status: 401, body: { error: 'dispatch_signature_invalid' } };
         }
-        const packet = raw?.packet;
+        const packet = envelope.body?.packet;
         const errors = stagingPacketErrors(packet);
         if (errors.length) return { status: 422, body: { accepted: false, error: 'staging_packet_rejected', errors } };
         const siteId = `project-${packet.project_id}`;

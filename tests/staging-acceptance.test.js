@@ -16,6 +16,13 @@ let app;
 const secret = 'hermetic-staging-secret';
 
 function packet(overrides = {}) {
+  const artifacts = [
+    { role: 'selected_preview', path: 'proofs/7/a/index.html', sha256: 'a'.repeat(64), bytes: 1200 },
+    { role: 'source_material', path: 'proofs/7/a/assets/hero.webp', sha256: 'b'.repeat(64), bytes: 2400 },
+  ];
+  const canonical = artifacts
+    .map((artifact) => ({ bytes: artifact.bytes, path: artifact.path, role: artifact.role, sha256: artifact.sha256 }))
+    .sort((left, right) => left.path.localeCompare(right.path));
   return {
     schema: 'famtastic.site-studio.build-packet.v1',
     packet_id: 'staging-packet-test-1',
@@ -24,7 +31,9 @@ function packet(overrides = {}) {
     project_id: '42',
     build_class: 'prepayment_selected_direction_staging',
     selected_direction_ids: ['direction-a'],
-    artifacts: [{ direction_id: 'direction-a', variant_id: 7, source_path: 'proofs/7/a/index.html' }],
+    artifacts,
+    artifact_manifest_sha256: crypto.createHash('sha256').update(JSON.stringify(canonical)).digest('hex'),
+    selected_artifacts: [{ direction_id: 'direction-a', source_artifact_path: artifacts[0].path, source_artifact_sha256: artifacts[0].sha256, source_artifact_bytes: artifacts[0].bytes }],
     ...overrides,
   };
 }
@@ -82,6 +91,7 @@ describe('FAMtastic selected staging acceptance boundary', () => {
 
   it('rejects tampered packet content and missing authentication', async () => {
     expect((await request({ packet: packet({ build_class: 'production' }) })).status).toBe(422);
+    expect((await request({ packet: packet({ artifact_manifest_sha256: '0'.repeat(64) }) })).status).toBe(422);
     expect((await request({ packet: packet() }, false)).status).toBe(401);
   });
 });
