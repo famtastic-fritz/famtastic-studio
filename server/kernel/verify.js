@@ -42,6 +42,19 @@ function normalizeInternalPath(href) {
   return clean.startsWith('/') ? clean.slice(1) : clean;
 }
 
+// Relative links are resolved from the page that contains them, not from the
+// site root. A proof tree can legitimately link from `owner/index.html` to
+// `../shay-growth-plan.md` or from `proofs/index.html` to `care-rhythm/`.
+// Checking every href against the root made valid multi-page artifacts look
+// broken and blocked exact FAMtastic-to-Studio parity.
+function resolveInternalPath(pagePath, href) {
+  const normalized = normalizeInternalPath(href);
+  if (!normalized) return normalized;
+  const base = path.posix.dirname(pagePath);
+  const resolved = path.posix.normalize(path.posix.join(base, normalized));
+  return resolved === '.' ? '' : resolved.replace(/^\.\//, '');
+}
+
 /**
  * verifySite({ siteDir, pages, launchBrowser }) -> { passed, checks, errors }.
  * `pages` is the compose stage's page list ({ path, title, html }[]); `siteDir`
@@ -122,7 +135,7 @@ export async function verifySite({ siteDir, pages, launchBrowser } = {}) {
             continue;
           }
           if (!isInternalHref(href)) continue;
-          const normalized = normalizeInternalPath(href);
+          const normalized = resolveInternalPath(pageArtifact.path, href);
           if (!normalized) continue;
           if (!knownPaths.has(normalized) && !fs.existsSync(path.join(siteDir, normalized))) {
             check.broken_links.push(href);

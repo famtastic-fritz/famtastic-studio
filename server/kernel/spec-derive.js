@@ -260,6 +260,14 @@ export function deriveSpecFromPacket({ packet, brief, site_id }) {
   const offers = Array.isArray(packet.site_needs?.offers) ? packet.site_needs.offers : [];
   const ctas = Array.isArray(packet.site_needs?.ctas) && packet.site_needs.ctas.length ? packet.site_needs.ctas : ['Get in touch'];
   const sectionsPerPage = packet.site_needs?.sections_per_page || {};
+  const artifact_bundle = brief?.artifact_bundle || packet.artifact_bundle || null;
+  const backend = brief?.backend || packet.backend || null;
+  const functional_contract = brief?.functional_contract || packet.functional_contract || null;
+  const declaredCapability = brief?.capability_class || packet.capability_class;
+  const capability_class = CAPABILITY_CLASSES.includes(declaredCapability)
+    ? declaredCapability
+    : (backend ? 'application' : 'brochure');
+  const recipe = brief?.recipe || packet.recipe || brief?.archetype || packet.archetype || null;
 
   const seenIds = new Set();
   const pages = rawPageNames.map((rawName) => {
@@ -286,7 +294,14 @@ export function deriveSpecFromPacket({ packet, brief, site_id }) {
   // Tokens are resolved HERE, once, so the composer never has to consult a
   // direction it might forget. brand.palette_direction stays for provenance —
   // it records what was asked for — but nothing downstream reads it.
-  let resolvedPaletteDir = packet.brand?.palette_direction || '';
+  const designContract = packet.brand?.design_contract || brief?.design_contract || null;
+  const explicitTokens = designContract?.tokens || packet.brand?.tokens || null;
+  // Older FAMtastic snapshots used `palette: ['#...', '#...']` while the
+  // research packet vocabulary used `palette_direction`. Accept both at this
+  // seam so a valid selected design cannot silently fall back to platform white.
+  let resolvedPaletteDir = packet.brand?.palette_direction
+    || (Array.isArray(packet.brand?.palette) ? packet.brand.palette.join(', ') : '')
+    || '';
   const packetHasColors = extractHexes(resolvedPaletteDir).length > 0 || extractNamedColours(resolvedPaletteDir).length > 0;
   if (!packetHasColors) {
     const briefPalette = brief?.business?.palette_direction || brief?.brand?.palette_direction || brief?.business?.style || '';
@@ -305,15 +320,14 @@ export function deriveSpecFromPacket({ packet, brief, site_id }) {
         ? 'Research declared no media slots for this site.'
         : 'Slots are declared from research media prompts. At derivation time every slot starts unfilled; the imagery adapter fills them later in the run, and an unfilled slot at the end carries the reason it could not be filled.',
     },
-    // What KIND of thing this spec can describe. Studio's vocabulary covers
-    // pages, sections, brand and media -- a brochure site. It has no field for a
-    // database, an endpoint, a session, a scheduled job or an upload target, so
-    // a site with a server-side runtime cannot be represented, only carried.
-    // Derivation always produces 'brochure' because derivation cannot produce
-    // anything else; an application spec is declared, never inferred. Recording
-    // this per site is what stops the console implying Studio could rebuild
-    // something it could only deploy.
-    capability_class: 'brochure',
+    // A backend/application lane is explicit and carried, never guessed from
+    // a screenshot. Studio can select the matching recipe and run behavioral
+    // checks, but it must not imply that a visual proof proves a database,
+    // login, cart, or portal works.
+    capability_class,
+    recipe,
+    backend,
+    functional_contract,
     generated_from: {
       packet_id: packet.packet_id,
       source_adapter: packet.source_adapter,
@@ -323,9 +337,9 @@ export function deriveSpecFromPacket({ packet, brief, site_id }) {
         ? 'No research provider is connected in this build. This spec is derived directly from the submitted brief, not from research findings.'
         : 'Derived from research packet findings where the packet supplied them; unresolved items remain in open_questions rather than being guessed.',
     },
-    tokens: deriveTokens({ paletteDirection: resolvedPaletteDir }).tokens,
+    tokens: deriveTokens({ paletteDirection: resolvedPaletteDir, explicitTokens }).tokens,
     tokens_provenance: (() => {
-      const d = deriveTokens({ paletteDirection: resolvedPaletteDir });
+      const d = deriveTokens({ paletteDirection: resolvedPaletteDir, explicitTokens });
       return { source: d.source, declared: d.declared, note: d.note };
     })(),
     brand: {
@@ -334,8 +348,10 @@ export function deriveSpecFromPacket({ packet, brief, site_id }) {
       voice: packet.brand?.voice || null,
       palette_direction: resolvedPaletteDir || null,
       type_direction: packet.brand?.type_direction || null,
+      design_contract: designContract,
     },
     pages,
+    artifact_bundle,
     offers,
     ctas,
     seo_targets: packet.seo_targets || { keywords: [], meta_direction: '' },

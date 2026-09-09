@@ -282,7 +282,11 @@ async function runShayNativeOnce({ site_id, brief, options = {} }) {
   const sanitizedSiteNeeds = sanitizeSiteNeeds(modelOutput.site_needs);
   const sanitizedMediaPrompts = sanitizeMediaPrompts(modelOutput.media_prompts);
   const sanitizedSeoTargets = sanitizeSeoTargets(modelOutput.seo_targets);
-  const brand = brandHasContent(sanitizedBrand) ? sanitizedBrand : passthroughOr(brief?.brand, {});
+  // Research enriches a brief; it must not erase an approved design contract
+  // merely because the model returned a fresh palette or voice direction.
+  const brand = brandHasContent(sanitizedBrand)
+    ? { ...passthroughOr(brief?.brand, {}), ...sanitizedBrand }
+    : passthroughOr(brief?.brand, {});
   const site_needs = siteNeedsHasContent(sanitizedSiteNeeds) ? sanitizedSiteNeeds : passthroughOr(brief?.site_needs, emptySiteNeeds());
   const media_prompts = sanitizedMediaPrompts.length ? sanitizedMediaPrompts : passthroughOr(brief?.media_prompts, []);
   const seo_targets = seoTargetsHasContent(sanitizedSeoTargets) ? sanitizedSeoTargets : passthroughOr(brief?.seo_targets, { keywords: [], meta_direction: '' });

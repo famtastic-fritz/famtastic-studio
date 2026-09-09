@@ -127,9 +127,7 @@ async function renderSiteSettings() {
           <div>
             <label style="display:block;font-size:11px;color:var(--color-text-dim);margin-bottom:4px">Deployment Target</label>
             <select class="form__select" id="inp-deploy-target" style="width:100%;font-size:12px">
-              <option value="vercel">Vercel (Production Edge)</option>
-              <option value="netlify">Netlify</option>
-              <option value="cloudflare">Cloudflare Pages</option>
+              <option value="famtasticinc">FAMtastic Inc (primary)</option>
               <option value="local">Local Only</option>
             </select>
           </div>
@@ -203,7 +201,7 @@ async function renderSiteSettings() {
 
       if (document.getElementById("inp-git-repo")) document.getElementById("inp-git-repo").value = currentSiteSettings.git_repo_url || "";
       if (document.getElementById("inp-domain")) document.getElementById("inp-domain").value = currentSiteSettings.domain || "";
-      if (document.getElementById("inp-deploy-target")) document.getElementById("inp-deploy-target").value = currentSiteSettings.deployment_target || "vercel";
+      if (document.getElementById("inp-deploy-target")) document.getElementById("inp-deploy-target").value = currentSiteSettings.deployment_target || "famtasticinc";
       if (document.getElementById("inp-biz-name")) document.getElementById("inp-biz-name").value = currentSiteSettings.site_name || "";
       if (document.getElementById("inp-market")) document.getElementById("inp-market").value = currentSiteSettings.market || "";
       if (document.getElementById("inp-style")) document.getElementById("inp-style").value = currentSiteSettings.brand_style || "modern-clean";

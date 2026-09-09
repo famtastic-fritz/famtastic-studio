@@ -63,6 +63,69 @@ describe('imagery bridge: media prompts become declared spec slots', () => {
   });
 });
 
+describe('selected design contract reaches the renderer', () => {
+  it('accepts the legacy palette array and explicit FAMtastic tokens', async () => {
+    const { deriveSpecFromPacket } = await import('../server/kernel/spec-derive.js');
+    const spec = deriveSpecFromPacket({
+      packet: {
+        packet_id: 'rp-design-contract', source_adapter: 'synthetic', execution_status: 'partial',
+        facts: [], open_questions: [],
+        brand: {
+          name: 'Contract Studio',
+          palette: ['#0a0a0a', '#7cfc00', '#eaeaea'],
+          design_contract: {
+            schema_version: 1,
+            tokens: { bg: '#0a0a0a', fg: '#eaeaea', accent: '#7cfc00', muted: '#888888' },
+            typography: { body: 'Inter, sans-serif', headings: 'Space Grotesk, Inter, sans-serif' },
+            component_recipe: ['proof-shell', 'hero', 'cta'],
+            layout: { max_width: '72rem', gutter: 'clamp(1rem, 4vw, 4rem)', grid: '12-column' },
+            responsive: { mobile: 'stack', tablet: 'two-column', desktop: 'max-width' },
+            asset_policy: { preserve: true, rights_safe_only: true },
+            evolution: { preserve_tokens: true, preserve_typography: true, additions_must_use_recipe: true, parity_required: true },
+          },
+        },
+        site_needs: { pages: ['home'] }, media_prompts: [],
+      },
+      brief: { business: { name: 'Contract Studio' } },
+      site_id: 'contract-studio',
+    });
+    expect(spec.tokens).toMatchObject({ bg: '#0a0a0a', fg: '#eaeaea', accent: '#7cfc00' });
+    expect(spec.tokens_provenance.source).toBe('design_contract');
+    expect(spec.brand.design_contract.typography.headings).toMatch(/Space Grotesk/);
+  });
+});
+
+describe('application implementation declarations survive the handoff', () => {
+  it('carries a CMS/portal recipe and backend descriptor without pretending the proof proves behavior', async () => {
+    const { deriveSpecFromPacket } = await import('../server/kernel/spec-derive.js');
+    const spec = deriveSpecFromPacket({
+      packet: {
+        packet_id: 'rp-app-contract', source_adapter: 'synthetic', execution_status: 'partial',
+        facts: [], open_questions: [], brand: {}, site_needs: { pages: ['home'] }, media_prompts: [],
+      },
+      brief: {
+        business: { name: 'Shay Portal' },
+        site_needs: { pages: ['home', 'services'] },
+        capability_class: 'application',
+        recipe: 'drupal-decoupled-tri-tier-v1',
+        backend: {
+          root: 'backend', runtime: 'drupal-jsonapi', schema_file: 'backend/schema.yml',
+          deploy_target: 'staging', migrate_command: 'drush updb -y', authored_by: 'external',
+          verify: [{ name: 'request persists', kind: 'behavioral' }],
+        },
+        functional_contract: { portal: ['login', 'request persistence'], data: ['availability'] },
+      },
+      site_id: 'shay-portal',
+    });
+    expect(spec).toMatchObject({
+      capability_class: 'application',
+      recipe: 'drupal-decoupled-tri-tier-v1',
+      backend: { root: 'backend', runtime: 'drupal-jsonapi' },
+      functional_contract: { portal: ['login', 'request persistence'] },
+    });
+  });
+});
+
 // REGRESSION: research returns sections_per_page as plain STRINGS. Those were
 // passed through raw, so section.type was undefined, the hero was never a hero,
 // and when imagery landed the hero image silently rendered nowhere while the

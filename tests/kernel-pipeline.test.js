@@ -404,6 +404,24 @@ describe('compose + verify: the default home CTA resolves to a real target (find
       fs.rmSync(tmp, { recursive: true, force: true });
     }
   });
+
+  it('resolves relative links from the page directory in a multi-page artifact tree', async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'verify-relative-links-'));
+    try {
+      const pages = [
+        { path: 'index.html', title: 'Home', html: '<!doctype html><html><body><h1>Home</h1><a href="owner/">Owner</a></body></html>' },
+        { path: 'owner/index.html', title: 'Owner', html: '<!doctype html><html><body><h1>Owner</h1><a href="../research.md">Research</a></body></html>' },
+      ];
+      fs.mkdirSync(path.join(tmp, 'owner'), { recursive: true });
+      fs.writeFileSync(path.join(tmp, 'index.html'), pages[0].html);
+      fs.writeFileSync(path.join(tmp, 'owner/index.html'), pages[1].html);
+      fs.writeFileSync(path.join(tmp, 'research.md'), '# Research');
+      const verifyResult = await verifySite({ siteDir: tmp, pages });
+      expect(verifyResult.passed).toBe(true);
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
 });
 
 describe('per-stage routing comes from the recipe, not one global provider', () => {

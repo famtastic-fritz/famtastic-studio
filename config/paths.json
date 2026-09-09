@@ -15,7 +15,8 @@
     "conversations": ".studio/conversations",
     "events": ".studio/events",
     "famtasticinc": ".studio/famtasticinc",
-    "deploys": ".studio/deploys"
+    "deploys": ".studio/deploys",
+    "learning": ".studio/learning"
   },
   "preview": {
     "port": 3400,

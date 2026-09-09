@@ -81,6 +81,7 @@ describe('Site Files & Settings API', () => {
     expect(resSettings.status).toBe(200);
     const settingsData = await resSettings.json();
     expect(settingsData.site_id).toBe(siteId);
+    expect(settingsData.deployment_target).toBe('famtasticinc');
 
     // 5. POST /api/sites/settings
     const resUpdateSettings = await fetch(`http://127.0.0.1:${port}/api/sites/settings?site_id=${siteId}`, {
@@ -99,6 +100,15 @@ describe('Site Files & Settings API', () => {
     const savedCtx = JSON.parse(fs.readFileSync(ctxFile, 'utf8'));
     expect(savedCtx.git_repo_url).toBe('https://github.com/my-org/super-movers.git');
     expect(savedCtx.domain).toBe('supermovers.com');
+    expect(savedCtx.deployment_target).toBe('famtasticinc');
+
+    const resUnsupportedTarget = await fetch(`http://127.0.0.1:${port}/api/sites/settings?site_id=${siteId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deployment_target: 'netlify' }),
+    });
+    expect(resUnsupportedTarget.status).toBe(422);
+    expect((await resUnsupportedTarget.json()).error).toBe('deployment_target_not_supported');
 
     server.close();
   });

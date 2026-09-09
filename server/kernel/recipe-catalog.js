@@ -4,7 +4,7 @@
 // - Drupal CMS & Decoupled Tri-Tier Stacks (Monolith + Custom Theme vs Decoupled Backend/Portal/Frontend)
 // - WordPress CMS & Decoupled Tri-Tier Stacks (Monolith + Custom Theme vs Decoupled Backend/Portal/Frontend)
 
-export const RECIPE_CATEGORIES = ['static', 'drupal', 'wordpress'];
+export const RECIPE_CATEGORIES = ['static', 'drupal', 'wordpress', 'application'];
 
 export const RECIPE_CATALOG = [
   // 1. Static Web Recipes
@@ -103,6 +103,29 @@ export const RECIPE_CATALOG = [
     theme_name: 'famtastic_headless_starter',
     description: 'Tri-tier architecture (MBSH pattern): Headless WordPress REST/GraphQL backend + React Attendee Portal + React Public Cinema Frontend.',
     pages: ['backend/docker-compose.yml', 'client-portal/src/App.jsx', 'frontend/src/App.jsx'],
+  },
+
+  // 4. Application recipes
+  // MBSH is the reference implementation for the reusable Event Cinema
+  // offering. This catalog entry describes the capability boundary and
+  // verification obligations; it does not pretend that Next can generate the
+  // PHP/WordPress application from a brochure spec. The site repository stays
+  // the source of truth for its implementation and data.
+  {
+    id: 'event-cinema-v1',
+    name: 'FAMtastic Event Cinema',
+    version: '1.0.0',
+    category: 'application',
+    archetype: 'event-cinema',
+    capability_class: 'application',
+    tiers: ['public', 'backend', 'portal', 'admin', 'commerce'],
+    custom_theme: true,
+    description: 'Evidence-driven event site with a cinematic public experience, verified attendee portal, role-based operations, moderated archive, and commerce/ticket boundaries.',
+    source_reference: 'sites/site-mbsh-reunion-event-cinema',
+    authorities: ['wordpress-editorial', 'woocommerce-commerce', 'portal-service', 'resend-outbox'],
+    capabilities: ['public-shell', 'attendee-portal', 'role-based-operations', 'media-moderation', 'commerce-ticketing', 'transactional-outbox'],
+    acceptance: ['public-shell-parity', 'authz-boundaries', 'form-and-endpoint-behavior', 'media-moderation', 'payment-entitlement', 'launch-receipts'],
+    pages: ['frontend/index.html', 'portal/', 'portal/admin/', 'wp-admin/'],
   },
 ];
 

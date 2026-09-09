@@ -8,6 +8,15 @@ import { composeSite } from '../server/kernel/compose.js';
 const REAL = 'Clinical-warm, not spa-pastel. Anchor on a deep near-black ink (#14161A) and a clean off-white paper (#F7F6F3) for the majority of the surface, with a single restrained accent — a muted clay or dusty terracotta (#B57B62).';
 
 describe('deriveTokens', () => {
+  it('copies an approved design-contract token set without reinterpreting it', () => {
+    const { tokens, source } = deriveTokens({
+      explicitTokens: { bg: '#0a0a0a', fg: '#eaeaea', accent: '#7cfc00', muted: '#888888' },
+      paletteDirection: 'paper #ffffff, blue #2563eb',
+    });
+    expect(source).toBe('design_contract');
+    expect(tokens).toMatchObject({ bg: '#0a0a0a', fg: '#eaeaea', accent: '#7cfc00', muted: '#888888' });
+  });
+
   it('assigns by measured lightness, not by order in the prose', () => {
     const { tokens, declared } = deriveTokens({ paletteDirection: REAL });
     expect(declared).toEqual(['#14161a', '#f7f6f3', '#b57b62']);

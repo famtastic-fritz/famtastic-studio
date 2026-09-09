@@ -23,8 +23,8 @@ function sampleSpec() {
 }
 
 describe('composeSite', () => {
-  it('declares deterministic as the only available composer', () => {
-    expect(COMPOSERS).toEqual(['deterministic']);
+  it('declares deterministic and immutable approved-artifact composers', () => {
+    expect(COMPOSERS).toEqual(['deterministic', 'artifact']);
     expect(DEFAULT_COMPOSER).toBe('deterministic');
   });
 

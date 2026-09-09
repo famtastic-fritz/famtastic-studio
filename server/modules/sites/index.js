@@ -8,6 +8,14 @@ import { createSite } from '../../kernel/site.js';
 import { createSpec } from '../../kernel/spec.js';
 import { createImporter } from '../../kernel/importer.js';
 
+const DEFAULT_DEPLOYMENT_TARGET = 'famtasticinc';
+const ALLOWED_DEPLOYMENT_TARGETS = new Set([DEFAULT_DEPLOYMENT_TARGET, 'local']);
+
+function deploymentTarget(value, fallback = DEFAULT_DEPLOYMENT_TARGET) {
+  const candidate = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  return candidate && ALLOWED_DEPLOYMENT_TARGETS.has(candidate) ? candidate : fallback;
+}
+
 // server/kernel/mutation.js is being built by another lane against the same
 // contract. Load it lazily (top-level await is safe: this module itself is
 // loaded via dynamic import from server/kernel/modules.js) so spec writes
@@ -247,7 +255,9 @@ export default {
           site_name: context.business_name || siteSpec.business?.name || identity.site_id.replace(/^site-/, '').replace(/-/g, ' '),
           domain: context.domain || siteSpec.business?.domain || `${identity.site_id.replace(/^site-/, '')}.famtastic.dev`,
           git_repo_url: context.git_repo_url || `https://github.com/famtastic-fritz/${identity.site_id}.git`,
-          deployment_target: context.deployment_target || 'vercel',
+          // FAMtastic Inc is the only production provider. A stale legacy
+          // value must never make the console imply Netlify/Vercel is active.
+          deployment_target: deploymentTarget(context.deployment_target),
           market: context.market || siteSpec.business?.market || siteSpec.business?.location || 'Local Market',
           brand_style: context.brand_style || siteSpec.business?.style || 'modern-clean',
           coupon_hook: context.coupon_hook || siteSpec.business?.coupon_hook || '',
@@ -280,13 +290,24 @@ export default {
           try { currentCtx = JSON.parse(fs.readFileSync(ctxFile, 'utf8')); } catch { currentCtx = {}; }
         }
 
+        const requestedDeploymentTarget = typeof body.deployment_target === 'string'
+          ? body.deployment_target.trim().toLowerCase()
+          : '';
+        if (requestedDeploymentTarget && !ALLOWED_DEPLOYMENT_TARGETS.has(requestedDeploymentTarget)) {
+          throw Object.assign(
+            new Error(`Unsupported deployment target: ${requestedDeploymentTarget}. Use famtasticinc or local.`),
+            { statusCode: 422, code: 'deployment_target_not_supported' },
+          );
+        }
+
         const updated = {
           ...currentCtx,
           site_id: identity.site_id,
           business_name: body.site_name || currentCtx.business_name || identity.site_id,
           domain: body.domain || currentCtx.domain || '',
           git_repo_url: body.git_repo_url || currentCtx.git_repo_url || '',
-          deployment_target: body.deployment_target || currentCtx.deployment_target || 'vercel',
+          deployment_target: requestedDeploymentTarget
+            || deploymentTarget(currentCtx.deployment_target),
           market: body.market || currentCtx.market || '',
           brand_style: body.brand_style || currentCtx.brand_style || 'modern-clean',
           coupon_hook: body.coupon_hook || currentCtx.coupon_hook || '',

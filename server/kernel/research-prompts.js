@@ -5,6 +5,8 @@
 // in sync, without touching dispatch, CLI invocation, or fetch-verification
 // logic. No I/O here -- string building and pure shape-sanitizing only,
 // nothing that needs a test double.
+
+import { sanitizeDesignContract } from './design-contract.js';
 //
 // This prompt is paired, in research.js, with a CLI invocation that grants
 // exactly two tools via --allowedTools: WebSearch and WebFetch (see
@@ -98,6 +100,24 @@ export function sanitizeBrand(v) {
   const out = {};
   for (const key of ['palette_direction', 'type_direction', 'imagery_direction', 'voice']) {
     if (typeof v[key] === 'string' && v[key].trim()) out[key] = v[key].trim();
+  }
+  // The selected-build handoff carries an approved machine-readable design
+  // contract. Keep only the bounded fields the renderer consumes; dropping it
+  // here would make research's harmless enrichment erase the approved theme.
+  if (Array.isArray(v.palette)) {
+    const palette = v.palette.filter((value) => typeof value === 'string' && value.trim()).map((value) => value.trim());
+    if (palette.length) out.palette = palette;
+  }
+  if (isPlainObject(v.tokens)) {
+    const tokens = {};
+    for (const key of ['bg', 'fg', 'accent', 'muted']) {
+      if (typeof v.tokens[key] === 'string' && v.tokens[key].trim()) tokens[key] = v.tokens[key].trim();
+    }
+    if (Object.keys(tokens).length) out.tokens = tokens;
+  }
+  if (isPlainObject(v.design_contract)) {
+    const contract = sanitizeDesignContract(v.design_contract);
+    if (contract) out.design_contract = contract;
   }
   return out;
 }

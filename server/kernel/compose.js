@@ -13,6 +13,7 @@
 // both consume only that shape, never how it was produced. pipeline.js's
 // MODEL_ROUTING table records which composer actually ran, per run, in DNA.
 import { tokensToCss, DEFAULT_TOKENS } from './tokens.js';
+import { materializeArtifactBundle } from './artifact-bundle.js';
 import {
   composeDrupalStandard,
   composeDrupalDecoupled,
@@ -20,7 +21,7 @@ import {
   composeWordPressDecoupled,
 } from './compose-cms.js';
 
-export const COMPOSERS = ['deterministic'];
+export const COMPOSERS = ['deterministic', 'artifact'];
 export const DEFAULT_COMPOSER = 'deterministic';
 
 function fail(statusCode, code, message) {
@@ -229,15 +230,18 @@ function renderPage(spec, pageSpec, allPages) {
 // hardcoded a stock blue, because nothing obliged it to look. A direction that
 // downstream must REMEMBER to consult is a direction that gets forgotten.
 // Tokens are resolved once, in tokens.js, and arrive here already decided.
-function buildStylesheet(tokens = DEFAULT_TOKENS, layout = null) {
+function buildStylesheet(tokens = DEFAULT_TOKENS, layout = null, designContract = null) {
   const container = layout?.container || 960;
+  const typography = designContract?.typography || {};
+  const bodyFont = typography.body || typography.font_family || 'system-ui, -apple-system, sans-serif';
+  const headingFont = typography.headings || typography.heading || bodyFont;
   // Rhythm is the vertical scale: how much air a page gives itself. A single
   // spacing value for every section is why twelve sections read as one
   // undifferentiated column.
   const RHYTHM = { generous: [7, 4.5, 3], tight: [5, 3.25, 2.25], compact: [4, 2.75, 2], punchy: [6, 4, 2.5] };
   const [gapPrimary, gapSecondary, gapTertiary] = RHYTHM[layout?.rhythm] || RHYTHM.generous;
   return `${tokensToCss(tokens)}
-:root { --container: ${container}px; --gap-primary: ${gapPrimary}rem; --gap-secondary: ${gapSecondary}rem; --gap-tertiary: ${gapTertiary}rem; }
+:root { --container: ${container}px; --gap-primary: ${gapPrimary}rem; --gap-secondary: ${gapSecondary}rem; --gap-tertiary: ${gapTertiary}rem; --font-body: ${bodyFont}; --font-heading: ${headingFont}; }
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -245,10 +249,11 @@ body {
   overflow-x: hidden;
   background: var(--bg);
   color: var(--fg);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   line-height: 1.5;
 }
 main { max-width: var(--container); margin: 0 auto; padding: 2rem 1.25rem; }
+h1, h2, h3 { font-family: var(--font-heading); }
 h1 { font-size: 2.25rem; margin-bottom: 1.5rem; line-height: 1.15; }
 h2 { font-size: 1.5rem; margin-top: 0; margin-bottom: 0.75rem; }
 h3 { font-size: 1.15rem; margin-top: 0; }
@@ -322,6 +327,17 @@ export function composeSite({ spec, composer = DEFAULT_COMPOSER } = {}) {
   }
   if (!spec || !Array.isArray(spec.pages) || spec.pages.length === 0) {
     throw fail(400, 'spec_has_no_pages', 'compose requires spec.pages to be a non-empty array');
+  }
+
+  // An approved proof is already the rendered design. The artifact composer
+  // deliberately does not regenerate it from prose; it validates and returns
+  // the exact bytes supplied by FAMtastic so the local build is byte-identical.
+  if (composer === 'artifact') {
+    if (!spec.artifact_bundle) throw fail(400, 'artifact_bundle_missing', 'artifact composer requires the approved proof artifact bundle');
+    const files = materializeArtifactBundle(spec.artifact_bundle);
+    const pages = files.filter((file) => 'html' in file).map((file) => ({ path: file.path, title: file.title, html: file.html }));
+    const assets = files.filter((file) => 'contents' in file).map((file) => ({ path: file.path, contents: file.contents }));
+    return { composer, pages, assets, provider: 'famtastic-proof-artifact', output_stack: 'static-artifact' };
   }
 
   const allPages = spec.pages.map((p) => ({ id: p.id, path: p.path, heading: p.heading || p.title, title: p.title }));
@@ -466,7 +482,7 @@ Sitemap: /sitemap.xml
     provider: 'archetype-native',
     output_stack: 'html-css',
     assets: [
-      { path: 'styles.css', contents: buildStylesheet(spec?.tokens, spec?.layout) },
+      { path: 'styles.css', contents: buildStylesheet(spec?.tokens, spec?.layout, spec?.brand?.design_contract) },
       { path: 'js/main.js', contents: mainJs },
       { path: 'robots.txt', contents: robotsTxt },
       { path: 'package.json', contents: packageJson },

@@ -4,8 +4,8 @@ import { composeSite } from '../server/kernel/compose.js';
 
 describe('Recipe Catalog & Version Registry', () => {
   it('exports all standard categories and version 1.0.0 recipes', () => {
-    expect(RECIPE_CATEGORIES).toEqual(['static', 'drupal', 'wordpress']);
-    expect(RECIPE_CATALOG.length).toBe(8);
+    expect(RECIPE_CATEGORIES).toEqual(['static', 'drupal', 'wordpress', 'application']);
+    expect(RECIPE_CATALOG.length).toBe(9);
 
     for (const r of RECIPE_CATALOG) {
       expect(r.version).toBe('1.0.0');
@@ -33,6 +33,17 @@ describe('Recipe Catalog & Version Registry', () => {
     expect(r).not.toBeNull();
     expect(r.tiers).toEqual(['backend', 'portal', 'frontend']);
     expect(r.custom_theme).toBe(true);
+  });
+
+  it('describes the Event Cinema application boundary without claiming brochure rebuild support', () => {
+    const r = getRecipe('event-cinema-v1');
+    expect(r).not.toBeNull();
+    expect(r.category).toBe('application');
+    expect(r.capability_class).toBe('application');
+    expect(r.source_reference).toBe('sites/site-mbsh-reunion-event-cinema');
+    expect(r.tiers).toEqual(['public', 'backend', 'portal', 'admin', 'commerce']);
+    expect(r.capabilities).toEqual(expect.arrayContaining(['attendee-portal', 'media-moderation', 'commerce-ticketing']));
+    expect(r.acceptance).toEqual(expect.arrayContaining(['authz-boundaries', 'form-and-endpoint-behavior', 'launch-receipts']));
   });
 });
 

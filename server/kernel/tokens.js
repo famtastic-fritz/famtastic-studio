@@ -180,7 +180,19 @@ function forceContrast(colour, bg, target = 4.5) {
  *
  * @returns {{tokens: object, source: string, declared: string[], adjusted: object[], note: string}}
  */
-export function deriveTokens({ paletteDirection = '', fallback = DEFAULT_TOKENS } = {}) {
+export function deriveTokens({ paletteDirection = '', explicitTokens = null, fallback = DEFAULT_TOKENS } = {}) {
+  // A selected build may carry an already-approved token set from FAMtastic's
+  // design contract. Preserve those exact decisions; do not re-interpret them
+  // from prose and accidentally turn a dark contract into a light default.
+  if (explicitTokens && typeof explicitTokens === 'object'
+    && ['bg', 'fg', 'accent', 'muted'].every((key) => typeof explicitTokens[key] === 'string' && explicitTokens[key].trim())) {
+    return {
+      tokens: { ...fallback, ...Object.fromEntries(['bg', 'fg', 'accent', 'muted'].map((key) => [key, explicitTokens[key].toLowerCase()])) },
+      declared: ['bg', 'fg', 'accent', 'muted'].map((key) => explicitTokens[key].toLowerCase()),
+      adjusted: [], source: 'design_contract',
+      note: 'copied from the approved machine-readable design contract',
+    };
+  }
   // Hex wins: an explicit value is a decision, a colour word is an intent.
   const hexes = extractHexes(paletteDirection);
   const named = hexes.length ? [] : extractNamedColours(paletteDirection);

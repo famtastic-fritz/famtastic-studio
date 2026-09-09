@@ -15,6 +15,7 @@
  */
 
 import { sha256Hex } from './packet.js';
+import { validateArtifactBundle } from './artifact-bundle.js';
 
 export const SELECTED_BUILD_PACKET_SCHEMA_VERSION = 1;
 export const ORIGINS = ['legit', 'test'];
@@ -115,6 +116,10 @@ export function validateSelectedBuildPacket(packet) {
 
   if (!isPlainObject(packet.spec)) errors.push('spec: must be an object');
   if (!isPlainObject(packet.brand)) errors.push('brand: must be an object');
+
+  if (packet.artifact_bundle !== undefined) {
+    errors.push(...validateArtifactBundle(packet.artifact_bundle));
+  }
 
   validateAssetRefs(packet.asset_refs, errors);
   validateResearchRef(packet.research_packet_ref, errors);
