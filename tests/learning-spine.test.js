@@ -151,4 +151,12 @@ describe('learning spine persistence', () => {
     expect(spine.readRecipeMetadata('event-cinema', '1.0.0').maturity).toBe('standard');
     expect(spine.findLessons({ promotion_state: 'approved' })).toHaveLength(1);
   });
+
+  it('persists and queries lifecycle evidence without merging site repositories', () => {
+    const spine = createLearningSpine({ paths });
+    const event = createLifecycleEvent({ site_id: 'acme', type: 'build.succeeded', status: 'passed', environment: 'local', evidence_refs: ['receipt-build-1'] });
+    spine.writeLifecycleEvent(event);
+    expect(spine.readLifecycleEvent(event.event_id)).toEqual(event);
+    expect(spine.listLifecycleEvents({ site_id: 'acme', type: 'build.succeeded', status: 'passed' })).toHaveLength(1);
+  });
 });

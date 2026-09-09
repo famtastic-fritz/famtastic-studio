@@ -356,6 +356,15 @@ export function createLearningSpine({ paths }) {
     },
     readRecipeMetadata(recipeId, recipeVersion) { return read('recipes', `${recipeId}@${recipeVersion}`); },
     listRecipeMetadata() { return list('recipes'); },
+    writeLifecycleEvent(event) {
+      const result = validateLifecycleEventRecord(event);
+      if (!result.ok) throw new Error(`invalid lifecycle event: ${result.errors.join('; ')}`);
+      return write('events', event.event_id, event);
+    },
+    readLifecycleEvent(eventId) { return read('events', eventId); },
+    listLifecycleEvents({ site_id, type, status } = {}) {
+      return list('events').filter((event) => (!site_id || event.site_id === site_id) && (!type || event.type === type) && (!status || event.status === status));
+    },
     writeLesson(lesson) {
       const result = validateLessonRecord(lesson);
       if (!result.ok) throw new Error(`invalid lesson record: ${result.errors.join('; ')}`);

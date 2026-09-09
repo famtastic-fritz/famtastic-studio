@@ -26,6 +26,11 @@ FAMtastic Designs --selected packet--> Site Studio Next --bootstrap--> site repo
 - `EvidenceReceipt`: a durable pointer to a build, parity, QA, staging, launch,
   or incident artifact, optionally protected by a SHA-256 digest.
 
+Lifecycle events are persisted and queryable by site, type, and status. The
+site catalog is queryable by capability, environment, or recipe. Lesson
+promotion refuses to proceed until privacy review passes, validation receipts
+are passed, and an owner is named.
+
 All records are schema-versioned and fail closed. Identifiers and version
 references are bounded so a typo cannot silently create an unqueryable record.
 Evidence is referenced by path or receipt id; customer uploads, secrets, bearer
@@ -46,6 +51,10 @@ records provide durable, queryable evidence and promotion state.
 4. Have the platform owner promote it to a versioned recipe.
 5. Roll it out through the shared QA workflow and record the resulting receipts.
 
+`server/kernel/shared-quality-gates.js` keeps the release claims separate:
+artifact parity, deterministic quality, functional behavior, and target safety
+must each have their own evidence. Missing evidence is `not_proven`; it is not
+silently converted into a green release verdict.
+
 This gives MBSH a path to become an `event-cinema@1` recipe without copying its
 customer data or turning every one-off implementation into a global skill.
-
