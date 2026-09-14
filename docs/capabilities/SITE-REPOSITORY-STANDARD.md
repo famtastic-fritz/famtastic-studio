@@ -38,6 +38,19 @@ remain required. Rebuilds preserve the site's authored robots and sitemap.
 The scaffold does not invent a business policy, verified canonical domain,
 owner approval, provider deployment or customer workflow proof.
 
+## Reproducible static output
+
+The deterministic composer adds dependency-free package/lockfiles, local HTML
+tests, CI, a public-file manifest, build and preview tools. `npm run build` runs
+the vendored source validator and HTML tests, then emits only allowlisted files
+into `dist/`. Neither private Markdown/JSON nor backend paths/symlinks are public
+artifacts. Existing authored scripts/docs and backend/server configuration are
+preserved on rebuild. Production hosting must point to a reviewed artifact, not
+the Git root. The local static deploy adapter reads the same explicit public-file
+manifest and refuses source repos lacking it; it never executes customer scripts
+while planning deployment. Application/CMS runtime configuration requires a
+separate reviewed recipe, not broadening the static source-public boundary.
+
 ## Portable library discovery
 
 `config/repositories/catalog.v1.json` pins repository_url, revision, catalog_path,

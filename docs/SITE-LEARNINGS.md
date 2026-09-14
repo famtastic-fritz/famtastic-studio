@@ -2,6 +2,15 @@
 
 ## 2026-09-14 - Source ownership must be enforced before the first write
 
+A validator alone is not a reproducible website build. The older static composer
+used an echo-only build command and had no lockfile or local tests. Fresh generated
+clones now prove `npm ci`, tests and a real allowlisted public artifact build. A
+failed HTML check or unsafe allowlist does not replace a previous artifact. Keep
+Git knowledge records separate from publishable files: the old deployment denylist
+was too narrow once full source docs existed. Static deployment now requires an
+explicit public-file list for source repositories and excludes JSON, Markdown,
+backend paths and symlinks. Application runtime configuration needs its own recipe.
+
 Independent runtime is insufficient when the customer source remains inside an
 agency repository. The prior post-build scaffold also bypassed direct builds
 and overwrote authored documentation. Use the same preflight/package before all

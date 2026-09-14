@@ -14,6 +14,7 @@
 // MODEL_ROUTING table records which composer actually ran, per run, in DNA.
 import { tokensToCss, DEFAULT_TOKENS } from './tokens.js';
 import { materializeArtifactBundle } from './artifact-bundle.js';
+import { repositoryTools } from './compose-repository-tools.js';
 import {
   composeDrupalStandard,
   composeDrupalDecoupled,
@@ -412,17 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 `;
 
-  const packageJson = JSON.stringify({
-    name: `site-${slug}`,
-    version: '1.0.0',
-    private: true,
-    description: `${bName} — static website built with Site Studio`,
-    scripts: {
-      dev: 'npx serve . -l 3000',
-      build: 'echo "Static build verified in place"',
-    },
-    keywords: ['famtastic', 'site-studio', 'static-site'],
-  }, null, 2) + '\n';
+  const localMedia = (spec.media_slots || []).filter(slot => slot.state === 'filled' && slot.asset_ref && !/^https?:\/\//i.test(slot.asset_ref)).map(slot => slot.asset_ref);
+  const sourceTools = repositoryTools({ name: `site-${slug}`, description: `${bName}: independent static source`, publicFiles: [...pages.map(page => page.path), '404.html', 'styles.css', 'js/main.js', 'robots.txt', 'sitemap.xml', ...localMedia] });
 
   const readmeMd = `# ${bName}
 
@@ -485,7 +477,7 @@ Sitemap: /sitemap.xml
       { path: 'styles.css', contents: buildStylesheet(spec?.tokens, spec?.layout, spec?.brand?.design_contract) },
       { path: 'js/main.js', contents: mainJs },
       { path: 'robots.txt', contents: robotsTxt },
-      { path: 'package.json', contents: packageJson },
+      ...sourceTools,
       { path: 'README.md', contents: readmeMd },
       { path: '404.html', contents: html404 },
     ],

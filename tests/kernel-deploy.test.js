@@ -66,6 +66,8 @@ describe('deploy publishable set', () => {
     const { paths, deploy } = setup();
     makeSiteFiles(paths, 'site-a', { customer: { id: 'cust-1' } }, {
       'index.html': '<h1>home</h1>', 'conversation.jsonl': '{"role":"user"}\n', '.studio/notes.json': '{"internal":true}',
+      'AGENTS.md': 'Private agent instructions', 'docs/research/proof.html': '<p>Not public</p>',
+      'package.json': '{}', 'package-lock.json': '{}', 'design-dna.json': '{}', 'blueprint.json': '{}', 'backend/handler.php': '<?php',
     });
     const receipt = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
     const shipped = receipt.manifest.map((m) => m.path).sort();

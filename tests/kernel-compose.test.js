@@ -35,7 +35,7 @@ describe('composeSite', () => {
     expect(result.pages).toHaveLength(2);
     expect(result.pages.map((p) => p.path)).toEqual(['index.html', 'about.html']);
     const assetPaths = result.assets.map((a) => a.path);
-    expect(assetPaths).toEqual(['styles.css', 'js/main.js', 'robots.txt', 'package.json', 'README.md', '404.html']);
+    expect(assetPaths).toEqual(['styles.css', 'js/main.js', 'robots.txt', 'package.json', 'package-lock.json', '.famtastic/public-files.json', '.famtastic/public-boundary.mjs', '.famtastic/build.mjs', '.famtastic/preview.mjs', 'tests/site-contract.test.mjs', 'docs/STATIC-BUILD.md', '.github/workflows/verify.yml', 'README.md', '404.html']);
     const stylesAsset = result.assets.find((a) => a.path === 'styles.css');
     expect(stylesAsset.contents).toContain(':root');
   });

@@ -1,14 +1,20 @@
 # Repository standard proof, 2026-09-14
 
 - `npm run lint`: passed.
-- `npm test -- --maxWorkers=1`: 78 files, 930 tests passed.
+- `npm test -- --maxWorkers=1`: final static-output follow-on, 79 files, 932 tests passed.
 - `node vendor/site-foundation/test.mjs`: 5 tests passed.
 - `scripts/prove-library-discovery.mjs`: Components and Media rendered the actual
   pinned catalogs at 390, 768 and 1280 pixels with no page exceptions, horizontal
   overflow or clipped main content. Screenshots and browser-proof.json are here.
 - A fresh generated customer clone executed its own vendored validator without
-  neighboring FAMtastic code. Rebuild tests preserve authored design/backend
-  source and staging robots. New palette drift requires an explicit revision.
+  neighboring FAMtastic code, plus `npm ci`, `npm test` and `npm run build` with
+  an unchanged lockfile. The build emits real allowlisted `dist/` files; malformed
+  HTML or an unsafe public allowlist fails without replacing the prior artifact.
+  Private agent/docs/spec/blueprint/package JSON files are absent from the output
+  and return 404 from the generated localhost preview. Static deployment tests
+  reject missing/unsafe allowlists and symlinks before target/receipt writes.
+  Rebuild tests preserve authored design/backend/PHP/.htaccess source and staging
+  robots. New palette drift requires an explicit revision.
 - Git tests exercised nested/foreign repositories, customer/agency common-dir
   distinction, dirty snapshots, duplicate identity and an approved local bare
   remote push with exact remote-ref readback.

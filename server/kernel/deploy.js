@@ -15,7 +15,7 @@ const PROVIDER = 'famtasticinc';
 // Operational files describe the site to Site Studio, not to a visitor, and
 // are never part of the publishable artifact; dot-directories are excluded too.
 
-import { fail, sha256, newId, walkAllFiles, isPublishable, computeManifestHash, stripContent } from './deploy-helpers.js';
+import { fail, sha256, newId, walkAllFiles, publishableFiles, computeManifestHash, stripContent } from './deploy-helpers.js';
 
 export function createDeploy({ paths, journal, events }) {
   const mutation = createMutation({ paths, journal, events });
@@ -128,10 +128,9 @@ export function createDeploy({ paths, journal, events }) {
     return latest && typeof latest.result?.revision === 'number' ? latest.result.revision : 0;
   }
 
-  // Only the PUBLISHABLE set (isPublishable) -- what a deploy actually ships.
+  // An explicit source allowlist, or the narrow legacy static extension set.
   function buildManifest(siteDir) {
-    return walkAllFiles(siteDir)
-      .filter(isPublishable)
+    return publishableFiles(siteDir)
       .map((relPath) => {
         const buf = fs.readFileSync(path.join(siteDir, relPath));
         return { path: relPath, sha256: sha256(buf), bytes: buf.length, content_base64: buf.toString('base64') };

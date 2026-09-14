@@ -18,11 +18,15 @@ contract, with portable read-only library discovery.
 - [x] Add portable pinned catalog tests and standalone source records.
 - [x] Complete final test/browser pass and catalog pins.
 - [x] Complete scoped push and coordinated existing-runtime cutover after job/data preflight.
+- [x] Prove fresh generated source npm ci/test/build and prevent private source deployment.
 
 ## Status
 
-Complete. Source published and the existing local Studio runtime uses the new
+Core source published and the existing local Studio runtime uses the new
 independent checkout, with preserved data and verified real preflight rejection.
+Final static-output boundary follow-on passed the complete test suite and fresh
+generated-clone build proof. Its scoped push and idle-service reload are recorded
+in the runtime receipt.
 
 ## Started
 
@@ -55,7 +59,7 @@ site-studio-conventions and dna-capture govern module boundaries and stage evide
 
 ## Proof
 
-Full Vitest suite: 930 passed across 78 files. Foundation: 5 tests passed.
+Full Vitest suite: 932 passed across 79 files. Foundation: 5 tests passed.
 Browser: both libraries at 390/768/1280, no clipping or page exceptions. See
 docs/evidence/repository-reconciliation-2026-09-14/README.md.
 Runtime proof: docs/evidence/repository-reconciliation-2026-09-14/RUNTIME-CUTOVER.md.

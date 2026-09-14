@@ -27,13 +27,39 @@ export function walkAllFiles(dir, base = dir, out = []) {
   return out;
 }
 
-const OPERATIONAL_FILENAMES = new Set(['spec.json', 'conversation.jsonl']);
+const PRIVATE_DIRECTORIES = new Set(['docs', 'tests', 'node_modules', 'vendor', 'backend', 'application', 'dist', 'coverage', 'research', 'scripts', 'ops']);
+const PUBLIC_EXTENSIONS = new Set(['.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.avif', '.svg', '.ico', '.mp4', '.webm', '.mp3', '.wav', '.woff', '.woff2', '.ttf', '.otf', '.eot']);
 
 export function isPublishable(relPath) {
+  if (typeof relPath !== 'string' || path.isAbsolute(relPath) || relPath.includes('\\')) return false;
   const segments = relPath.split('/');
-  if (segments.some((seg) => seg.startsWith('.'))) return false;
-  if (OPERATIONAL_FILENAMES.has(segments[segments.length - 1])) return false;
-  return true;
+  if (segments.some((seg) => !seg || seg.startsWith('.') || PRIVATE_DIRECTORIES.has(seg))) return false;
+  return PUBLIC_EXTENSIONS.has(path.extname(relPath).toLowerCase()) || ['robots.txt', 'sitemap.xml'].includes(relPath);
+}
+
+// Read only JSON, never execute customer package scripts during a deploy plan.
+export function publishableFiles(dir) {
+  const configPath = path.join(dir, '.famtastic/public-files.json');
+  const sourceManifest = path.join(dir, '.famtastic/site-manifest.json');
+  let files;
+  if (fs.existsSync(configPath)) {
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    if (config.schema_version !== 1 || !Array.isArray(config.files)) throw fail(409, 'public_manifest_invalid', 'A versioned public-file allowlist is required');
+    files = [...new Set(config.files)];
+    if (files.some(file => !isPublishable(file))) throw fail(409, 'private_public_path', 'A source or unsupported application path cannot be included in this static release');
+  } else {
+    if (fs.existsSync(sourceManifest)) throw fail(409, 'public_manifest_required', 'Source repositories require an explicit public-file allowlist before static deployment');
+    files = walkAllFiles(dir).filter(isPublishable);
+  }
+  for (const file of files) {
+    let current = dir;
+    for (const part of file.split('/')) {
+      current = path.join(current, part);
+      if (!fs.existsSync(current) || fs.lstatSync(current).isSymbolicLink()) throw fail(409, 'public_file_unsafe', 'A public file is missing or uses a symlink');
+    }
+    if (!fs.statSync(current).isFile()) throw fail(409, 'public_file_unsafe', 'A public path is not a file');
+  }
+  return files;
 }
 
 // Order-independent: sorted (path, sha256) pairs, content hashes only.
@@ -50,4 +76,3 @@ export function stripContent(receipt) {
     manifest: (receipt.manifest || []).map(({ path: p, sha256: h, bytes }) => ({ path: p, sha256: h, bytes })),
   };
 }
-

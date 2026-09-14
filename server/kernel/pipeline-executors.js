@@ -158,7 +158,7 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
     },
     build: ({ site_id, composed, initiator, repository_session }) => {
       if (!composed) throw fail(400, 'composed_missing', 'cannot run the build stage without composed page artifacts');
-      const protectedPaths = new Set([...REQUIRED_FILES, 'robots.txt', 'sitemap.xml']);
+      const protectedPaths = new Set([...REQUIRED_FILES, 'robots.txt', 'sitemap.xml', 'package.json', 'package-lock.json', 'tests/site-contract.test.mjs', '.famtastic/preview.mjs', '.famtastic/public-boundary.mjs', '.famtastic/build.mjs', '.github/workflows/verify.yml', 'docs/STATIC-BUILD.md']);
       const changes = [
         ...composed.pages.map((p) => ({ path: p.path, contents: p.html })),
         ...composed.assets.map((a) => ({ path: a.path, contents: a.contents })),

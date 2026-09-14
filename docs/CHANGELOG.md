@@ -2,6 +2,12 @@
 
 ## 2026-09-14 - Independent source foundation and portable libraries
 
+Generated static repositories now include dependency-free lockfiles, actual HTML
+tests, CI and a real `npm run build` producing allowlisted `dist/` output. Local
+preview and deploy reject private source/metadata and symlinks. Source repositories
+without an explicit public-file manifest cannot use the static deploy adapter.
+Existing authored package/test/deployment docs, PHP and .htaccess survive rebuilds.
+
 Follow-on: after source push and idle/data verification, the authorized local
 launchd service was switched to the independent checkout while preserving its
 exact data root. Both live library catalogs resolve, and the real pipeline
