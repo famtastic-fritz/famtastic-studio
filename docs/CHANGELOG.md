@@ -1,5 +1,16 @@
 # Site Studio Next change log
 
+## 2026-09-14 - Independent source foundation and portable libraries
+
+Added one versioned site-foundation package, Git identity preflight, complete
+startup/design/learning/research scaffold and preservation rules. Direct,
+conversational and retry paths now share the contract; foreign origins and dirty
+targets fail before site writes. Removed invented repository URLs. Components
+and Media now discover pinned JSON catalogs with explicit unavailable states,
+separate from portfolio inventory and full platform readiness. See the
+[source contract](capabilities/SITE-REPOSITORY-STANDARD.md). Source/tests only;
+no production service restart or customer data migration is implied.
+
 ## 2026-09-14 - Business-owned newsletter source awareness
 
 Recorded verified consumer release `b79aca2b`: 18-table independent application,

@@ -1,0 +1,22 @@
+/* Library views retain the full navigation without clipping narrow screens. */
+.library-page .shell__main { min-width: 0; }
+.library-page .card { overflow-wrap: anywhere; }
+@media (max-width: 800px) {
+  .library-page .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) 52px;
+    grid-template-areas: "topbar" "nav" "main" "cmdbar";
+    height: 100dvh;
+  }
+  .library-page .topbar { min-width: 0; gap: 8px; padding: 12px; flex-wrap: wrap; }
+  .library-page .brand__sub, .library-page .topbar .env-chip { display: none; }
+  .library-page .shell__nav { display: flex; flex-direction: row; align-items: center; height: 88px; max-height: 88px; gap: 8px; padding: 8px; overflow-x: auto; overflow-y: hidden; max-width: 100vw; border-bottom: 1px solid var(--color-border); }
+  .library-page .shell__nav-brand, .library-page .shell__nav-group-title, .library-page .shell__killcard-desc { display: none; }
+  .library-page .shell__nav-list { display: flex; flex-direction: row; align-items: center; flex: 0 0 auto; gap: 4px; margin: 0; }
+  .library-page .shell__nav-link { min-height: 44px; white-space: nowrap; }
+  .library-page .shell__killcard { flex: 0 0 150px; margin: 0; padding: 4px; }
+  .library-page .shell__main { padding: 20px 16px 40px; }
+  .library-page .cmdbar { min-width: 0; padding: 0 12px; }
+  .library-page .cmdbar input { min-width: 0; }
+  .library-page .cmdbar .hint { display: none; }
+}

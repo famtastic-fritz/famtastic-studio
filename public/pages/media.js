@@ -9,6 +9,7 @@ import { render as renderShell } from "/kit/shell.js";
 import { createRegion } from "/kit/region.js";
 import { pill } from "/kit/pill.js";
 import { panel } from "/kit/panel.js";
+import { renderLibraryPanel } from "/kit/library-panel.js";
 
 const root = renderShell({ pageId: "media" });
 
@@ -31,6 +32,7 @@ const regionEl = document.createElement("div");
 
 section.append(heading, sub, jumpOffEl, count, regionEl);
 root.appendChild(section);
+renderLibraryPanel(root, 'media-studio', 'Media Studio');
 
 // The jump-off is page chrome, not media data -- it must show regardless of
 // whether any asset was found, so it is fetched from the registry route

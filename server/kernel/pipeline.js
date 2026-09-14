@@ -30,6 +30,7 @@ import { runResearch } from './research.js';
 import { runBatch as runBatchImpl } from './pipeline-batch.js';
 import { makeExecutors } from './pipeline-executors.js';
 import { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY } from './pipeline-constants.js';
+import { createRepositoryLifecycle } from './repository-lifecycle.js';
 
 // Re-exported so existing importers of pipeline.js keep working.
 export { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY };
@@ -300,20 +301,21 @@ async function runStage(dna, run_id, stageName, retryOf, fn, recipeSnapshot = nu
 }
 
 export function createPipeline({ paths, journal, events, dna, spec, mutation, recipe = null, researchOptions = {}, imageryOptions = {}, copyOptions = {} }) {
-  const executors = makeExecutors({ paths, journal, events, mutation, spec, researchOptions, imageryOptions, copyOptions });
+  const repositories = createRepositoryLifecycle({ paths, journal });
+  const executors = makeExecutors({ paths, journal, events, mutation, spec, researchOptions, imageryOptions, copyOptions, repositories });
   function finalizeFailed(run_id, stageName, error) {
     dna.finishRun({ run_id, outcome: { status: 'failed', failed_stage: stageName, message: error.message, code: error.code || null } });
     return { run_id, outcome: 'failed', failed_stage: stageName, error: { message: error.message, code: error.code || null } };
   }
 
-  async function run({ site_id, brief, adapter = 'shay-native', raw_import, composer = DEFAULT_COMPOSER, initiator = 'pipeline', recipe_ref = null } = {}) {
+  async function runUnchecked({ site_id, brief, adapter = 'shay-native', raw_import, composer = DEFAULT_COMPOSER, initiator = 'pipeline', recipe_ref = null, repository_session } = {}) {
     if (!site_id) throw fail(400, 'identity_required', 'pipeline.run requires site_id');
     if (!brief || typeof brief !== 'object') throw fail(400, 'brief_required', 'pipeline.run requires a brief object');
 
     const { source_commit, tree_hash } = resolveTreeIdentity();
     const recipe_snapshot = resolveRecipeSnapshot({ recipe, recipe_ref });
 
-    const ctx = { site_id, brief, adapter, raw_import, composer, initiator };
+    const ctx = { site_id, brief, adapter, raw_import, composer, initiator, repository_session };
 
     // research runs BEFORE dna.startRun() on purpose: research_packet_ref is
     // set once, at startRun, and never mutated afterward -- starting first
@@ -377,7 +379,7 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
   // re-executes ONLY that stage, reconstructing inputs from what earlier
   // stages actually persisted. No prior successful stage re-runs. Satisfies
   // A4's shape-plus-verification rerun definition, not byte-identical output.
-  async function retryStage({ site_id: boundSiteId, run_id, stage, brief, adapter = 'shay-native', raw_import, composer = DEFAULT_COMPOSER, initiator = 'pipeline:retry' } = {}) {
+  async function retryUnchecked({ site_id: boundSiteId, run_id, stage, brief, adapter = 'shay-native', raw_import, composer = DEFAULT_COMPOSER, initiator = 'pipeline:retry', repository_session } = {}) {
     if (!STAGES.includes(stage)) throw fail(400, 'unknown_stage', `unknown stage '${stage}'; must be one of ${STAGES.join(', ')}`);
     const record = dna.read(run_id);
     if (!record) throw fail(404, 'dna_run_not_found', `no DNA record for run_id ${run_id}`);
@@ -395,7 +397,7 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
     if (!priorFailed) throw fail(400, 'no_failed_attempt', `stage '${stage}' has no failed attempt on run ${run_id} to retry`);
 
     const site_id = record.site_id;
-    const ctx = { site_id, brief, adapter, raw_import, composer, initiator };
+    const ctx = { site_id, brief, adapter, raw_import, composer, initiator, repository_session };
 
     function latestSuccessOutputRef(stageName) {
       const attempts = record.stages.filter((s) => s.stage === stageName && s.status === 'success');
@@ -436,6 +438,28 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
     return { run_id, outcome: 'stage_retried', stage, value: result.value };
   }
 
+  async function guarded(options, retry = false) {
+    if (!options?.site_id) throw fail(400, 'identity_required', 'pipeline requires site_id');
+    if (retry) {
+      if (!STAGES.includes(options.stage)) throw fail(400, 'unknown_stage', `unknown stage '${options.stage}'`);
+      const record = dna.read(options.run_id);
+      if (!record) throw fail(404, 'dna_run_not_found', `no DNA record for run_id ${options.run_id}`);
+      if (record.site_id !== options.site_id) throw fail(403, 'site_mismatch', 'Run belongs to a different site');
+      if (!record.stages.some(item => item.stage === options.stage && item.status === 'failed')) throw fail(400, 'no_failed_attempt', `stage '${options.stage}' has no failed attempt`);
+    }
+    const session = repositories.begin({ ...options, retry });
+    let result;
+    try {
+      result = await (retry ? retryUnchecked : runUnchecked)({ ...options, repository_session: session });
+    } catch (error) {
+      repositories.finish(session, { outcome: 'failed' });
+      throw error;
+    }
+    try { return repositories.finish(session, result); }
+    catch (error) { if (result?.run_id) return finalizeFailed(result.run_id, 'record', error); throw error; }
+  }
+  const run = options => guarded(options);
+  const retryStage = options => guarded(options, true);
   return {
     run,
     runBatch: (opts) => runBatchImpl({ ...opts, run }),

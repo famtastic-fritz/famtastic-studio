@@ -2,8 +2,6 @@
 // Translates natural operator dialogue (whether from CLI, ⌘K, or Shay Rail)
 // into a research-grounded site brief and executes the build pipeline.
 
-import fs from 'node:fs';
-import path from 'node:path';
 import { createPipeline } from './pipeline.js';
 import { createConversation } from './conversation.js';
 import { buildCard } from './cards.js';
@@ -13,7 +11,6 @@ import { createDna } from './dna.js';
 import { createMutation } from './mutation.js';
 import { createSpec } from './spec.js';
 import { slugify } from './pipeline-text.js';
-import { createGitDelivery } from './git-delivery.js';
 
 export function parsePromptToBrief(promptText) {
   const text = (promptText || '').trim();
@@ -321,55 +318,16 @@ export function createShayRoutine({ paths, researchOptions = {}, copyOptions = {
       initiator: `shay-routine:${siteConvoId}`,
     });
 
-    // 4. Ensure .site-context managed record exists on disk
-    try {
-      const siteDir = paths.within('sites', site_id);
-      const contextDir = path.join(siteDir, '.site-context');
-      if (!fs.existsSync(contextDir)) fs.mkdirSync(contextDir, { recursive: true });
-      fs.writeFileSync(path.join(contextDir, 'site-context.json'), JSON.stringify({
-        site_id,
-        business_name: brief.business.name,
-        created_at: new Date().toISOString(),
-        managed_by: 'shay-routine',
-      }, null, 2));
-
-      // Repository operating files are part of the materialized delivery, not
-      // an optional post-build convenience.
-      fs.writeFileSync(path.join(siteDir, 'CLAUDE.md'), `# ${brief.business.name}\n\nSite created by Shay Routine for ${brief.business.location}.\n`);
-      fs.writeFileSync(path.join(siteDir, 'AGENTS.md'), '# Site operating contract\n\nPreserve the approved design contract and run the local parity gates before any staging or production handoff.\n', 'utf8');
-      fs.writeFileSync(path.join(siteDir, 'design.md'), `# ${brief.business.name} design doctrine\n\nThis site is materialized from the Site Studio Next contract. Future pages and edits must preserve the approved tokens, typography, responsive rules, and component recipe.\n`, 'utf8');
-      fs.writeFileSync(path.join(siteDir, '.gitignore'), '# FAMtastic Site Studio\nnode_modules/\n.DS_Store\n*.log\n.env\n.env.*\n!.env.example\n', 'utf8');
-      const hostingRoot = '/home/nineoo/public_html/famtasticinc-landing';
-      fs.mkdirSync(path.join(siteDir, '.famtastic'), { recursive: true });
-      fs.writeFileSync(path.join(siteDir, '.famtastic', 'site-manifest.json'), JSON.stringify({
-        schema_version: 1,
-        site_id,
-        provider: 'famtasticinc',
-        target_path: path.posix.join(hostingRoot, site_id),
-        source: 'shay-routine-local-build',
-      }, null, 2) + '\n', 'utf8');
-      // This is the canonical Git seam. It creates a real commit and refuses
-      // the shared hosting root; it never invents a remote or claims a push.
-      createGitDelivery().prepare({
-        repository_path: siteDir,
-        site_id,
-        hosting_root: hostingRoot,
-        target_path: path.posix.join(hostingRoot, site_id),
-        message: `Initial commit: ${brief.business.name.replace(/"/g, '')}`,
-      });
-    } catch (error) {
-      // A site without its required Git commit is not a completed build.
-      // Surface the failure instead of returning a misleading success card.
-      throw Object.assign(new Error(`site repository delivery failed: ${error.message}`), { code: error.code || 'git_delivery_failed', cause: error });
-    }
+    // The shared pipeline now owns preflight, scaffold, journal and Git commit.
+    // Never regenerate agent/design files after the checked build completes.
 
     // 5. Append Shay's completion result card
     const resultCard = buildCard({
-      type: 'success',
+      type: pipelineResult.outcome === 'success' ? 'success' : 'failure',
       site_id,
       conversation_id: siteConvoId,
-      title: `Site Built: ${brief.business.name}`,
-      body: `Successfully generated ${pipelineResult.composed?.pages?.length || 4} pages on disk with verified styles and spec. Ready for operator inspection.`,
+      title: `${pipelineResult.outcome === 'success' ? 'Site Built' : 'Build needs attention'}: ${brief.business.name}`,
+      body: pipelineResult.outcome === 'success' ? `Generated ${pipelineResult.composed.pages.length} pages in an independent local repository. Ready for operator inspection; not pushed or deployed.` : `Build stopped at ${pipelineResult.failed_stage || 'repository preflight'}: ${pipelineResult.error?.message || 'Inspect the build record.'}`,
       evidence: [
         { kind: 'file', ref: 'spec.json', note: 'Derived business spec' },
         { kind: 'file', ref: 'index.html', note: 'Primary homepage' },
@@ -408,6 +366,7 @@ export function createShayRoutine({ paths, researchOptions = {}, copyOptions = {
       pages: pipelineResult.composed?.pages || [],
       spec: pipelineResult.spec,
       verify: pipelineResult.verify,
+      repository: pipelineResult.repository,
       card: resultCard,
     };
   }

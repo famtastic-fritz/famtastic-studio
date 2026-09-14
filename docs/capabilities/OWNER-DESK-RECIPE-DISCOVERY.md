@@ -1,5 +1,10 @@
 # Owner Desk recipe discovery — 2026-09-13
 
+Current 2026-09-14 override: fixed sibling imports described below are historical.
+Discovery now uses pinned, declarative catalog JSON from independently configured
+repositories. See SITE-REPOSITORY-STANDARD.md. The historical Designs source
+paths below record lineage, not the canonical location for future customer apps.
+
 Local implementation: `GET /api/component-recipes`, global read-only scope.
 The existing component inventory/catalog endpoint remains present. The recipe
 endpoint loads the sibling Component Studio API and returns original recipe

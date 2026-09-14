@@ -1,5 +1,19 @@
 # Site Studio learning record
 
+## 2026-09-14 - Source ownership must be enforced before the first write
+
+Independent runtime is insufficient when the customer source remains inside an
+agency repository. The prior post-build scaffold also bypassed direct builds
+and overwrote authored documentation. Use the same preflight/package before all
+creation paths, record foundation files in DNA, preserve authored source and
+reject foreign/dirty/common-directory targets. A remote URL comes from Git, not
+from a naming convention. See the repository reconciliation research record.
+
+Sibling imports were locally functional but not portable. Discovery now reads
+the pinned catalog from an explicitly configured independent checkout and
+checks root, origin, revision and bytes. Availability of a library is not proof
+of a full studio UI, installed application or production customer workflow.
+
 ## 2026-09-14 - Newsletter is a separate business-owned consent lane
 
 Preserve explicit signup apart from booking, double-opt-in, read-only GET,

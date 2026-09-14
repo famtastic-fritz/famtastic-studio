@@ -20,6 +20,17 @@ export function createPaths(config = loadPathsConfig()) {
   const roots = Object.fromEntries(
     Object.entries(config.roots).map(([name, rel]) => [name, path.resolve(dataRoot, rel)]),
   );
+  // Customer source checkouts live outside agency/platform Git roots. An explicit
+  // data-root override retains isolated test/sandbox storage unless separately set.
+  const sourceRoot = process.env.STUDIO_REPOSITORIES_ROOT || (!process.env[config.data_root_env] && config.source_root_default);
+  if (sourceRoot) roots.sites = path.resolve(String(sourceRoot).replace(/^~/, process.env.HOME || '~'));
+  function libraryRoot(id) {
+    let configured;
+    try { configured = JSON.parse(process.env.FAMTASTIC_REPOSITORY_CHECKOUTS || process.env.STUDIO_LIBRARY_ROOTS || '{}'); }
+    catch { throw Object.assign(new Error('FAMTASTIC_REPOSITORY_CHECKOUTS must be a JSON object'), { code: 'library_roots_invalid' }); }
+    const value = configured[id];
+    return typeof value === 'string' && path.isAbsolute(value) ? path.resolve(value) : null;
+  }
   // The operator's REAL sites, prefixed `portfolio_` so they can never collide
   // with a studio root of the same short name (config.roots.sites is studio
   // BUILD OUTPUT; config.portfolio_roots.sites is the operator's actual repo).
@@ -187,5 +198,5 @@ export function createPaths(config = loadPathsConfig()) {
     return { rootName, dir, source: 'portfolio', entry };
   }
 
-  return { dataRoot, roots, root, ensure, within, resolveSite, config, configFile };
+  return { dataRoot, roots, root, ensure, within, resolveSite, libraryRoot, config, configFile };
 }

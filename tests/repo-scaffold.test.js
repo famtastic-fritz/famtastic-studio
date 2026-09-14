@@ -16,7 +16,7 @@ describe('per-site repository scaffold', () => {
   it('creates the shared defaults without running git or a remote transport', () => {
     const scaffold = createRepoScaffold({ site_id: 'shay-tighten-up-your-locs', business_name: 'Tighten Up Your Locs', description: 'A private fixture.', design_contract: contract, repository: { mode: 'existing', url: 'git@github.com:example/site.git', branch: 'staging' } });
     expect(scaffold.files.map((file) => file.path)).toEqual(expect.arrayContaining(['AGENTS.md', 'CLAUDE.md', 'design.md', '.famtastic/site-manifest.json']));
-    expect(scaffold.manifest.repository).toEqual({ mode: 'existing', url: 'git@github.com:example/site.git', branch: 'staging' });
+    expect(scaffold.manifest.repository).toEqual({ mode: 'existing', url: 'git@github.com:example/site.git', branch: 'staging', state: 'local_only' });
     expect(scaffold.files.find((file) => file.path === 'design.md').contents).toContain('schema_version');
   });
 
@@ -24,4 +24,3 @@ describe('per-site repository scaffold', () => {
     expect(() => createRepoScaffold({ site_id: 'site', business_name: 'Site' })).toThrow(/design_contract/);
   });
 });
-

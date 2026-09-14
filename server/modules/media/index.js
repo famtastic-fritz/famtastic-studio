@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { buildMediaInventory } from '../../kernel/media-inventory.js';
 import { SUBTREE_PRECEDENCE } from '../../kernel/thumbnails.js';
+import { discoverLibrary } from '../../kernel/library-discovery.js';
 
 function errorResponse(error) {
   const status = error.statusCode || 500;
@@ -27,17 +28,6 @@ const MIME_BY_EXT = {
 // rejected up front rather than fed into path resolution.
 function isRemote(src) {
   return /^([a-z][a-z0-9+.-]*:)?\/\//i.test(src);
-}
-
-async function loadLibraryPresets() {
-  try {
-    const targetUrl = new URL('../../../../media-studio/src/presets.js', import.meta.url);
-    const mod = await import(targetUrl.href);
-    return mod.STOCK_PRESETS || [];
-  } catch {
-    // Graceful fallback
-  }
-  return [];
 }
 
 export default {
@@ -61,7 +51,7 @@ export default {
             },
           };
         }
-        const libraryPresets = await loadLibraryPresets();
+        const libraryPresets = discoverLibrary({ id: 'media-studio', paths });
 
         return {
           status: 200,
@@ -69,7 +59,8 @@ export default {
             status: 'ok',
             source: 'media inventory (portfolio-specs + page + importer.extractImages)',
             assets: result.assets,
-            presets: libraryPresets,
+            presets: libraryPresets.entries.filter(entry => entry.kind === 'preset'),
+            library: libraryPresets,
             unfilled: result.unfilled,
             skipped_sites: result.skipped_sites,
           },

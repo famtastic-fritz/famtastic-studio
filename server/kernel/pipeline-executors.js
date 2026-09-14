@@ -4,6 +4,8 @@
 // owns WHAT a stage does; pipeline.js owns the sequencing, DNA recording and
 // failure handling around it.
 import path from 'node:path';
+import fs from 'node:fs';
+import { REQUIRED_FILES } from '../../vendor/site-foundation/index.js';
 import { deriveSpecFromPacket } from './spec-derive.js';
 import { composeSite } from './compose.js';
 import { verifySite } from './verify.js';
@@ -19,7 +21,7 @@ function fail(statusCode, code, message) {
   return Object.assign(new Error(message), { statusCode, code });
 }
 
-export function makeExecutors({ paths, journal, events, mutation, spec, researchOptions = {}, imageryOptions = {}, copyOptions = {} }) {
+export function makeExecutors({ paths, journal, events, mutation, spec, researchOptions = {}, imageryOptions = {}, copyOptions = {}, repositories }) {
   return {
     // Async since the shay-native adapter became real: it spawns a CLI that
     // searches and fetches, then independently re-fetches every cited source
@@ -34,9 +36,10 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
       const outputs = [{ ref: `packets/${site_id}/${packet.packet_id}.json`, content: JSON.stringify(packet) }];
       return { value: packet, inputs: [{ ref: 'brief', content: JSON.stringify(brief) }], outputs };
     },
-    spec: async ({ site_id, packet, brief, initiator }) => {
+    spec: async ({ site_id, packet, brief, initiator, repository_session }) => {
       if (!packet) throw fail(400, 'packet_missing', 'cannot run the spec stage without a completed research stage');
       let derivedSpec = deriveSpecFromPacket({ packet, brief, site_id });
+      const foundationOutputs = repositories.bootstrap(repository_session, brief, derivedSpec);
 
       // Imagery runs here, after slots are declared and before the spec is
       // persisted, so the stored spec is the truth about what exists on disk.
@@ -113,7 +116,7 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
 
       const writeResult = spec.write(site_id, derivedSpec, { initiator });
       const inputs = [{ ref: `packets/${site_id}/${packet.packet_id}.json`, content: JSON.stringify(packet) }];
-      const outputs = [{ ref: 'spec.json', content: JSON.stringify(derivedSpec) }];
+      const outputs = [{ ref: 'spec.json', content: JSON.stringify(derivedSpec) }, ...foundationOutputs];
       return { value: derivedSpec, inputs, outputs, evidence_ref: writeResult.journal_entry_id };
     },
     compose: ({ derivedSpec, composer }) => {
@@ -153,12 +156,14 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
         },
       };
     },
-    build: ({ site_id, composed, initiator }) => {
+    build: ({ site_id, composed, initiator, repository_session }) => {
       if (!composed) throw fail(400, 'composed_missing', 'cannot run the build stage without composed page artifacts');
+      const protectedPaths = new Set([...REQUIRED_FILES, 'robots.txt', 'sitemap.xml']);
       const changes = [
         ...composed.pages.map((p) => ({ path: p.path, contents: p.html })),
         ...composed.assets.map((a) => ({ path: a.path, contents: a.contents })),
-      ];
+      ].filter(change => !protectedPaths.has(change.path) || !fs.existsSync(path.join(repository_session.dir, change.path)));
+      repository_session.generated = changes.map(change => change.path);
       const result = mutation.apply({ site_id, initiator, intent: 'pipeline.build', changes });
       const refs = changes.map((c) => ({ ref: c.path, content: c.contents }));
       return { value: result, inputs: refs, outputs: refs, evidence_ref: result.journal_entry_id };
@@ -179,4 +184,3 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
     },
   };
 }
-

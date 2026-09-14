@@ -8,6 +8,7 @@ import { createRegion } from "/kit/region.js";
 import { table } from "/kit/table.js";
 import { panel } from "/kit/panel.js";
 import { pill } from "/kit/pill.js";
+import { renderLibraryPanel } from "/kit/library-panel.js";
 
 const root = renderShell({ pageId: "components" });
 
@@ -27,6 +28,7 @@ const regionEl = document.createElement("div");
 
 section.append(heading, sub, jumpOffEl, regionEl);
 root.appendChild(section);
+renderLibraryPanel(root, 'component-studio', 'Component Studio');
 
 // The jump-off is page chrome, not inventory data -- it must show regardless
 // of whether any component types were found, so it is fetched from the
@@ -127,7 +129,7 @@ createRegion(regionEl, {
 
       const catalogMeta = document.createElement("p");
       catalogMeta.className = "card__meta";
-      catalogMeta.textContent = `${data.catalog.length} production UI component archetypes available from component-studio library.`;
+      catalogMeta.textContent = `${data.catalog.length} catalog records. Installation and production readiness are recorded per package.`;
 
       const gridEl = document.createElement("div");
       gridEl.style.display = "grid";

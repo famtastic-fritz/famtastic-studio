@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest';
 import componentModule, { discoverRecipes } from '../server/modules/components/index.js';
 
 describe('read-only Component Studio recipe discovery', () => {
-  it('loads the real sibling repository without claiming executable import', async () => {
+  it('does not silently import an adjacent repository when no checkout is configured', async () => {
     const result = await discoverRecipes();
-    expect(result.status).toBe('ok');
+    expect(result.status).toBe('unavailable');
     expect(result.discovery_only).toBe(true);
     expect(result.executable_import_proven).toBe(false);
-    expect(result.recipes.some(recipe => recipe.id === 'service-business-owner-desk')).toBe(true);
+    expect(result.recipes).toEqual([]);
   });
 
   it('retains source readiness and module state without promotion', async () => {

@@ -59,7 +59,7 @@ const { loadModules } = await load('kernel/modules.js');
 const paths = createPaths();
 const events = createEvents({ paths });
 const journal = createJournal({ paths });
-const registry = createRegistry();
+const registry = createRegistry({ paths });
 const app = createApp();
 const modules = await loadModules();
 for (const mod of modules) mod.register({ app, paths, events, journal, registry });
@@ -70,5 +70,5 @@ const host = process.env.BIND_LAN === '1' || paths.config.preview.bind_lan ? '0.
 const server = http.createServer(app.handler);
 events.attach(server);
 server.listen(port, host, () => {
-  console.log(`site-studio-next listening on http://${host}:${port} (modules: ${modules.map((m) => m.name).join(', ')}; P0-I1 preflight cleared ${preflight.checked} files)`);
+  console.log(`site-studio-next listening on http://${host}:${server.address().port} (modules: ${modules.map((m) => m.name).join(', ')}; P0-I1 preflight cleared ${preflight.checked} files)`);
 });

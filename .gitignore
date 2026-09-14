@@ -6,3 +6,6 @@ dist/
 coverage/
 .playwright-mcp/
 tmp/
+.env
+.env.*
+!.env.example

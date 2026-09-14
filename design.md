@@ -146,3 +146,17 @@ FAMtastic owns research, creative direction, proofs, and selection. Site Studio
 Next owns composition, build, verification, deployment, and rollback. If the
 selected packet cannot express the approved design, the handoff fails closed;
 Site Studio must not guess.
+
+## 2026-09-14: independent repository and library contract
+
+Preserve the complete design direction above. Customer builds use one versioned
+site-foundation scaffold before any source write; authored design and agent
+records survive rebuilds. Customer businesses own their repositories and data,
+separately from the agency that built them.
+
+Components and Media gain an independent pinned library region, with loading,
+available and unavailable states separate from portfolio inventory. Show the
+pinned version and individual readiness; the full studio platforms remain
+planned. On narrow library views keep navigation horizontally scrollable and
+content readable rather than clipping the main column. Verify 390, 768 and 1280
+pixel layouts, keyboard access and the actual main content bounds.

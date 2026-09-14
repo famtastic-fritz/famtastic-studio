@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createSite } from '../../kernel/site.js';
 import { createSpec } from '../../kernel/spec.js';
 import { createImporter } from '../../kernel/importer.js';
+import { repositoryStatus } from '../../kernel/repository-status.js';
 
 const DEFAULT_DEPLOYMENT_TARGET = 'famtasticinc';
 const ALLOWED_DEPLOYMENT_TARGETS = new Set([DEFAULT_DEPLOYMENT_TARGET, 'local']);
@@ -253,8 +254,9 @@ export default {
         const settings = {
           site_id: identity.site_id,
           site_name: context.business_name || siteSpec.business?.name || identity.site_id.replace(/^site-/, '').replace(/-/g, ' '),
-          domain: context.domain || siteSpec.business?.domain || `${identity.site_id.replace(/^site-/, '')}.famtastic.dev`,
-          git_repo_url: context.git_repo_url || `https://github.com/famtastic-fritz/${identity.site_id}.git`,
+          domain: context.domain || siteSpec.business?.domain || null,
+          git_repo_url: repositoryStatus(siteDir).url,
+          repository_state: repositoryStatus(siteDir).state,
           // FAMtastic Inc is the only production provider. A stale legacy
           // value must never make the console imply Netlify/Vercel is active.
           deployment_target: deploymentTarget(context.deployment_target),

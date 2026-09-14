@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "node": "v24.19.0",
+  "evidence": [
+    {
+      "route": "components",
+      "width": 390,
+      "library_visible": true,
+      "overflow": false,
+      "errors": [],
+      "screenshot": "/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/docs/evidence/repository-reconciliation-2026-09-14/components-390.png"
+    },
+    {
+      "route": "media",
+      "width": 390,
+      "library_visible": true,
+      "overflow": false,
+      "errors": [],
+      "screenshot": "/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/docs/evidence/repository-reconciliation-2026-09-14/media-390.png"
+    },
+    {
+      "route": "components",
+      "width": 768,
+      "library_visible": true,
+      "overflow": false,
+      "errors": [],
+      "screenshot": "/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/docs/evidence/repository-reconciliation-2026-09-14/components-768.png"
+    },
+    {
+      "route": "media",
+      "width": 768,
+      "library_visible": true,
+      "overflow": false,
+      "errors": [],
+      "screenshot": "/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/docs/evidence/repository-reconciliation-2026-09-14/media-768.png"
+    },
+    {
+      "route": "components",
+      "width": 1280,
+      "library_visible": true,
+      "overflow": false,
+      "errors": [],
+      "screenshot": "/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/docs/evidence/repository-reconciliation-2026-09-14/components-1280.png"
+    },
+    {
+      "route": "media",
+      "width": 1280,
+      "library_visible": true,
+      "overflow": false,
+      "errors": [],
+      "screenshot": "/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/docs/evidence/repository-reconciliation-2026-09-14/media-1280.png"
+    }
+  ]
+}

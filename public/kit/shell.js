@@ -99,7 +99,15 @@ function buildTopbar(page) {
   const rootLabel = document.createElement("span");
   rootLabel.textContent = "sites root: ";
   const rootPath = document.createElement("b");
-  rootPath.textContent = "~/FAMtastic/sites";
+  rootPath.textContent = "loading";
+  fetch('/api/admin/paths', { headers: { Accept: 'application/json' } })
+    .then(response => { if (!response.ok) throw new Error('Paths unavailable'); return response.json(); })
+    .then(body => {
+      const actual = body.roots?.sites?.path;
+      rootPath.textContent = actual ? `…/${actual.split('/').slice(-2).join('/')}` : 'not configured';
+      if (actual) rootPath.title = actual;
+    })
+    .catch(() => { rootPath.textContent = 'unavailable'; });
   siteChip.append(rootLabel, rootPath);
 
   if (currentSite) {

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:famtastic:site-repository:1.0.0",
+  "type": "object",
+  "required": ["schema_version", "contract_version", "format", "site_id", "business_name", "business_owner", "builder", "repository", "installed_recipes"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "contract_version": { "const": "1.0.0" },
+    "format": { "const": "source_repository" },
+    "site_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$" },
+    "business_name": { "type": "string", "minLength": 1 },
+    "business_owner": { "type": "object", "required": ["name"] },
+    "builder": { "type": "object", "required": ["name"] },
+    "repository": { "type": "object", "required": ["url", "branch", "state"], "properties": { "url": { "type": ["string", "null"] }, "branch": { "type": "string" }, "state": { "enum": ["local_only", "remote_verified"] } } },
+    "installed_recipes": { "type": "array", "items": { "type": "object", "required": ["id", "version"] } }
+  }
+}
