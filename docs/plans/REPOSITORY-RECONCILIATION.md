@@ -59,7 +59,7 @@ site-studio-conventions and dna-capture govern module boundaries and stage evide
 
 ## Proof
 
-Full Vitest suite: 932 passed across 79 files. Foundation: 5 tests passed.
+Full Vitest suite: 936 passed across 80 files. Foundation: 5 tests passed.
 Browser: both libraries at 390/768/1280, no clipping or page exceptions. See
 docs/evidence/repository-reconciliation-2026-09-14/README.md.
 Runtime proof: docs/evidence/repository-reconciliation-2026-09-14/RUNTIME-CUTOVER.md.

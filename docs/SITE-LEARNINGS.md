@@ -10,6 +10,11 @@ Git knowledge records separate from publishable files: the old deployment denyli
 was too narrow once full source docs existed. Static deployment now requires an
 explicit public-file list for source repositories and excludes JSON, Markdown,
 backend paths and symlinks. Application runtime configuration needs its own recipe.
+Generated build output also needs ownership: being named `dist` does not make a
+directory disposable. The static builder records exact generated inventory in
+Git-local metadata and refuses tracked, unowned, modified or extra output. A
+successor is staged before the receipted predecessor is replaced. Compatibility
+accepts legacy explicit-array public manifests through the same safety gates.
 
 Independent runtime is insufficient when the customer source remains inside an
 agency repository. The prior post-build scaffold also bypassed direct builds

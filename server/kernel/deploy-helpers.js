@@ -44,8 +44,9 @@ export function publishableFiles(dir) {
   let files;
   if (fs.existsSync(configPath)) {
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    if (config.schema_version !== 1 || !Array.isArray(config.files)) throw fail(409, 'public_manifest_invalid', 'A versioned public-file allowlist is required');
-    files = [...new Set(config.files)];
+    const listed = Array.isArray(config) ? config : config?.schema_version === 1 ? config.files : null;
+    if (!Array.isArray(listed)) throw fail(409, 'public_manifest_invalid', 'An explicit public-file array or version 1 manifest is required');
+    files = [...new Set(listed)];
     if (files.some(file => !isPublishable(file))) throw fail(409, 'private_public_path', 'A source or unsupported application path cannot be included in this static release');
   } else {
     if (fs.existsSync(sourceManifest)) throw fail(409, 'public_manifest_required', 'Source repositories require an explicit public-file allowlist before static deployment');

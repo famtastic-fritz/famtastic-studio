@@ -1,7 +1,7 @@
 # Repository standard proof, 2026-09-14
 
 - `npm run lint`: passed.
-- `npm test -- --maxWorkers=1`: final static-output follow-on, 79 files, 932 tests passed.
+- `npm test -- --maxWorkers=1`: final compatibility/ownership follow-on, 80 files, 936 tests passed.
 - `node vendor/site-foundation/test.mjs`: 5 tests passed.
 - `scripts/prove-library-discovery.mjs`: Components and Media rendered the actual
   pinned catalogs at 390, 768 and 1280 pixels with no page exceptions, horizontal
@@ -13,6 +13,9 @@
   Private agent/docs/spec/blueprint/package JSON files are absent from the output
   and return 404 from the generated localhost preview. Static deployment tests
   reject missing/unsafe allowlists and symlinks before target/receipt writes.
+  Existing explicit-array and versioned-object manifests share the same gates.
+  Generated builders reject tracked, unowned, modified or extra `dist` contents;
+  exact receipted generated output rebuilds successfully without deleting source.
   Rebuild tests preserve authored design/backend/PHP/.htaccess source and staging
   robots. New palette drift requires an explicit revision.
 - Git tests exercised nested/foreign repositories, customer/agency common-dir

@@ -2,6 +2,14 @@
 
 ## 2026-09-14 - Independent source foundation and portable libraries
 
+Compatibility follow-on: the one public-file manifest path accepts both existing
+explicit arrays of relative strings and `{schema_version:1,files:[...]}`. Both
+formats use identical private-path/type/symlink gates; invalid records never
+fall back to an empty or broadly copied release.
+Generated static builders now reject tracked, unowned or edited `dist` outputs
+using an exact Git-local ownership receipt; only unchanged generated predecessors
+can be replaced after the next artifact is staged.
+
 Generated static repositories now include dependency-free lockfiles, actual HTML
 tests, CI and a real `npm run build` producing allowlisted `dist/` output. Local
 preview and deploy reject private source/metadata and symlinks. Source repositories

@@ -53,6 +53,8 @@ describe('all creation paths require the source repository contract', () => {
     expect(fs.readFileSync(path.join(clone, 'dist/index.html'), 'utf8')).toBe(homepage);
     fs.writeFileSync(path.join(clone, 'index.html'), homepage);
     const publicList = fs.readFileSync(path.join(clone, '.famtastic/public-files.json'), 'utf8');
+    fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), JSON.stringify(JSON.parse(publicList).files));
+    expect(execFileSync(process.execPath, ['.famtastic/build.mjs'], { cwd: clone, encoding: 'utf8' })).toContain('allowlisted public files into dist/');
     fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), JSON.stringify({ schema_version: 1, files: ['index.html', 'spec.json'] }));
     expect(() => execFileSync(process.execPath, ['.famtastic/build.mjs'], { cwd: clone, stdio: 'pipe' })).toThrow();
     expect(fs.readFileSync(path.join(clone, 'dist/index.html'), 'utf8')).toBe(homepage);

@@ -16,6 +16,20 @@ function fixture() {
   return { paths, deploy, dir };
 }
 describe('static deployment source boundary', () => {
+  it('accepts existing explicit array manifests through the same publication gates', () => {
+    const { deploy, dir } = fixture();
+    fs.writeFileSync(path.join(dir, '.famtastic/site-manifest.json'), '{"format":"source_repository"}');
+    const file = path.join(dir, '.famtastic/public-files.json');
+    fs.writeFileSync(file, JSON.stringify(['index.html']));
+    expect(deploy.plan({ site_id: 'source-site' }).files.map(entry => entry.path)).toEqual(['index.html']);
+    fs.writeFileSync(file, JSON.stringify(['index.html', 'docs/private.html']));
+    expect(() => deploy.plan({ site_id: 'source-site' })).toThrow(/cannot be included/);
+    fs.writeFileSync(file, JSON.stringify(['index.html', { path: 'other.html' }]));
+    expect(() => deploy.plan({ site_id: 'source-site' })).toThrow(/cannot be included/);
+    fs.writeFileSync(file, JSON.stringify({ files: ['index.html'] }));
+    expect(() => deploy.plan({ site_id: 'source-site' })).toThrow(/explicit public-file array or version 1/);
+    expect(deploy.list('source-site').receipts).toEqual([]);
+  });
   it('rejects unsafe source allowlists before any deployment target or receipt writes', () => {
     const { paths, deploy, dir } = fixture();
     fs.writeFileSync(path.join(dir, '.famtastic/site-manifest.json'), '{"format":"source_repository"}');

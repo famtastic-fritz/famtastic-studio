@@ -50,6 +50,14 @@ the Git root. The local static deploy adapter reads the same explicit public-fil
 manifest and refuses source repos lacking it; it never executes customer scripts
 while planning deployment. Application/CMS runtime configuration requires a
 separate reviewed recipe, not broadening the static source-public boundary.
+At the same `.famtastic/public-files.json` path, an existing explicit array of
+relative strings and the version 1 `{schema_version,files}` object are both
+accepted through identical validation. No duplicate manifest or migration is
+required merely to discover/deploy an already governed static repository.
+The generated builder keeps its exact output ownership receipt in Git-local
+metadata, refuses tracked or unowned/changed `dist` contents, and stages the next
+artifact before replacing the receipted predecessor. An existing directory with
+no receipt is not implicitly disposable; inspect and preserve it explicitly.
 
 ## Portable library discovery
 
