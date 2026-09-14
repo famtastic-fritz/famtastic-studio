@@ -45,8 +45,8 @@ drill is not claimed.
 Corrected instructions were accepted by SMTP: Shay
 `1x66Bq-00000002qz6-0JVQ`; Fritz, copied to Shay,
 `1x66C9-00000002r8l-3oE6`. Acceptance is not inbox delivery or readership. Shay
-must still choose her own password and complete her personal sign-in. The
-newsletter is an additional release still pending in this evidence record.
+must still choose her own password and complete her personal sign-in. Newsletter
+was pending at this core checkpoint; its later evidence is recorded below.
 These are orchestrator-reported consumer deployment facts, not proof that
 Site Studio can execute or regenerate this application recipe.
 
@@ -86,3 +86,26 @@ inventory tests pass against the updated sibling metadata. The source recipe
 retains negative runtime readiness, and the discovery endpoint retains
 `discovery_only: true` and `executable_import_proven: false`. No browser,
 deployment or live consumer-import proof is implied by these 11 local tests.
+
+## 2026-09-14 - Business-owned newsletter source pattern
+
+The orchestrator reports Locs source
+`b79aca2b76e64a14368a0d04a83b6fafea650262` live with 18 independent tables.
+Controlled HTTPS signup/duplicate suppression, SMTP acceptance
+(`1x66OA-00000002wiy-1814`), read-only GET, CSRF confirmation, single-use token,
+unsubscribe and 401 private-API denial passed; the fixture was fully removed.
+`/admin/newsletter` is an owner-only reader count/list, not a campaign sender.
+
+For future application builds, preserve separate newsletter consent,
+double-opt-in, business-owned storage/outbox, unsubscribe and one-attempt SMTP
+transactions with explicit uncertainty. Never auto-enroll appointment clients
+or move the list into agency storage. This is candidate source-pattern awareness,
+not bundled component code or executable Studio import; all strict recipe and
+discovery flags remain unchanged.
+
+Public title/meta, canonical/Open Graph, schema, robots and sitemap were
+published; no Google Business Profile, Search Console or ranking outcome is
+claimed. Reported release checks: 63 PHP tests/383 assertions, 36 public tests
+and 11 admin tests. Later hover/child-HTTPS gateway source `576b190a` was still
+deploying at this checkpoint; it is not needed to substantiate the newsletter
+release above.

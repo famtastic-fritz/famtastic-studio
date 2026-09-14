@@ -1,5 +1,15 @@
 # Site Studio Next change log
 
+## 2026-09-14 - Business-owned newsletter source awareness
+
+Recorded verified consumer release `b79aca2b`: 18-table independent application,
+controlled signup/confirmation/unsubscribe proof, fixture cleanup and an
+owner-only read-only reader list. No campaign sender or bundled newsletter
+component is claimed. Future builds must preserve separate consent, own storage
+and one-attempt SMTP with explicit uncertain outcomes. Published local SEO files
+do not prove GBP, Search Console or rankings. All discovery/recipe readiness
+flags remain unchanged; later `576b190a` deployment was still pending.
+
 ## 2026-09-14 - Preserve independent business applications
 
 Documented the Locs owner correction: shared components do not imply an agency
@@ -12,8 +22,8 @@ Recorded independent consumer source `ebb1215c`, migration guard source
 live, exact one-request import, 12 legacy guards, hosted controlled owner
 workflow checks, unchanged rollback digests, independent workers and a verified
 backup. Corrected instruction emails were accepted by SMTP. Personal owner
-sign-in, inbox delivery, a restore drill and the additional newsletter release
-are not claimed complete. Exact package and receipt identifiers are in the
+sign-in, inbox delivery and a restore drill are not claimed complete. Newsletter
+was pending at the core checkpoint and is recorded above. Exact identifiers are in the
 capability record.
 Discovery remains read-only and non-executable; no readiness flags or runtime
 code were promoted by this documentation change.

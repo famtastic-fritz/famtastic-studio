@@ -1,5 +1,19 @@
 # Site Studio learning record
 
+## 2026-09-14 - Newsletter is a separate business-owned consent lane
+
+Preserve explicit signup apart from booking, double-opt-in, read-only GET,
+CSRF-protected confirmation/unsubscribe and business-owned storage/outbox.
+An owner reader list does not imply campaign sending. Automatic transaction
+retries must never wrap SMTP: the fixed post-acceptance deadlock check proves
+one send, an uncertain outcome and no automatic resend.
+
+The orchestrator verified source `b79aca2b` live through a controlled HTTPS
+signup/confirmation/unsubscribe lifecycle and removed the fixture. This is a
+candidate source pattern for future builds, not an imported or bundled Studio
+feature. Keep readiness flags unchanged. Published local SEO files establish
+source/deployment evidence, not search-account setup or rankings.
+
 ## 2026-09-14 - Application ownership must survive component discovery
 
 Observation: The first Locs Owner Desk used the agency customer portal as its
@@ -20,8 +34,9 @@ core cutover live: database isolation, exact one-request import, 12 legacy write
 guards, hosted controlled owner workflow, unchanged six-table rollback digests,
 and fixture cleanup. Own same-origin booking, independent worker and nightly
 backup are active; a backup was verified and corrected instructions accepted by
-SMTP. Personal owner sign-in, inbox delivery, a restore drill and the additional
-newsletter release remain separate gates. The capability record pins exact
+SMTP. Personal owner sign-in, inbox delivery and a restore drill remain separate
+gates. Newsletter was pending at that core checkpoint; its later release is
+recorded above. The capability record pins exact
 source/package and receipt identifiers.
 The Component Studio historical React hashes and Site Studio discovery-only
 flags remain unchanged.
