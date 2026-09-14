@@ -1,5 +1,37 @@
 # Site Studio learning record
 
+## 2026-09-14 - Application ownership must survive component discovery
+
+Observation: The first Locs Owner Desk used the agency customer portal as its
+runtime. The owner required a separate business application instead. Reusing a
+presentation component was incorrectly allowed to determine the location of
+authentication, booking records and notifications.
+
+Guidance: Discover and reuse components at build time while preserving the
+business's own backend descriptor, same-domain owner routes, identity authority,
+database boundary and notification queue. An agency footer credit is not a
+runtime dependency. Do not downgrade an application site into a static rebuild
+or point it back to the agency portal when updating pages or assets. If Studio
+cannot represent the functional contract, stop that operation explicitly.
+
+Evidence: Designs source `ebb1215c`, `customer-apps/tighten-up-your-locs/`, and
+`docs/architecture/LOCS_STANDALONE_APPLICATION_V1.md`. The orchestrator reports
+core cutover live: database isolation, exact one-request import, 12 legacy write
+guards, hosted controlled owner workflow, unchanged six-table rollback digests,
+and fixture cleanup. Own same-origin booking, independent worker and nightly
+backup are active; a backup was verified and corrected instructions accepted by
+SMTP. Personal owner sign-in, inbox delivery, a restore drill and the additional
+newsletter release remain separate gates. The capability record pins exact
+source/package and receipt identifiers.
+The Component Studio historical React hashes and Site Studio discovery-only
+flags remain unchanged.
+
+Post-evaluation: The discovery seam correctly preserves readiness metadata, but
+the consumer guidance was too vague about business ownership. The updated
+contract now names forbidden agency runtime dependencies. A future executable
+application recipe needs an independence test in addition to visual parity and
+catalog discovery tests.
+
 ## 2026-09-13 — Owner Desk recipe discovery and evidence boundaries
 
 Observation: An earlier research review counted relative path segments incorrectly and called the Component Studio sibling import broken. Executing the existing import showed it was already correct. The new `/api/component-recipes` endpoint adds specification discovery, not a path repair.
