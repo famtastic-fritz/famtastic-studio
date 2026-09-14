@@ -53,12 +53,15 @@ describe('all creation paths require the source repository contract', () => {
     expect(fs.readFileSync(path.join(clone, 'dist/index.html'), 'utf8')).toBe(homepage);
     fs.writeFileSync(path.join(clone, 'index.html'), homepage);
     const publicList = fs.readFileSync(path.join(clone, '.famtastic/public-files.json'), 'utf8');
-    fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), JSON.stringify(JSON.parse(publicList).files));
+    fs.writeFileSync(path.join(clone, '.htaccess'), 'Options -Indexes\n');
+    const legacyPublicList = JSON.stringify([...JSON.parse(publicList).files, '.htaccess']);
+    fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), legacyPublicList);
     expect(execFileSync(process.execPath, ['.famtastic/build.mjs'], { cwd: clone, encoding: 'utf8' })).toContain('allowlisted public files into dist/');
+    expect(fs.readFileSync(path.join(clone, 'dist/.htaccess'), 'utf8')).toBe('Options -Indexes\n');
     fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), JSON.stringify({ schema_version: 1, files: ['index.html', 'spec.json'] }));
     expect(() => execFileSync(process.execPath, ['.famtastic/build.mjs'], { cwd: clone, stdio: 'pipe' })).toThrow();
     expect(fs.readFileSync(path.join(clone, 'dist/index.html'), 'utf8')).toBe(homepage);
-    fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), publicList);
+    fs.writeFileSync(path.join(clone, '.famtastic/public-files.json'), legacyPublicList);
     const preview = spawn(process.execPath, ['.famtastic/preview.mjs'], { cwd: clone, env: { ...process.env, PORT: '0' }, stdio: ['ignore', 'pipe', 'pipe'] });
     try {
       const url = await new Promise((resolve, reject) => {
@@ -68,6 +71,7 @@ describe('all creation paths require the source repository contract', () => {
       });
       expect((await fetch(`${url}/index.html`)).status).toBe(200);
       for (const file of privateFiles) expect((await fetch(`${url}/${file}`)).status).toBe(404);
+      expect((await fetch(`${url}/.htaccess`)).status).toBe(404);
     } finally { preview.kill('SIGTERM'); }
     fs.appendFileSync(path.join(dir, 'design.md'), '\nCustomer-authored approved refinement.\n');
     fs.mkdirSync(path.join(dir, 'backend')); fs.writeFileSync(path.join(dir, 'backend/notes.md'), 'Do not delete backend sources.');

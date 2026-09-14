@@ -58,6 +58,9 @@ The generated builder keeps its exact output ownership receipt in Git-local
 metadata, refuses tracked or unowned/changed `dist` contents, and stages the next
 artifact before replacing the receipted predecessor. An existing directory with
 no receipt is not implicitly disposable; inspect and preserve it explicitly.
+The exact root `.htaccess` is a server-control packaging exception, not public
+document content. An allowlist may include it for Apache; local previews return
+404 for it. This does not permit any other hidden path or raw application source.
 
 ## Portable library discovery
 

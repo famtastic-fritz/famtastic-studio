@@ -32,6 +32,7 @@ const PUBLIC_EXTENSIONS = new Set(['.html', '.css', '.js', '.png', '.jpg', '.jpe
 
 export function isPublishable(relPath) {
   if (typeof relPath !== 'string' || path.isAbsolute(relPath) || relPath.includes('\\')) return false;
+  if (relPath === '.htaccess') return true; // Exact root Apache control file, not arbitrary dot-source.
   const segments = relPath.split('/');
   if (segments.some((seg) => !seg || seg.startsWith('.') || PRIVATE_DIRECTORIES.has(seg))) return false;
   return PUBLIC_EXTENSIONS.has(path.extname(relPath).toLowerCase()) || ['robots.txt', 'sitemap.xml'].includes(relPath);

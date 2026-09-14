@@ -32,7 +32,7 @@ export function publicFiles() {
   return [...new Set(listed)].map(rel => {
     if (typeof rel !== 'string' || path.isAbsolute(rel) || rel.includes('\\\\')) throw new Error('Invalid public path');
     const pieces = rel.split('/'); const ext = path.extname(rel).toLowerCase();
-    if (pieces.some(piece => !piece || piece.startsWith('.') || blocked.has(piece)) || !types[ext] || (ext === '.txt' && rel !== 'robots.txt') || (ext === '.xml' && rel !== 'sitemap.xml')) throw new Error('Private or unsupported public path: ' + rel);
+    if (rel !== '.htaccess' && (pieces.some(piece => !piece || piece.startsWith('.') || blocked.has(piece)) || !types[ext] || (ext === '.txt' && rel !== 'robots.txt') || (ext === '.xml' && rel !== 'sitemap.xml'))) throw new Error('Private or unsupported public path: ' + rel);
     let current = root;
     for (const piece of pieces) { current = path.join(current, piece); if (fs.lstatSync(current).isSymbolicLink()) throw new Error('Public symlinks are forbidden'); }
     if (!fs.statSync(current).isFile()) throw new Error('Public file missing: ' + rel);
@@ -100,7 +100,7 @@ const server = http.createServer((req, res) => {
     if (!['GET','HEAD'].includes(req.method)) { res.writeHead(405); return res.end(); }
     const rel = decodeURIComponent(new URL(req.url, 'http://localhost').pathname).replace(/^\\/+/, '') || 'index.html';
     const ext = path.extname(rel).toLowerCase();
-    if (!publicFiles().includes(rel)) throw new Error('not public');
+    if (rel === '.htaccess' || !publicFiles().includes(rel)) throw new Error('not public');
     const file = fs.realpathSync(path.resolve(root, rel));
     if (!file.startsWith(root + path.sep) || !fs.statSync(file).isFile()) throw new Error('not found');
     res.writeHead(200, { 'Content-Type': types[ext], 'X-Content-Type-Options':'nosniff' });

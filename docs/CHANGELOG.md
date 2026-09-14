@@ -9,6 +9,9 @@ fall back to an empty or broadly copied release.
 Generated static builders now reject tracked, unowned or edited `dist` outputs
 using an exact Git-local ownership receipt; only unchanged generated predecessors
 can be replaced after the next artifact is staged.
+The exact root `.htaccess` is retained when explicitly packaged for Apache,
+while localhost previews still refuse to serve it. Other hidden/source files
+remain denied. This preserves the existing Inc site's server-control boundary.
 
 Generated static repositories now include dependency-free lockfiles, actual HTML
 tests, CI and a real `npm run build` producing allowlisted `dist/` output. Local
