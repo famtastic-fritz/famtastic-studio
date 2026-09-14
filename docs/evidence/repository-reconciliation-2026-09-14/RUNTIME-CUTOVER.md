@@ -39,7 +39,27 @@ listening only on 127.0.0.1:3400; lsof verified its actual new working directory
 ## Rollback
 
 Inspect active jobs first. Restore the exact prior plist from the saved path,
-validate it with plutil, bootout only gui/501/com.famtastic.studio-next, then
-bootstrap that label's plist. The old checkout and actual data root remain in
-place. Read back process cwd, data root, build inventory and loopback port after
-rollback. Do not erase the independent repos or replace customer business data.
+but update its WorkingDirectory to the preserved old checkout at
+`/Users/famtastic-fritz/Development/FAMtastic-Repos/retired-nested-checkouts.Ty4jPH/site-studio-next`:
+the orchestrator relocated that intact nested repository after cutover, so the
+saved old directory must not be used verbatim. Its node_modules and original Git
+HEAD were checked. Validate with plutil, bootout only gui/501/com.famtastic.studio-next,
+then bootstrap that label's plist. The exact actual data root remains unchanged.
+Read back cwd, data root, build inventory and loopback port after rollback. Do not
+erase the independent repos or replace customer business data. This describes
+rollback; no rollback was needed or executed.
+
+## Static build/public-boundary follow-on
+
+Source a7bd14e770c169dde12ac145e62657fd7659ccb1 was pushed to main and the scoped
+branch and read back before reloading. This adds real generated-clone npm build,
+lockfiles/tests/CI and allowlisted static output/preview/deployment. All 932 tests
+across 79 files, lint and the five unchanged foundation tests passed.
+
+Before reload, PID 38688 had no children and GET /api/builds reported zero runs.
+`launchctl kickstart -k gui/501/com.famtastic.studio-next` succeeded. New PID 99610
+has the independent checkout as cwd and listens only on 127.0.0.1:3400. Read-back
+checks confirmed both pinned libraries available, the same exact old data root,
+zero runs and zero files/two directories in that data root. A fresh guarded POST
+to /api/pipeline/run?site_id=site-studio-next returned 409 repository_identity_required
+without new data or source writes. No customer site process was restarted.

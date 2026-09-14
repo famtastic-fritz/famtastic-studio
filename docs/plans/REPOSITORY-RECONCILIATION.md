@@ -22,11 +22,11 @@ contract, with portable read-only library discovery.
 
 ## Status
 
-Core source published and the existing local Studio runtime uses the new
+Complete. Source published and the existing local Studio runtime uses the new
 independent checkout, with preserved data and verified real preflight rejection.
 Final static-output boundary follow-on passed the complete test suite and fresh
-generated-clone build proof. Its scoped push and idle-service reload are recorded
-in the runtime receipt.
+generated-clone build proof. Its source push and successful idle-service reload
+are recorded in the runtime receipt. No customer deployment is implied.
 
 ## Started
 
