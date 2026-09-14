@@ -5,6 +5,18 @@ Studio Next, and each delivered site repository. A catalog entry is a
 versioned capability boundary, not a promise that Site Studio can regenerate
 every implementation from prose.
 
+## Service business Owner Desk — research candidate (2026-09-13)
+
+The separate Component Studio branch `research/service-business-owner-desk`
+contains the booking/teaching research, versioned candidate contract, Tighten Up
+Your Locs instance, build guide and reusable skill. See the
+[source and consumer handoff](../../../docs/research/SERVICE_BUSINESS_OWNER_DESK_HANDOFF_2026-09-13.md).
+Local read-only `GET /api/component-recipes` now discovers the sibling package's
+specifications and preserves source readiness. Four discovery tests plus seven
+existing inventory tests pass. No executable owner UI import, generated
+owner application or production scheduling capability is certified. Preserve
+the registry promotion rules below before adding it to a runnable catalog.
+
 ## Registry rules
 
 - Recipe IDs are stable; released versions are immutable.
