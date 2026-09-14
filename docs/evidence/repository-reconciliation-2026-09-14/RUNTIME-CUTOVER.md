@@ -63,3 +63,21 @@ checks confirmed both pinned libraries available, the same exact old data root,
 zero runs and zero files/two directories in that data root. A fresh guarded POST
 to /api/pipeline/run?site_id=site-studio-next returned 409 repository_identity_required
 without new data or source writes. No customer site process was restarted.
+
+## Existing-site compatibility and output ownership
+
+Source 5a75508f88269399207db8198da4f8be2b23d044 (including ownership change
+631456b793396fd1d971c2876aeb82170ec37fae) passed all 936 tests across 80 files
+and lint before push/ref readback. The generated builder now refuses tracked,
+unowned, changed or extra dist contents, and supports the same explicit-array
+public manifests used by existing governed sites. Exact root .htaccess is
+packaged for Apache but remains inaccessible from the local preview server.
+
+After another zero-job/no-child preflight, the existing local service was reloaded
+to PID 72336. Its cwd/data root were unchanged, both catalogs remained available,
+and data inventory remained zero files/two directories. Read-only POST
+/api/sites/plan-deploy?site_id=site-famtastic-inc returned 200, 13 files including
+.htaccess, and dispatched:false. Its manifest hash
+`a895dc1d7d2c806f93429561962a7bb394deb7a693c16f5d6144f841eabc64c7`
+exactly matched the independent Inc GitHub-clone artifact proof at 498dbf999bbb7b656c93a324e56dfac8842d1ba2.
+No deployment receipt was created and no customer runtime was changed.
