@@ -29,7 +29,7 @@
   </array>
 
   <key>WorkingDirectory</key>
-  <string>/Users/famtastic-fritz/Development/FAMtastic/site-studio-next</string>
+  <string>/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next</string>
 
   <key>EnvironmentVariables</key>
   <dict>
@@ -51,6 +51,15 @@
 
     <key>NODE_ENV</key>
     <string>production</string>
+
+    <key>STUDIO_REPOSITORIES_ROOT</key>
+    <string>/Users/famtastic-fritz/Development/FAMtastic-Repos</string>
+
+    <key>FAMTASTIC_REPOSITORY_CHECKOUTS</key>
+    <string>{"component-studio":"/Users/famtastic-fritz/Development/FAMtastic-Repos/component-studio","media-studio":"/Users/famtastic-fritz/Development/FAMtastic-Repos/media-studio"}</string>
+
+    <key>FAMTASTIC_REPOSITORY_CONTRACT_VERSION</key>
+    <string>1.0.0</string>
   </dict>
 
   <key>RunAtLoad</key>

@@ -6,6 +6,9 @@ direct/conversational/retry build paths. Customer checkouts and studio/library
 repositories are separate. The full Component and Media Studio platforms are
 planned, while their independent libraries are available at pinned revisions.
 
-This source release does not restart the running Studio service or migrate
-customer business data. The ecosystem orchestrator records remote publication,
-customer-repository migration and production evidence separately.
+The authorized local launchd cutover now runs the new independent checkout on
+loopback port 3400. Its actual existing data root was preserved; no running jobs
+or data were lost. The real pipeline rejected a wrong-repository build before
+writing. See docs/evidence/repository-reconciliation-2026-09-14/RUNTIME-CUTOVER.md.
+Customer-repository migration and website production evidence remain in the
+ecosystem orchestrator's separate release ledger.

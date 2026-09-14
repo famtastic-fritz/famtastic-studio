@@ -17,12 +17,12 @@ contract, with portable read-only library discovery.
 - [x] Replace sibling imports and invented remote URLs.
 - [x] Add portable pinned catalog tests and standalone source records.
 - [x] Complete final test/browser pass and catalog pins.
-- [ ] Complete scoped push and coordinated existing-runtime cutover after job/data preflight.
+- [x] Complete scoped push and coordinated existing-runtime cutover after job/data preflight.
 
 ## Status
 
-Source implementation and local verification complete; publication and runtime
-cutover preflight in progress.
+Complete. Source published and the existing local Studio runtime uses the new
+independent checkout, with preserved data and verified real preflight rejection.
 
 ## Started
 
@@ -30,7 +30,7 @@ cutover preflight in progress.
 
 ## Ended
 
-Pending final proof.
+2026-09-14
 
 ## Execution
 
@@ -58,3 +58,4 @@ site-studio-conventions and dna-capture govern module boundaries and stage evide
 Full Vitest suite: 930 passed across 78 files. Foundation: 5 tests passed.
 Browser: both libraries at 390/768/1280, no clipping or page exceptions. See
 docs/evidence/repository-reconciliation-2026-09-14/README.md.
+Runtime proof: docs/evidence/repository-reconciliation-2026-09-14/RUNTIME-CUTOVER.md.

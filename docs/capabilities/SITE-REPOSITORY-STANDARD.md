@@ -49,6 +49,7 @@ produce explicit unavailable reasons. Catalog code is never executed.
 `STUDIO_LIBRARY_ROOTS` remains a lower-priority compatibility alias.
 
 Discovery and individual package installation are separate proofs. Full studio
-platforms remain planned. Runtime services were not restarted by this source
-change. Production deployment and fleet migrations belong to the orchestrator's
-release ledger, not these source-test claims.
+platforms remain planned. The separately authorized local launchd cutover is
+recorded in the runtime receipt, including actual data-root preservation and a
+real wrong-repository rejection. Customer production deployment and fleet
+migrations belong to the orchestrator's release ledger, not source-test claims.

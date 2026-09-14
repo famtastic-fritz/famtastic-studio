@@ -2,14 +2,20 @@
 
 ## 2026-09-14 - Independent source foundation and portable libraries
 
+Follow-on: after source push and idle/data verification, the authorized local
+launchd service was switched to the independent checkout while preserving its
+exact data root. Both live library catalogs resolve, and the real pipeline
+rejects a wrong-repository target with 409 before writing. The runtime receipt
+is recorded separately from customer website deployment.
+
 Added one versioned site-foundation package, Git identity preflight, complete
 startup/design/learning/research scaffold and preservation rules. Direct,
 conversational and retry paths now share the contract; foreign origins and dirty
 targets fail before site writes. Removed invented repository URLs. Components
 and Media now discover pinned JSON catalogs with explicit unavailable states,
 separate from portfolio inventory and full platform readiness. See the
-[source contract](capabilities/SITE-REPOSITORY-STANDARD.md). Source/tests only;
-no production service restart or customer data migration is implied.
+[source contract](capabilities/SITE-REPOSITORY-STANDARD.md). No customer website
+service restart or customer data migration is implied.
 
 ## 2026-09-14 - Business-owned newsletter source awareness
 
