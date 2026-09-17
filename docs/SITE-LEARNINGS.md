@@ -1,5 +1,15 @@
 # Site Studio learning record
 
+## 2026-09-17 - A consumer fixture is not a normal producer flow
+
+Observation: the cross-repository test exercised real serialization and receipt
+services but supplied continuation authority by hand. Actual proof finalization
+does not record those facts, so successful consumer tests overstated routine
+readiness. Guidance: trace the writer of every authority-bearing field before
+claiming end-to-end completion. Byte hashes, fulfilled media and valid HTML do
+not establish agreed site scope, rights approval or protected target ownership.
+Keep missing writers classified as implementation, not configuration.
+
 ## 2026-09-17 - Missing SFTP inputs do not mean missing hosting access
 
 Observation: the default adapter required SFTP settings while the ecosystem

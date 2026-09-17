@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Independent retest and production evidence-owner trace
+
+- Recorded parent 134-test/19-file independent retest and PHP/API evidence.
+- Corrected routine-readiness claims: the selection serializer consumes an
+  evidence record absent from normal proof finalization. Documented actual
+  legacy output, derivable identity/bytes and missing scope/design/rights/
+  retrieval/hosting writers; no fabricated complete-site producer was added.
+
 ## 2026-09-14 - Independent source foundation and portable libraries
 
 Compatibility follow-on: the one public-file manifest path accepts both existing

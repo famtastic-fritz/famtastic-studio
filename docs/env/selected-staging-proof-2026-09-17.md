@@ -112,3 +112,16 @@ Agency commit remains 92e0d4b68d15fd69b3afd803bb7adb6040b3ceeb; its actual
 serializer/receipt boundary was rerun in this suite. These tests supersede the
 previous insufficient static-navigation evidence; they do not establish live
 hosting, general application continuation or full Drupal runtime proof.
+
+## Parent independent retest
+
+The parent independently tested Next 1e678ad and agency 92e0d4b: the combined
+bounded sweep passed 134 tests in 19 files in 18.42 seconds. Next lint and diff
+checks passed; the actual PHP harness passed 40 assertions and portal API tests
+passed 3 cases. The temporary Next dependency symlink was removed and its
+checkout was clean. This resolves the three reproduced correctness defects.
+
+The parent also identified a remaining production evidence-producer gap:
+fresh selections cannot yet obtain selected_build_continuation through the
+normal finalization path. This is remaining implementation, not a credential
+or activation gate; hand-seeded evidence does not prove the routine flow.

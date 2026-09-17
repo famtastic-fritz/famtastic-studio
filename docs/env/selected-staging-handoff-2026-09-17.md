@@ -29,7 +29,9 @@ and freeform revision execution remain unsupported and the overall general
 build-continuation requirement stays open; such requests become exceptions,
 not falsely ready sites.
 
-Agency real producer and receipt logic now share executable contracts. Missing
+Agency selection serializer and receipt logic share executable contracts. The
+normal proof finalizer does not yet produce the required continuation evidence;
+the positive test supplies that evidence synthetically. Missing
 metadata preserves selection and records a specific exception. Local legacy
 reconciliation retains old source/project identity. Newer revisions archive
 prior receipt/acceptance, reject stale callbacks, supersede old queued readiness
@@ -56,6 +58,11 @@ See agency docs/plans/SELECTED_STAGING_CONTINUATION_LOCAL_2026-09-17.md.
 
 ## Remaining gates
 
+Routine evidence production remains implementation work, not activation-only:
+see [the producer trace](selected-staging-producer-trace-2026-09-17.md) for exact
+available facts, missing authoritative writers and the source-owner decision.
+No complete routine producer-to-receipt success is claimed.
+
 Matching Drupal vendor/runtime for real SQL concurrency/transaction/controller
 and customer lifecycle proof. Production metadata reconciliation. Broader
 revision/application recipes. Separately authorized credential binding, review
@@ -73,6 +80,10 @@ runbook. These are explicit gates, not a declaration of production readiness.
 real Chromium navigation/resource negatives and positives, directory/prefix
 scoping, protection-dependent HTTP fixtures and independent busy-queue progress.
 Lint and diff checks pass. Agency source remains unchanged at 92e0d4b.
+
+Parent independently retested Next 1e678ad and agency 92e0d4b: 134 tests in
+19 files passed in 18.42 seconds, plus Next lint/diff, 40 PHP assertions and
+3 portal API tests. The dependency symlink was removed and checkout was clean.
 See selected-staging-proof-2026-09-17.md for the exact command and limitations.
 
 ## Exact changed files: Next
