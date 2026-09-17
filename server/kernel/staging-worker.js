@@ -54,7 +54,12 @@ export function stagingCallback(job) {
 // payment client, mailer, or production deploy adapter in this coordinator.
 export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArtifactOrigins, qa, host, callback, maxAttempts = 3 }) {
   async function run(id) {
-    const { job, token } = store.claim(id);
+    let claim;
+    try { claim = store.claim(id); } catch (error) {
+      if (error.code === 'project_busy') error.stagingClaimBusy = true;
+      throw error;
+    }
+    const { job, token } = claim;
     const save = () => store.checkpoint(job, token);
     try {
       if (['complete', 'exception', 'superseded'].includes(job.state)) return job;
@@ -115,7 +120,13 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
   }
   return { run, tick: async () => {
     const results = [];
-    for (const j of store.list().filter(j => ['queued', 'retry', 'running'].includes(j.state))) results.push(await run(j.id));
+    for (const j of store.list().filter(j => ['queued', 'retry', 'running'].includes(j.state))) {
+      try { results.push(await run(j.id)); }
+      catch (error) {
+        if (error.code !== 'project_busy' || error.stagingClaimBusy !== true) throw error;
+        results.push({ id: j.id, state: 'busy', stage: j.stage, code: 'project_busy' });
+      }
+    }
     return results;
   } };
 }

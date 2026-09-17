@@ -1,3 +1,4 @@
+import { reviewDirectoryUrl } from './review-directory-url.js';
 // Narrow cPanel review transport. The capability provider supplies authenticated
 // request/read/probe/backup/restore functions; none acquire credentials here.
 import fs from 'node:fs';
@@ -6,7 +7,7 @@ import { safePublicPath } from './staging-contract.js';
 
 export function createCpanelReview({ paths, journal, binding, transport }) {
   const target = structuredClone(binding);
-  const url = new URL(target.url);
+  const url = reviewDirectoryUrl(target.url);
   if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash
     || !(url.hostname === 'famtasticinc.com' || /^[a-z0-9-]+\.famtasticinc\.com$/.test(url.hostname))
     || !/^\/home\/nineoo\/public_html\/[a-z0-9-]+$/.test(target.target_path)

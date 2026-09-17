@@ -1,3 +1,4 @@
+import { reviewDirectoryUrl } from './review-directory-url.js';
 import { digest, stagingError } from './staging-store.js';
 import { createReviewBackup } from './review-backup.js';
 import { safePublicPath } from './staging-contract.js';
@@ -5,7 +6,7 @@ import { safePublicPath } from './staging-contract.js';
 // Real HTTP serialization, with fetch and credentials injected at assembly.
 // Never contacts a host merely by importing or constructing this module.
 export function createCpanelHttpTransport({ paths, journal, binding, credentialProvider, reviewAuthorization, authFile, fetchImpl = fetch }) {
-  const target = structuredClone(binding), url = new URL(target.url);
+  const target = structuredClone(binding), url = reviewDirectoryUrl(target.url);
   if (!/^\/home\/nineoo\/\.famtastic-review\/[a-z0-9-]+\.htpasswd$/.test(authFile || '') || typeof reviewAuthorization !== 'string' || !reviewAuthorization.startsWith('Basic ') || typeof credentialProvider !== 'function') throw stagingError('cpanel_credentials_unbound');
   const privateRoot = '/home/nineoo/.famtastic-review';
   const lockName = `${target.site_id}.lock.json`;
@@ -47,7 +48,8 @@ export function createCpanelHttpTransport({ paths, journal, binding, credentialP
     if (!operation || await readText(privateRoot, lockName) !== operation) throw stagingError('remote_claim_lost');
   }
   async function publicGet(name, authorization = reviewAuthorization, host = url.hostname) {
-    const endpoint = new URL(name, target.url); endpoint.hostname = host;
+    if (name !== '' && !safePublicPath(name)) throw stagingError('review_probe_path_invalid');
+    const endpoint = new URL(name, url.href); endpoint.hostname = host;
     let response;
     try { response = await fetchImpl(endpoint.href, { headers: authorization ? { Authorization: authorization } : {}, redirect: 'error', signal: AbortSignal.timeout(30000) }); }
     catch { throw stagingError('review_https_failed'); }

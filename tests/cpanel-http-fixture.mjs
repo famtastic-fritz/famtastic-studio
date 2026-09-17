@@ -11,7 +11,7 @@ export function mockCpanelHttp({ binding, html, artifactUrl, callbackEndpoint })
     if (url.port === '2083') {
       if (options.headers?.Authorization !== 'cpanel nineoo:synthetic-token') return new Response('', { status: 401 });
       const q = Object.fromEntries(url.searchParams);
-      if (url.pathname === '/execute/DomainInfo/domains_data') return json({ status: 1, data: { sub_domains: [{ domain: new URL(binding.url).hostname, documentroot: binding.target_path }] } });
+      if (url.pathname === '/execute/DomainInfo/domains_data') return json({ status: 1, data: { sub_domains: [{ domain: new URL(binding.url).hostname, documentroot: new URL(binding.url).pathname === '/' ? binding.target_path : '/home/nineoo/public_html' }] } });
       if (url.pathname === '/execute/Fileman/list_files') {
         if (!dirs.has(q.dir)) return json({ status: 0 });
         const rows = [];
@@ -33,10 +33,14 @@ export function mockCpanelHttp({ binding, html, artifactUrl, callbackEndpoint })
       if (q.cpanel_jsonapi_func === 'fileop' && q.op === 'trash') { files.delete(`/home/nineoo/${q.sourcefiles}`); return json({ event: { result: 1 } }); }
       throw new Error('Unexpected API call');
     }
-    const headers = { 'X-Robots-Tag': 'noindex, nofollow' };
-    if (url.hostname !== new URL(binding.url).hostname) return new Response('', { status: 403, headers });
-    if (options.headers?.Authorization !== 'Basic synthetic-review') return new Response('', { status: 401, headers });
-    const bytes = files.get(`${binding.target_path}${url.pathname === '/' ? '/index.html' : url.pathname}`);
+    const boundUrl = new URL(binding.url);
+    if (!url.pathname.startsWith(boundUrl.pathname)) return new Response('', { status: 404 });
+    const gate = files.get(`${binding.target_path}/.htaccess`)?.toString() || '';
+    const headers = /Header always set X-Robots-Tag "noindex/.test(gate) ? { 'X-Robots-Tag': 'noindex, nofollow' } : {};
+    if (url.hostname !== boundUrl.hostname && gate.includes('RewriteCond %{HTTP_HOST}') && gate.includes('RewriteRule ^ - [F,L]')) return new Response('', { status: 403, headers });
+    if (gate.includes('AuthType Basic') && gate.includes('Require valid-user') && options.headers?.Authorization !== 'Basic synthetic-review') return new Response('', { status: 401, headers });
+    const relative = url.pathname.slice(boundUrl.pathname.length) || 'index.html';
+    const bytes = files.get(`${binding.target_path}/${relative}`);
     return new Response(bytes ? (controls.corrupt ? 'corrupt' : bytes) : '', { status: bytes ? 200 : 404, headers });
   }
   return { fetchImpl, files, calls, callbacks, controls };

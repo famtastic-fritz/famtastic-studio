@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { checkStaticNavigation, checkStaticResources } from './selected-static-navigation.js';
 import { digest } from './staging-store.js';
 // Static selected-artifact QA. No application behavior or independent human
 // design judgment is inferred. Unknown interactive forms fail scope validation.
@@ -22,13 +22,37 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
     try {
       for (const width of [390, 768, 1280]) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
-        // Hermetic review: undeclared network assets are a failed check.
-        await context.route(/^https?:/, route => { problems.push('undeclared_external_dependency'); return route.abort(); });
+        const origin = 'https://selected-review.invalid';
+        const resourceChecks = [];
+        let baselineMode = false;
+        const mime = { html: 'text/html', css: 'text/css', js: 'application/javascript', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', woff2: 'font/woff2' };
+        const manifest = new Map(files.map(f => [f.path, f]));
+        // Every browser request is intercepted. Only current allowlisted bytes
+        // are served, so missing CSS/imports/fonts/scripts cannot pass silently.
+        await context.route('**/*', async route => {
+          const request = route.request(), url = new URL(request.url());
+          const relative = decodeURIComponent(url.pathname.slice(1));
+          const name = !relative || relative.endsWith('/') ? `${relative}index.html` : relative;
+          const allowed = url.origin === origin && manifest.has(name);
+          if (!allowed) {
+            problems.push(url.origin === origin ? 'missing_local_resource' : 'undeclared_external_dependency');
+            resourceChecks.push({ url: url.href, type: request.resourceType(), passed: false, reason: url.origin === origin ? 'not_in_artifact_manifest' : 'external_request_blocked' });
+            return route.fulfill({ status: 404, body: '' });
+          }
+          const artifact = manifest.get(name);
+          const contents = baselineMode ? Buffer.from(artifact.content_base64, 'base64') : fs.readFileSync(paths.within('sites', `project-${job.packet.project_id}`, name));
+          resourceChecks.push({ path: name, type: request.resourceType(), passed: true, sha256: digest(contents) });
+          return route.fulfill({ status: 200, contentType: mime[name.split('.').at(-1)] || 'application/octet-stream', body: contents });
+        });
         for (const file of files.filter(f => f.path.endsWith('.html'))) {
           const page = await context.newPage();
           page.on('pageerror', () => problems.push('script_error'));
-          const local = paths.within('sites', `project-${job.packet.project_id}`, file.path);
-          await page.goto(pathToFileURL(local).href);
+          baselineMode = false;
+          await page.goto(`${origin}/${file.path}`);
+          const navigation = await checkStaticNavigation({ page, context, origin, files: manifest });
+          const declaredResources = await checkStaticResources({ page, origin, files: manifest });
+          if (declaredResources.some(check => check.passed === false)) problems.push('declared_resource_failed');
+          if (navigation.some(check => check.passed === false)) problems.push('static_navigation_failed');
           const checks = await page.evaluate(() => ({
             overflow: document.documentElement.scrollWidth > innerWidth + 1,
             lang: !!document.documentElement.lang, title: !!document.title,
@@ -39,10 +63,11 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
           }));
           if (checks.overflow || !checks.lang || !checks.title || !checks.h1 || !checks.images || !checks.controls || checks.unsupportedForms) problems.push('static_browser_qa');
           const actual = await page.screenshot({ fullPage: true, animations: 'disabled' });
-          await page.goto(pathToFileURL(paths.within('staging', job.id, 'baseline', file.path)).href);
+          baselineMode = true;
+          await page.goto(`${origin}/${file.path}`);
           const baseline = await page.screenshot({ fullPage: true, animations: 'disabled' });
           if (digest(actual) !== digest(baseline)) problems.push('visual_parity');
-          evidence.push({ path: file.path, width, checks, output_screenshot_sha256: digest(actual), baseline_screenshot_sha256: digest(baseline) });
+          evidence.push({ path: file.path, width, checks, navigation, declared_resources: declaredResources, resources: [...resourceChecks], output_screenshot_sha256: digest(actual), baseline_screenshot_sha256: digest(baseline) });
           await page.close();
         }
         await context.close();
@@ -52,6 +77,6 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
     if (c.required_pages.some(p => !manifestPaths.has(p))) problems.push('scope_incomplete');
     if (c.files.some(f => f.rights?.status !== 'approved' || !f.rights?.evidence_ref)) problems.push('asset_rights');
     return { passed: problems.length === 0, checks: ['functional', 'responsive', 'accessibility', 'asset_rights', 'visual_parity'],
-      verifier: 'selected-static-browser-v1', evidence, problems, limitations: ['Accessibility checks are structural, not a complete WCAG audit', 'Functional scope is static navigation; no application recipe is inferred'] };
+      verifier: 'selected-static-browser-v2', evidence, problems, limitations: ['Accessibility checks are structural, not a complete WCAG audit', 'Functional scope is static navigation; no application recipe is inferred'] };
   };
 }
