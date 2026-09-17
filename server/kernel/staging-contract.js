@@ -29,7 +29,8 @@ export function stagingPacketErrors(packet) {
   const canonicalManifest = artifacts
     .filter(artifact => artifact && typeof artifact === 'object')
     .map((artifact) => ({ bytes: artifact.bytes, path: artifact.path, role: artifact.role, sha256: artifact.sha256 }))
-    .sort((left, right) => left.path.localeCompare(right.path));
+    // Contract paths are ASCII. Match PHP strcmp; locale collation is not a wire format.
+    .sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
   const manifestDigest = crypto.createHash('sha256').update(JSON.stringify(canonicalManifest)).digest('hex');
   if (!/^[a-f0-9]{64}$/.test(packet?.artifact_manifest_sha256 || '') || packet?.artifact_manifest_sha256 !== manifestDigest) {
     errors.push('packet.artifact_manifest_sha256');

@@ -42,7 +42,7 @@ export function createStagingStore({ paths, journal }) {
       const held = db.prepare('SELECT * FROM claims WHERE project=?').get(packet.project_id);
       if (held && alive(held.pid)) throw stagingError('project_busy', 409);
       if (held) db.prepare('DELETE FROM claims WHERE project=?').run(packet.project_id);
-      const job = { id: `ssj_${hash.slice(0, 32)}`, hash, packet, stage: 'materialize', state: 'queued', attempts: {}, history: [], created_at: new Date().toISOString() };
+      const job = { id: `ssj_${hash.slice(0, 32)}`, hash, packet, stage: packet.schema === 'famtastic.site-studio.planning-packet.v1' ? 'plan' : 'materialize', state: 'queued', attempts: {}, history: [], created_at: new Date().toISOString() };
       journal.append({ site_id: `project-${packet.project_id}`, initiator: 'famtastic-drupal', intent: 'accept_selected_staging_packet', changes: [{ job_id: job.id }], result: { status: 'durably_queued' }, evidence: { packet_sha256: hash } });
       db.prepare('INSERT INTO jobs VALUES (?,?,?,?,?,?,?,?,?)').run(job.id, packet.idempotency_key, packet.packet_id, packet.project_id, packet.request_id, account, revision, hash, JSON.stringify(job));
       return job;

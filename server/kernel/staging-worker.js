@@ -3,6 +3,8 @@ import { continuationErrors } from './staging-contract.js';
 import { digest, stagingError } from './staging-store.js';
 import { createArtifactBundle } from './artifact-bundle.js';
 import { prepareStagingBuildPacket, packetToBuildBrief } from './selected-build-adapter.js';
+import { planSelectedSource } from './selected-source-plan.js';
+import { PLANNING_SCHEMA } from './selected-planning-contract.js';
 
 export async function materializeSelection(packet, { fetchArtifact, allowedArtifactOrigins }) {
   const errors = continuationErrors(packet);
@@ -43,6 +45,10 @@ export function stagingCallback(job) {
     selected_direction_id: p.selected_direction_ids[0], selected_artifact_sha256: p.selected_artifacts[0].source_artifact_sha256,
     artifact_manifest_sha256: p.artifact_manifest_sha256, completed_at: job.completed_at,
     customer_accepted: false, checkout_eligible: false, final_launch: false };
+  if (p.schema === PLANNING_SCHEMA) return { ...identity,
+    schema: 'famtastic.site-studio.planning-result.v1', status: job.failure ? 'planning_failed' : 'planning_complete',
+    intent_id: p.intent.intent_id, intent_sha256: digest(p.intent), ready: false,
+    ...(job.failure ? { error: job.failure } : { plan: job.plan }) };
   if (job.failure) return { ...identity, schema: 'famtastic.site-studio.staging-failure.v1', status: 'failed', error: job.failure };
   return { ...identity, schema: 'famtastic.site-studio.staging-receipt.v1', status: 'deployed',
     staging_url: job.host.url, artifact_sha256: job.host.manifest_sha256, target_path: job.host.target_path,
@@ -75,7 +81,11 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
         job.state = 'running'; save();
         const started = Date.now();
         try {
-          if (stage === 'materialize') {
+          if (stage === 'plan') {
+            job.plan = planSelectedSource(job.packet.intent);
+            if (job.packet.dispatch_issue) job.plan.issues.push({ stage: 'dispatch', code: 'agency_execution_binding_incomplete', detail: job.packet.dispatch_issue, owner: 'designs' });
+            job.stage = 'callback';
+          } else if (stage === 'materialize') {
             job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins });
             job.stage = 'build';
           } else if (stage === 'build') {

@@ -1,5 +1,12 @@
 # Selected staging producer trace
 
+September 17 follow-on: the orchestrator selected Next as continuation owner and
+Designs as authority. Local finalized-source and unresolved-intent adapters now
+exist. Later read-only inspection found actual data-template, section and field
+markers in the legacy shared-template family; any earlier blanket absence claim
+is superseded by LEGACY-SHARED-SHELL-ADAPTER-2026-09-17.md. Missing authored
+content/rights/mappings remain distinct from available structural boundaries.
+
 Local source investigation after the independent parent retest. No production
 records or secrets were read, and no generator, callback or hosting operation
 was invoked. The agency source is 92e0d4b; Next code is 118201e (handoff 1e678ad).

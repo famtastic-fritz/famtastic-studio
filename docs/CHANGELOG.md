@@ -1,5 +1,15 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Canonical mixed-case manifests and durable intent planning
+
+- Matched PHP strcmp ordering for ASCII artifact paths, retaining original
+  filenames/bytes; actual PHP mixed-case/punctuation, reorder and tamper tests pass.
+- Added a planning stage in existing SQLite jobs and authenticated acceptance/
+  callback flow. Planning results never contain staging evidence or readiness.
+- Real agency selection/ledger/client to Next HTTP/planner to agency result
+  proof passes restart, duplicate, stale and cross-tenant negatives without builds.
+  Bounded affected sweep passed 25 tests/8 files in 9.16 seconds; lint passed.
+
 ## 2026-09-17 - Bound completed-source round trip and stale-evidence repair
 
 - Bound source exports to live Git identity and actual verified bytes; bound

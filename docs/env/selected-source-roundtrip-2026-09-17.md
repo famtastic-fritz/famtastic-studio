@@ -87,6 +87,14 @@ passed in the one-test focused rerun (2.36 seconds).
 
 ## Remaining implementation versus activation
 
+Follow-on correction: unresolved-intent dispatch is now wired through the same
+agency ledger/client and Next durable worker; revision-bound planning results
+return through the existing callback without staging readiness. The earlier
+statement below is historical. Also, the real legacy template family does have
+data-template/section/field markers; the bounded adapter proposal is recorded in
+../plans/LEGACY-SHARED-SHELL-ADAPTER-2026-09-17.md. Available structure does not
+establish a customer's content or transformation authority.
+
 - Ordinary concept output lacks an executable selected-preserving recipe.
   Intent and remaining-work planning are implemented, but automatic dispatch of
   unresolved intents into a durable Next planning queue is not wired. The

@@ -115,6 +115,12 @@ hosting, general application continuation or full Drupal runtime proof.
 
 ## Parent independent retest
 
+Later parent review of Next 2d43117 / agency de7f6ddf passed 147 tests in
+24 files in 25.66 seconds, 42 PHP assertions, three actual-selection-seam cases
+and three portal API tests. Lint/diff passed and its dependency symlink was
+removed. The mixed-case cross-language manifest defect found afterward is fixed
+by matching PHP ASCII comparison; real PHP reorder/tamper fixtures were added.
+
 The parent independently tested Next 1e678ad and agency 92e0d4b: the combined
 bounded sweep passed 134 tests in 19 files in 18.42 seconds. Next lint and diff
 checks passed; the actual PHP harness passed 40 assertions and portal API tests

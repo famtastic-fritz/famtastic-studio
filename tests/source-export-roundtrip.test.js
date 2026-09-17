@@ -24,7 +24,11 @@ it.skipIf(!harness || !receipts)('actual completed pipeline export crosses porta
   const produced = JSON.parse(execFileSync('php', [harness, '--export-packet'], { input: JSON.stringify({ source_export: exported, html_base64: Buffer.from(html).toString('base64'), authority }), encoding: 'utf8' })).packet;
   for (const mutate of [a => { a.files['index.html'].rights = { ai_use_consent: true }; }, a => { a.customer_id = '999'; }, a => { a.source_export_sha256 = '0'.repeat(64); }, a => { a.request_scope_sha256 = digest({ page_count: 1, page_list: 'Different page' }); }]) {
     const invalid = structuredClone(authority); mutate(invalid);
-    expect(() => execFileSync('php', [harness, '--export-packet'], { input: JSON.stringify({ source_export: exported, html_base64: Buffer.from(html).toString('base64'), authority: invalid }), encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })).toThrow();
+    let rejected;
+    try { rejected = JSON.parse(execFileSync('php', [harness, '--export-packet'], { input: JSON.stringify({ source_export: exported, html_base64: Buffer.from(html).toString('base64'), authority: invalid }), encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })); }
+    catch (error) { expect(String(error.stderr)).toMatch(/selected_continuation_source_(mapping|export)/); continue; }
+    expect(rejected.packet.schema).toBe('famtastic.site-studio.planning-packet.v1');
+    expect(rejected.packet.dispatch_issue).toBeTruthy();
   }
   expect(produced.continuation.initiating_system).toBe('studio');
   expect(produced.continuation.source_export_sha256).toBe(exported.sha256);

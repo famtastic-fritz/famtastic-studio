@@ -1,5 +1,12 @@
 # Site Studio learning record
 
+## 2026-09-17 - Wire ordering and existing semantic source contracts
+
+PHP strcmp and JavaScript localeCompare disagree for mixed case. Wire manifests
+must use locale-independent ASCII ordering; never rename customer assets to hide
+hash differences. Inspect actual template artifacts before declaring structure
+absent: this legacy family has header/footer/shared-style and typed field markers.
+
 ## 2026-09-17 - A prior clean/QA result cannot certify changed bytes
 
 Parent review reproduced an exporter accepting edited files with old QA and

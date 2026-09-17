@@ -4,6 +4,7 @@
 // bindIdentity itself), parses the body, calls the kernel, and maps errors.
 import crypto from 'node:crypto';
 import { stagingPacketErrors } from '../../kernel/staging-contract.js';
+import { PLANNING_SCHEMA, planningPacketErrors } from '../../kernel/selected-planning-contract.js';
 import { createStagingStore } from '../../kernel/staging-store.js';
 import { createDna } from '../../kernel/dna.js';
 import { createMutation } from '../../kernel/mutation.js';
@@ -62,7 +63,7 @@ export default {
           return { status: 401, body: { error: 'dispatch_signature_invalid' } };
         }
         const packet = envelope.body?.packet;
-        const errors = stagingPacketErrors(packet);
+        const errors = packet?.schema === PLANNING_SCHEMA ? planningPacketErrors(packet) : stagingPacketErrors(packet);
         if (errors.length) return { status: 422, body: { accepted: false, error: 'staging_packet_rejected', errors } };
         stagingStore ||= stagingRuntime?.store || createStagingStore({ paths, journal });
         const job = stagingStore.accept(packet);

@@ -58,6 +58,11 @@ See agency docs/plans/SELECTED_STAGING_CONTINUATION_LOCAL_2026-09-17.md.
 
 ## Remaining gates
 
+Planning-wire follow-on: unresolved selections now take the existing durable
+dispatch/planning/callback path, distinct from executable work. The real legacy
+family has reusable semantic markers; a bounded shared-shell adapter is approved
+for local implementation. Scope/content/rights authority is still required.
+
 Latest local producer increment: see
 [source round-trip evidence](selected-source-roundtrip-2026-09-17.md). Completed
 Next source now crosses the actual agency selection seam and reuses one mapped
