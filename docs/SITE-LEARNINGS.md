@@ -1,5 +1,12 @@
 # Site Studio learning record
 
+## 2026-09-17 - A prior clean/QA result cannot certify changed bytes
+
+Parent review reproduced an exporter accepting edited files with old QA and
+commit metadata. Recheck live HEAD/branch/worktree and the verify-stage manifest;
+bind QA to site/run/manifest. Compare to actual verified bytes, not composer
+suggestions: source protection may deliberately preserve existing scaffold files.
+
 ## 2026-09-17 - Export source after its repository commit
 
 Source evidence must bind actual on-disk public bytes and finalized repository

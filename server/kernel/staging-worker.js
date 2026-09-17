@@ -47,12 +47,12 @@ export function stagingCallback(job) {
   return { ...identity, schema: 'famtastic.site-studio.staging-receipt.v1', status: 'deployed',
     staging_url: job.host.url, artifact_sha256: job.host.manifest_sha256, target_path: job.host.target_path,
     remote_subdirectory: job.host.remote_subdirectory, repository: { mode: 'local_only', branch: job.build.repository.branch, commit: job.build.repository.commit, remote_url: job.build.repository.remote_url || null },
-    qa: job.qa.checks.map(name => ({ name, status: 'passed' })), evidence: job.host };
+    qa: job.qa.checks.map(name => ({ name, status: 'passed' })), source_export_sha256: job.source_export?.sha256 || job.build.source_export?.sha256 || null, evidence: job.host };
 }
 
 // Injected capabilities are mandatory. There is deliberately no ambient fetch,
 // payment client, mailer, or production deploy adapter in this coordinator.
-export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArtifactOrigins, qa, host, callback, maxAttempts = 3 }) {
+export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArtifactOrigins, qa, host, callback, resolveSource = null, maxAttempts = 3 }) {
   async function run(id) {
     let claim;
     try { claim = store.claim(id); } catch (error) {
@@ -79,16 +79,34 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins });
             job.stage = 'build';
           } else if (stage === 'build') {
+            if (job.packet.continuation.initiating_system === 'studio') {
+              if (!resolveSource) throw Object.assign(stagingError('source_repository_mapping_required'), { permanent: true });
+              if (job.packet.continuation.operation !== 'package_existing') throw Object.assign(stagingError('mapped_source_continuation_recipe_required'), { permanent: true });
+              job.build = await resolveSource(job.packet);
+              if (job.build?.reused_existing_source !== true || job.build?.source_export?.scope_complete !== true) throw stagingError('source_export_invalid');
+              job.stage = 'qa';
+            } else {
             const brief = packetToBuildBrief(job.selected);
             brief.handoff = { operation: job.packet.continuation.operation, correlation_id: job.packet.continuation.correlation_id, initiating_system: job.packet.continuation.initiating_system, source_sha256: job.hash, transformations: job.selected.transformations };
             brief.business_owner = { id: job.packet.continuation.customer.id, name: job.packet.continuation.customer.name };
             job.build = await pipeline.run({ site_id: `project-${job.packet.project_id}`, brief, composer: 'artifact', initiator: job.id });
             if (job.build?.outcome !== 'success' || job.build.verify?.passed !== true) throw Object.assign(stagingError('build_failed'), { permanent: true });
             job.stage = 'qa';
+            }
           } else if (stage === 'qa') {
             job.qa = await qa({ job });
             const required = ['functional', 'responsive', 'accessibility', 'asset_rights', 'visual_parity'];
             if (job.qa?.passed !== true || required.some(n => !job.qa.checks?.includes(n))) throw stagingError('qa_failed');
+            if (!job.build.reused_existing_source && pipeline.finalizeSource) {
+              const c = job.packet.continuation;
+              const resolved = new Set((c.recipe?.steps || []).flatMap(step => step.resolves_change_ids || []));
+              job.source_export = pipeline.finalizeSource(job.build, { completion_scope: {
+                site_id: job.build.site_id, evidence_ref: `selected-packet:${job.packet.packet_id}`,
+                required_pages: c.required_pages, features: ['static_navigation'],
+                pending_revisions: (c.requested_changes || []).filter(change => !resolved.has(change.id)),
+              } }, job.qa);
+              if (!job.source_export.scope_complete) throw stagingError('source_scope_incomplete');
+            }
             job.stage = 'host';
           } else if (stage === 'host') {
             job.host = await host.deploy({ job, operation_id: job.id });

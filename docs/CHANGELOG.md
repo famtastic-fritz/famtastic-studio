@@ -1,5 +1,16 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Bound completed-source round trip and stale-evidence repair
+
+- Bound source exports to live Git identity and actual verified bytes; bound
+  selected-browser QA to site/run/manifest. Added dirty/stale/cross-source and
+  incomplete-scope negatives. Preserved scaffold-byte verification semantics.
+- Reused explicitly mapped Studio-origin repositories through QA/hosting/receipt
+  with zero duplicate build; source-mapping absence is a named exception.
+- Proved actual worker export through real agency selection/serialization and
+  receipt services using synthetic authority/HTTP adapters. Two-worker sweep:
+  84 tests/18 files in 21.62 seconds. General concept execution remains open.
+
 ## 2026-09-17 - Selection planner and actual source finalization export
 
 - Added inherited-source planning with explicit remaining-work/authority issues.

@@ -41,7 +41,7 @@ export function fixture({ producerPacket = null, artifactBytes = Buffer.from(htm
   const counters = { generation: 0, builds: 0, uploads: 0, callbacks: 0, backups: 0 };
   const forbidden = () => { counters.generation++; throw new Error('generation forbidden'); };
   const real = createPipeline({ paths, journal, events, dna, mutation, spec, researchOptions: { spawnImpl: forbidden, fetchImpl: forbidden, commandExistsImpl: forbidden }, copyOptions: { adapter: { complete: forbidden } } });
-  const pipeline = { run: async o => { counters.builds++; return real.run(o); } };
+  const pipeline = { run: async o => { counters.builds++; return real.run(o); }, finalizeSource: real.finalizeSource };
   const binding = { url: 'https://synthetic.famtasticinc.com/', target_path: '/home/nineoo/public_html/synthetic', remote_subdirectory: 'synthetic', site_id: 'project-42', customer_id: 'customer-1', access: 'protected_review', host_aliases: ['mbsh.example.invalid'] };
   if (producerPacket) {
     binding.site_id = `project-${producerPacket.project_id}`; binding.customer_id = producerPacket.continuation.customer.id;

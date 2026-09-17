@@ -11,6 +11,7 @@ import { createSelectedReviewQa } from './selected-review-qa.js';
 import { createCpanelReview } from './cpanel-review.js';
 import { createCpanelHttpTransport } from './cpanel-http-transport.js';
 import { stagingError } from './staging-store.js';
+import { createSelectedSourceResolver } from './selected-source-binding.js';
 
 export async function boundedBytes(response, maxBytes) {
   const chunks = []; let count = 0;
@@ -25,7 +26,7 @@ export async function boundedBytes(response, maxBytes) {
 // Actual assembly for an explicitly reviewed local configuration module. Secrets
 // enter via caller-supplied providers; construction performs no network call.
 export function createSelectedStagingAssembly({ paths = createPaths(), bindings, credentialProvider, callbackEndpoint, callbackSecret,
-  artifactOrigins, artifactAuthorizationProvider = async () => null, fetchImpl = fetch }) {
+  artifactOrigins, artifactAuthorizationProvider = async () => null, fetchImpl = fetch, sourceMappings = [] }) {
   if (!Array.isArray(bindings) || !bindings.length || !Array.isArray(artifactOrigins) || !artifactOrigins.length) throw stagingError('runtime_configuration_required');
   const journal = createJournal({ paths }), events = createEvents({ paths }), dna = createDna({ paths });
   const mutation = createMutation({ paths, journal, events }), spec = createSpec({ paths, mutation });
@@ -43,7 +44,7 @@ export function createSelectedStagingAssembly({ paths = createPaths(), bindings,
     let body; try { body = JSON.parse(bytes); } catch { throw stagingError('callback_json_invalid'); }
     return { status: response.status, body };
   } });
-  return createStagingRuntime({ paths, journal, pipeline, callback, allowedArtifactOrigins: artifactOrigins,
+  return createStagingRuntime({ paths, journal, pipeline, callback, resolveSource: createSelectedSourceResolver({ paths, mappings: sourceMappings }), allowedArtifactOrigins: artifactOrigins,
     fetchArtifact: async ({ url, maxBytes }) => {
       const origin = new URL(url).origin;
       if (!artifactOrigins.includes(origin)) throw stagingError('artifact_origin_rejected');
@@ -54,7 +55,7 @@ export function createSelectedStagingAssembly({ paths = createPaths(), bindings,
       if (response.status !== 200) throw stagingError('artifact_fetch_status');
       return boundedBytes(response, maxBytes);
     }, qa: createSelectedReviewQa({ paths }), host: { deploy: options => {
-      const host = hosts.get(`project-${options.job.packet.project_id}`);
+      const host = hosts.get(options.job.build?.site_id || `project-${options.job.packet.project_id}`);
       if (!host) throw stagingError('site_host_not_configured');
       return host.deploy(options);
     } } });

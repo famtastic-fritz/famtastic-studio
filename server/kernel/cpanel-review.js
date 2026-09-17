@@ -16,7 +16,7 @@ export function createCpanelReview({ paths, journal, binding, transport }) {
     || !target.host_aliases?.length) throw stagingError('review_target_invalid');
   const bindingHash = digest(target);
   async function deploy({ job, operation_id }) {
-    if (`project-${job.packet.project_id}` !== target.site_id || job.packet.continuation.customer.id !== target.customer_id) throw stagingError('hosting_identity_conflict');
+    if ((job.build?.site_id || `project-${job.packet.project_id}`) !== target.site_id || job.packet.continuation.customer.id !== target.customer_id) throw stagingError('hosting_identity_conflict');
     const declared = job.packet.continuation.hosting_target;
     if (declared?.staging_url !== target.url || declared?.target_path !== target.target_path || declared?.remote_subdirectory !== target.remote_subdirectory) throw stagingError('hosting_packet_target_mismatch');
     if (job.qa?.passed !== true || job.build?.outcome !== 'success') throw stagingError('qa_required');

@@ -58,6 +58,13 @@ See agency docs/plans/SELECTED_STAGING_CONTINUATION_LOCAL_2026-09-17.md.
 
 ## Remaining gates
 
+Latest local producer increment: see
+[source round-trip evidence](selected-source-roundtrip-2026-09-17.md). Completed
+Next source now crosses the actual agency selection seam and reuses one mapped
+repository through receipt. This supersedes the earlier claim that no normal
+selection adapter consumes an export. Concept execution, authority registry
+writers and unresolved-intent dispatch remain implementation gaps.
+
 Routine evidence production remains implementation work, not activation-only:
 see [the producer trace](selected-staging-producer-trace-2026-09-17.md) for exact
 available facts, missing authoritative writers and the source-owner decision.

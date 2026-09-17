@@ -5,6 +5,7 @@
 // failure handling around it.
 import path from 'node:path';
 import { importSelectedProvenance } from './selected-provenance.js';
+import { digest } from './staging-store.js';
 import fs from 'node:fs';
 import { REQUIRED_FILES } from '../../vendor/site-foundation/index.js';
 import { deriveSpecFromPacket } from './spec-derive.js';
@@ -189,7 +190,11 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
         throw err;
       }
       const inputs = composed.pages.map((p) => ({ ref: p.path, content: p.html }));
-      return { value: result, verification: { passed: true, checks: result.checks }, verifier_version: 'playwright-1', inputs };
+      const source_manifest = [...composed.pages, ...composed.assets].map(file => {
+        const bytes = fs.readFileSync(paths.within('sites', site_id, file.path));
+        return { path: file.path, sha256: digest(bytes), bytes: bytes.length };
+      });
+      return { value: { ...result, source_manifest }, verification: { passed: true, checks: result.checks }, verifier_version: 'playwright-1', inputs };
     },
   };
 }

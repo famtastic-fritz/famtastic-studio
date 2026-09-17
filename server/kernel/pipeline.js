@@ -469,6 +469,7 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
   const retryStage = options => guarded(options, true);
   return {
     run,
+    finalizeSource: (result, brief, reviewQa) => exportFinalizedSource({ paths, result, brief, reviewQa }),
     runBatch: (opts) => runBatchImpl({ ...opts, run }),
     retryStage,
     STAGES,

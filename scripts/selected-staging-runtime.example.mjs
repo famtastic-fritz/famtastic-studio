@@ -14,6 +14,7 @@ export function createRuntime() {
   return createSelectedStagingAssembly({
     bindings: config.bindings.map(row => ({ binding: row.binding, authFile: row.authFile, reviewAuthorization: secret(row.reviewAuthorizationEnv) })),
     artifactOrigins: config.artifactOrigins,
+    sourceMappings: config.sourceMappings || [],
     artifactAuthorizationProvider: async () => config.artifactAuthorizationEnv ? secret(config.artifactAuthorizationEnv) : null,
     callbackEndpoint: config.callbackEndpoint,
     callbackSecret: secret('SITE_STUDIO_CALLBACK_SECRET'),

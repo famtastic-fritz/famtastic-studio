@@ -62,10 +62,10 @@ describe('durable selected continuation', () => {
     j.stage = 'build'; j.state = 'running'; f.store.checkpoint(j, claim.token); f.store.release(j, claim.token); f.restart();
     const done = await f.worker().run(j.id); expect(done.failure.code).toBe('interrupted_build_requires_reconciliation'); expect(f.counters.builds).toBe(0);
   });
-  it('Studio-origin packaging converges without sending another build request', async () => {
+  it('Studio-origin without an authority mapping never creates a second repository', async () => {
     f = fixture(); const p = packet(); p.continuation.initiating_system = 'studio';
-    expect((await f.worker().run(f.store.accept(p).id)).state).toBe('complete');
-    expect(f.counters.generation).toBe(0); expect(f.callbackBodies).toHaveLength(1); expect(f.remote.get('index.html').toString()).toBe(html);
+    expect((await f.worker().run(f.store.accept(p).id)).failure.code).toBe('source_repository_mapping_required');
+    expect(f.counters.generation).toBe(0); expect(f.counters.builds).toBe(0); expect(f.remote.size).toBe(0);
   });
   it('rejects a wrong host binding and missing source page', async () => {
     f = fixture(); expect(() => createCpanelReview({ paths: f.paths, journal: f.journal, transport: f.transport, binding: { ...f.binding, url: 'https://famtasticdesigns.com/' } })).toThrow('review_target_invalid');

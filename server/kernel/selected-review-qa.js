@@ -11,7 +11,7 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
     const baselineDir = paths.within('staging', job.id, 'baseline');
     fs.mkdirSync(baselineDir, { recursive: true, mode: 0o700 });
     for (const file of files) {
-      const local = paths.within('sites', `project-${job.packet.project_id}`, file.path);
+      const local = paths.within('sites', job.build?.site_id || `project-${job.packet.project_id}`, file.path);
       if (!fs.existsSync(local) || digest(fs.readFileSync(local)) !== file.sha256) problems.push('artifact_parity');
       const baseline = paths.within('staging', job.id, 'baseline', file.path);
       const parent = file.path.split('/').slice(0, -1).join('/');
@@ -40,7 +40,7 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
             return route.fulfill({ status: 404, body: '' });
           }
           const artifact = manifest.get(name);
-          const contents = baselineMode ? Buffer.from(artifact.content_base64, 'base64') : fs.readFileSync(paths.within('sites', `project-${job.packet.project_id}`, name));
+          const contents = baselineMode ? Buffer.from(artifact.content_base64, 'base64') : fs.readFileSync(paths.within('sites', job.build?.site_id || `project-${job.packet.project_id}`, name));
           resourceChecks.push({ path: name, type: request.resourceType(), passed: true, sha256: digest(contents) });
           return route.fulfill({ status: 200, contentType: mime[name.split('.').at(-1)] || 'application/octet-stream', body: contents });
         });
@@ -77,6 +77,8 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
     if (c.required_pages.some(p => !manifestPaths.has(p))) problems.push('scope_incomplete');
     if (c.files.some(f => f.rights?.status !== 'approved' || !f.rights?.evidence_ref)) problems.push('asset_rights');
     return { passed: problems.length === 0, checks: ['functional', 'responsive', 'accessibility', 'asset_rights', 'visual_parity'],
+      source_binding: { site_id: job.build?.site_id || `project-${job.packet.project_id}`, run_id: job.build?.run_id || null,
+        manifest_sha256: digest(files.map(f => ({ path: f.path, sha256: f.sha256, bytes: Buffer.from(f.content_base64, 'base64').length })).sort((a, b) => a.path.localeCompare(b.path))) },
       verifier: 'selected-static-browser-v2', evidence, problems, limitations: ['Accessibility checks are structural, not a complete WCAG audit', 'Functional scope is static navigation; no application recipe is inferred'] };
   };
 }
