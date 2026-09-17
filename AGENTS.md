@@ -24,3 +24,12 @@ copy raw private conversations or customer data into shared catalogs.
 
 The parent FAMtastic ecosystem owns universal doctrine. This independent repo
 consumes that doctrine; old parent-tracked copies are not alternate sources.
+
+Read `docs/contracts/CLIENT-SELECTED-BUILD-FLOW.md` for the owner's selected-site
+continuation policy and proven FAMtastic Inc cPanel route. Client selection
+starts build and protected review without per-site Fritz approval; revisions
+continue until explicit client acceptance of the current artifact. Never charge
+from selection, QA, silence or a deployment receipt. Escalate exceptions, not
+every routine build. Review hosting is separate from final production launch.
+Check the existing cPanel/vault recipe before declaring SFTP's missing settings
+to be missing hosting access. Documentation is not an enabled queue consumer.

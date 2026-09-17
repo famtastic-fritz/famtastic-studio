@@ -1,5 +1,13 @@
 # Conversation decisions
 
+## 2026-09-17: client-led build and acceptance
+
+Fritz directed automatic selected-direction build/revision work without his
+per-site approval, charging only after the client is fully happy and explicitly
+accepts the current site. Hosting is famtasticinc.com; a protected path is an
+approved review option, not a final launch. The cPanel API route was located and
+proved; the default Studio adapter remains dry-run until separately integrated.
+
 ## 2026-09-14: repository and library reconciliation
 
 Fritz approved implementation of the reconciliation plan in Codex task

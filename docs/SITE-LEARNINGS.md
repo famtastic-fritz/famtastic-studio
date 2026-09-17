@@ -1,5 +1,15 @@
 # Site Studio learning record
 
+## 2026-09-17 - Missing SFTP inputs do not mean missing hosting access
+
+Observation: the default adapter required SFTP settings while the ecosystem
+already held a working cPanel API credential and upload recipe. A controlled
+customer review deployed successfully through API2 mkdir and UAPI upload_files.
+Guidance: inspect repository recipes, stored credential IDs and live routing
+before asking the owner for access again. Record actual transport proof apart
+from adapter readiness. Root-sharing makes host and anonymous-access checks
+mandatory; absent DNS is not privacy. See the client-selected build contract.
+
 ## 2026-09-14 - Source ownership must be enforced before the first write
 
 A validator alone is not a reproducible website build. The older static composer
