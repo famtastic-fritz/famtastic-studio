@@ -1,5 +1,12 @@
 # Site Studio learning record
 
+## 2026-09-17 - Export source after its repository commit
+
+Source evidence must bind actual on-disk public bytes and finalized repository
+identity. Exporting before the commit loses that binding; treating successful
+pipeline verification as all-scope QA loses missing features and pending edits.
+Record completion blockers separately and require the actual selected-browser QA.
+
 ## 2026-09-17 - A consumer fixture is not a normal producer flow
 
 Observation: the cross-repository test exercised real serialization and receipt

@@ -1,5 +1,15 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Selection planner and actual source finalization export
+
+- Added inherited-source planning with explicit remaining-work/authority issues.
+- Pipeline now exports actual public hashes, committed repository/run identity,
+  spec/provenance and source verification after repository finalization. Pipeline
+  success alone never marks scope complete; missing pages/features/revisions or
+  selected-browser QA keep completion false. Two focused tests pass, including
+  actual agency selection-seam output; existing 12 worker tests pass and lint is
+  clean. Positive export-to-agency-to-worker proof remains the next increment.
+
 ## 2026-09-17 - Independent retest and production evidence-owner trace
 
 - Recorded parent 134-test/19-file independent retest and PHP/API evidence.

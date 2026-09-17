@@ -31,6 +31,7 @@ import { runBatch as runBatchImpl } from './pipeline-batch.js';
 import { makeExecutors } from './pipeline-executors.js';
 import { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY } from './pipeline-constants.js';
 import { createRepositoryLifecycle } from './repository-lifecycle.js';
+import { exportFinalizedSource } from './source-finalization.js';
 
 // Re-exported so existing importers of pipeline.js keep working.
 export { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY };
@@ -457,7 +458,11 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
       repositories.finish(session, { outcome: 'failed' });
       throw error;
     }
-    try { return repositories.finish(session, result); }
+    try {
+      const finalized = repositories.finish(session, result);
+      if (finalized.outcome !== 'success') return finalized;
+      return { ...finalized, source_export: exportFinalizedSource({ paths, result: finalized, brief: options.brief || {} }) };
+    }
     catch (error) { if (result?.run_id) return finalizeFailed(result.run_id, 'record', error); throw error; }
   }
   const run = options => guarded(options);
