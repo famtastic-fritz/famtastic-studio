@@ -16,6 +16,7 @@
     "conversations": ".studio/conversations",
     "events": ".studio/events",
     "famtasticinc": ".studio/famtasticinc",
+    "staging": ".studio/selected-staging",
     "deploys": ".studio/deploys",
     "learning": ".studio/learning"
   },

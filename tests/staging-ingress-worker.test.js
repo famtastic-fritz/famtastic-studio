@@ -1,0 +1,21 @@
+import crypto from 'node:crypto';
+import { Readable } from 'node:stream';
+import { afterEach, expect, it } from 'vitest';
+import { createApp } from '../server/kernel/app.js';
+import module from '../server/modules/pipeline/index.js';
+import { createEvents } from '../server/kernel/events.js';
+import { fixture, packet } from './staging-worker-fixture.mjs';
+let f;
+afterEach(() => { f?.cleanup(); delete process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET; });
+it('signed HTTP acceptance wakes the actual worker and persists one end-to-end job', async () => {
+  f = fixture(); process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET = 'synthetic-ingress';
+  const app = createApp(); let running;
+  module.register({ app, paths: f.paths, journal: f.journal, events: createEvents({ paths: f.paths }), stagingRuntime: { store: f.store, wake: () => running ||= f.worker().tick() } });
+  const raw = JSON.stringify({ packet: packet() }), req = Readable.from([raw]);
+  req.method = 'POST'; req.url = '/api/pipeline/staging/accept'; req.headers = { 'x-famtastic-signature': `sha256=${crypto.createHmac('sha256', 'synthetic-ingress').update(raw).digest('hex')}` };
+  const response = await new Promise(resolve => app.handler(req, { writeHead(status) { this.status = status; }, end(body) { resolve({ status: this.status, body: JSON.parse(body) }); } }));
+  expect(response.status).toBe(202);
+  await new Promise(resolve => setImmediate(resolve)); await running;
+  expect(f.store.read(response.body.receipt.receipt_id).state).toBe('complete');
+  expect(f.counters.generation).toBe(0); expect(f.counters.callbacks).toBe(1);
+});

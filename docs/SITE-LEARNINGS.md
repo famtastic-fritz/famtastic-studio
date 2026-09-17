@@ -94,3 +94,17 @@ Guidance: Resolve and execute imports before declaring a discovery failure. Test
 The captured Owner Desk implementation belongs to the FAMtastic Designs booking lane; reusable presentation source belongs to Component Studio. A future Studio build must bind the selected business's approved brand and backend adapter explicitly. Never transplant Tighten Up Your Locs identity or records into another business. Calendar and class enrollment are distinct domains sharing instructor time.
 
 Evidence: `tests/component-recipe-discovery.test.js`, `docs/capabilities/OWNER-DESK-RECIPE-DISCOVERY.md`; consumer implementation lineage is recorded in Designs `docs/evidence/owner-desk-implementation/`.
+
+## 2026-09-17 - Selected transfer is not generation
+
+The old acceptance route retained only an event, and the generic pipeline would
+repeat research even when receiving completed selected HTML. Durable packet
+retention and explicit operation intent are separate requirements. Preserve
+selected bytes and import provenance without generation. Validate prior evidence
+against the current manifest/design, never use a completion claim to skip QA.
+Cross-repository executable serialization caught a repository receipt mapping
+missing mode; helper-only tests did not. Test the producer and receipt boundary
+together. Existing Drupal packets need full scope/design metadata; a DNA digest
+is not a reconstructible design contract. Natural-language revisions without an
+executable recipe remain explicit exceptions. Local mock-host success is not
+production integration proof.

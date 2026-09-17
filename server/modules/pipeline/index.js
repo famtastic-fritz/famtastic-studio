@@ -3,6 +3,8 @@
 // binds identity (via the router's frozen `identity`, never calling
 // bindIdentity itself), parses the body, calls the kernel, and maps errors.
 import crypto from 'node:crypto';
+import { stagingPacketErrors } from '../../kernel/staging-contract.js';
+import { createStagingStore } from '../../kernel/staging-store.js';
 import { createDna } from '../../kernel/dna.js';
 import { createMutation } from '../../kernel/mutation.js';
 import { createSpec } from '../../kernel/spec.js';
@@ -18,7 +20,12 @@ function errorResponse(error) {
 function readJsonEnvelope(req) {
   return new Promise((resolve, reject) => {
     let data = '';
-    req.on('data', (chunk) => { data += chunk; });
+    let tooLarge = false;
+    req.on('data', (chunk) => {
+      if (tooLarge) return;
+      data += chunk;
+      if (Buffer.byteLength(data) > 2 * 1024 * 1024) { tooLarge = true; data = ''; reject(Object.assign(new Error('request too large'), { statusCode: 413, code: 'request_too_large' })); }
+    });
     req.on('end', () => {
       if (!data) return resolve({ raw: '', body: {} });
       try {
@@ -35,59 +42,14 @@ async function readJsonBody(req) {
   return (await readJsonEnvelope(req)).body;
 }
 
-function stagingPacketErrors(packet) {
-  const errors = [];
-  if (!packet || packet.schema !== 'famtastic.site-studio.build-packet.v1') errors.push('packet.schema');
-  for (const field of ['packet_id', 'idempotency_key', 'request_id', 'project_id', 'build_class']) {
-    if (typeof packet?.[field] !== 'string' || !packet[field].trim()) errors.push(`packet.${field}`);
-  }
-  if (packet?.build_class !== 'prepayment_selected_direction_staging') errors.push('packet.build_class');
-  if (!Array.isArray(packet?.selected_direction_ids) || packet.selected_direction_ids.length !== 1) errors.push('packet.selected_direction_ids');
-  const artifacts = Array.isArray(packet?.artifacts) ? packet.artifacts : [];
-  if (!artifacts.length) errors.push('packet.artifacts');
-  const paths = new Set();
-  for (const artifact of artifacts) {
-    const valid = artifact
-      && ['source_material', 'selected_preview', 'render_evidence'].includes(artifact.role)
-      && typeof artifact.path === 'string'
-      && artifact.path.length > 0
-      && !artifact.path.startsWith('/')
-      && !artifact.path.includes('..')
-      && /^[a-f0-9]{64}$/.test(artifact.sha256 || '')
-      && Number.isInteger(artifact.bytes)
-      && artifact.bytes >= 0
-      && !paths.has(artifact.path);
-    if (!valid) errors.push('packet.artifacts');
-    if (artifact?.path) paths.add(artifact.path);
-  }
-  const canonicalManifest = artifacts
-    .map((artifact) => ({ bytes: artifact.bytes, path: artifact.path, role: artifact.role, sha256: artifact.sha256 }))
-    .sort((left, right) => left.path.localeCompare(right.path));
-  const manifestDigest = crypto.createHash('sha256').update(JSON.stringify(canonicalManifest)).digest('hex');
-  if (!/^[a-f0-9]{64}$/.test(packet?.artifact_manifest_sha256 || '') || packet?.artifact_manifest_sha256 !== manifestDigest) {
-    errors.push('packet.artifact_manifest_sha256');
-  }
-  const selected = Array.isArray(packet?.selected_artifacts) ? packet.selected_artifacts : [];
-  if (selected.length !== 1) {
-    errors.push('packet.selected_artifacts');
-  } else {
-    const bound = selected[0];
-    const match = artifacts.filter((artifact) => artifact.role === 'selected_preview'
-      && artifact.path === bound?.source_artifact_path
-      && artifact.sha256 === bound?.source_artifact_sha256
-      && artifact.bytes === bound?.source_artifact_bytes);
-    if (bound?.direction_id !== packet.selected_direction_ids?.[0] || match.length !== 1) errors.push('packet.selected_artifacts');
-  }
-  if (packet?.boundary?.deploy_authorized === true) errors.push('packet.boundary.deploy_authorized');
-  return [...new Set(errors)];
-}
 
 export default {
   name: 'pipeline',
-  register({ app, paths, journal, events }) {
+  register({ app, paths, journal, events, stagingRuntime = null }) {
     const dna = createDna({ paths });
     const mutation = createMutation({ paths, journal, events });
     const spec = createSpec({ paths, mutation });
+    let stagingStore;
     const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation });
 
     app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
@@ -102,22 +64,14 @@ export default {
         const packet = envelope.body?.packet;
         const errors = stagingPacketErrors(packet);
         if (errors.length) return { status: 422, body: { accepted: false, error: 'staging_packet_rejected', errors } };
-        const siteId = `project-${packet.project_id}`;
-        const event = events.emit({
-          type: 'site_studio.staging_accepted',
-          site_id: siteId,
-          idempotency_key: packet.idempotency_key,
-          payload: { packet_id: packet.packet_id, request_id: packet.request_id, project_id: packet.project_id, status: 'accepted_waiting_callback' },
-        });
-        journal.append({
-          site_id: siteId,
-          initiator: 'famtastic-drupal',
-          intent: 'accept_selected_staging_packet',
-          changes: [{ packet_id: packet.packet_id, status: 'accepted_waiting_callback' }],
-          result: { event_id: event.event_id, status: 'accepted_waiting_callback' },
-          evidence: { idempotency_key: packet.idempotency_key },
-        });
-        return { status: 202, body: { accepted: true, status: 'accepted_waiting_callback', receipt: { receipt_id: event.event_id, packet_id: packet.packet_id, idempotency_key: packet.idempotency_key } } };
+        stagingStore ||= stagingRuntime?.store || createStagingStore({ paths, journal });
+        const job = stagingStore.accept(packet);
+        events.emit({ type: 'site_studio.staging_accepted', site_id: `project-${packet.project_id}`, idempotency_key: packet.idempotency_key,
+          payload: { packet_id: packet.packet_id, job_id: job.id, status: job.state } });
+        if (stagingRuntime) setImmediate(() => { stagingRuntime.wake().catch(() => {}); });
+        return { status: 202, body: { accepted: true, status: 'accepted_waiting_callback',
+          receipt: { receipt_id: job.id, packet_id: packet.packet_id, idempotency_key: packet.idempotency_key } } };
+
       } catch (error) {
         return { status: error.statusCode || 500, body: { accepted: false, error: error.code || 'staging_accept_failed', message: error.message } };
       }

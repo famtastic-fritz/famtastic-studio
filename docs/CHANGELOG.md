@@ -73,3 +73,14 @@ discovery tests and seven inventory tests pass locally. No executable owner UI
 import, scheduling runtime or production deployment is claimed.
 
 See [capability and learning](capabilities/OWNER-DESK-RECIPE-DISCOVERY.md).
+
+## 2026-09-17 - Selected staging continuation (local feature branch)
+
+- Persist signed selected packets as revision-bound durable jobs and expose an
+  explicit worker runtime with checkpointed packaging, QA, hosting and callback.
+- Import inherited selected provenance without research/copy/imagery generation;
+  preserve identical source files and the site-foundation ownership contract.
+- Add protected cPanel contract transport, bounded callback retry and rollback
+  semantics, real static browser/parity QA and synthetic cross-repo proof.
+- Document activation gates, interrupted-build reconciliation and unsupported
+  revision/application scope. No live service or production settings changed.

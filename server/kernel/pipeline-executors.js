@@ -4,6 +4,7 @@
 // owns WHAT a stage does; pipeline.js owns the sequencing, DNA recording and
 // failure handling around it.
 import path from 'node:path';
+import { importSelectedProvenance } from './selected-provenance.js';
 import fs from 'node:fs';
 import { REQUIRED_FILES } from '../../vendor/site-foundation/index.js';
 import { deriveSpecFromPacket } from './spec-derive.js';
@@ -29,6 +30,7 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
     // stage a Promise, which a spec derivation would happily treat as an empty
     // packet and never notice.
     research: async ({ site_id, brief, adapter, raw_import, initiator }) => {
+      if (brief.handoff) return importSelectedProvenance({ paths, site_id, brief });
       // runResearch takes a NESTED options object. Spreading these at the top level
       // silently left options undefined, so the real CLI ran even when a caller
       // had injected stubs -- a failure that looked like slowness, not a bug.
@@ -45,7 +47,7 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
       // persisted, so the stored spec is the truth about what exists on disk.
       // A generator failure never fails the stage: slots stay declared-unfilled
       // with a reason, which is a legitimate outcome, not an error.
-      if (Array.isArray(derivedSpec.media_slots) && derivedSpec.media_slots.length) {
+      if (!brief.handoff && Array.isArray(derivedSpec.media_slots) && derivedSpec.media_slots.length) {
         const filled = await fillMediaSlots({
           slots: derivedSpec.media_slots, paths, site_id, ...(imageryOptions || {}),
         });
@@ -63,7 +65,7 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
       // null body and render empty, which is honest. The alternative — letting
       // the instruction through as copy — is what published five sites' own
       // outlines to customers.
-      const copyAdapter = copyOptions.adapter ?? resolveShayAdapter({ paths, spawnImpl: copyOptions.spawnImpl, commandExistsImpl: copyOptions.commandExistsImpl });
+      const copyAdapter = brief.handoff ? null : copyOptions.adapter ?? resolveShayAdapter({ paths, spawnImpl: copyOptions.spawnImpl, commandExistsImpl: copyOptions.commandExistsImpl });
       if (copyAdapter && Array.isArray(derivedSpec.pages)) {
         // Pages are INDEPENDENT: each call writes only its own page's sections,
         // so nothing is shared and ordering does not matter. Running them
@@ -112,7 +114,7 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
       // the sections, so compose cannot render a default it was never told to
       // reconsider. Runs after copy and imagery so it can see what the page
       // actually has: section count, images declared, lists present.
-      derivedSpec = directLayout({ spec: derivedSpec, packet });
+      if (!brief.handoff) derivedSpec = directLayout({ spec: derivedSpec, packet });
 
       const writeResult = spec.write(site_id, derivedSpec, { initiator });
       const inputs = [{ ref: `packets/${site_id}/${packet.packet_id}.json`, content: JSON.stringify(packet) }];
@@ -163,7 +165,14 @@ export function makeExecutors({ paths, journal, events, mutation, spec, research
         ...composed.pages.map((p) => ({ path: p.path, contents: p.html })),
         ...composed.assets.map((a) => ({ path: a.path, contents: a.contents })),
       ].filter(change => !protectedPaths.has(change.path) || !fs.existsSync(path.join(repository_session.dir, change.path)));
+      if (repository_session.initialized) {
+        for (let i = changes.length - 1; i >= 0; i--) {
+          const file = paths.within('sites', site_id, changes[i].path);
+          if (fs.existsSync(file) && fs.readFileSync(file).equals(Buffer.from(changes[i].contents))) changes.splice(i, 1);
+        }
+      }
       repository_session.generated = changes.map(change => change.path);
+      if (!changes.length) return { value: { status: 'already_materialized' }, inputs: composed.pages.map(p => ({ ref: p.path, content: p.html })), outputs: [], verification: { passed: true, reason: 'existing bytes match selected output' } };
       const result = mutation.apply({ site_id, initiator, intent: 'pipeline.build', changes });
       const refs = changes.map((c) => ({ ref: c.path, content: c.contents }));
       return { value: result, inputs: refs, outputs: refs, evidence_ref: result.journal_entry_id };

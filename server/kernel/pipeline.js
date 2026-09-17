@@ -313,7 +313,9 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
     if (!brief || typeof brief !== 'object') throw fail(400, 'brief_required', 'pipeline.run requires a brief object');
 
     const { source_commit, tree_hash } = resolveTreeIdentity();
-    const recipe_snapshot = resolveRecipeSnapshot({ recipe, recipe_ref });
+    const recipe_snapshot = brief.handoff ? { schema_version: 1, kind: 'selected-artifact-transfer', handoff: brief.handoff,
+      stages: STAGES.map(stage => ({ stage, model: 'none', agent: stage === 'research' ? 'selected-artifact-import' : 'deterministic' }))
+    } : resolveRecipeSnapshot({ recipe, recipe_ref });
 
     const ctx = { site_id, brief, adapter, raw_import, composer, initiator, repository_session };
 
