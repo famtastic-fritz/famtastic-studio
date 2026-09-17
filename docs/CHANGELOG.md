@@ -84,3 +84,12 @@ See [capability and learning](capabilities/OWNER-DESK-RECIPE-DISCOVERY.md).
   semantics, real static browser/parity QA and synthetic cross-repo proof.
 - Document activation gates, interrupted-build reconciliation and unsupported
   revision/application scope. No live service or production settings changed.
+
+## 2026-09-17 - Independent-review corrections
+
+- Validate static links, anchors and local resources with intercepted Chromium
+  requests and actionable evidence; no external fetches.
+- Reject ambiguous subfolder review URLs and keep all probes scoped.
+- Skip only busy claims while allowing independent queued projects to progress.
+- Derive mock-host access/noindex from installed protection; preserve foreign
+  .htaccess guard. Corrective affected/cross-repo suite: 43 tests passed.

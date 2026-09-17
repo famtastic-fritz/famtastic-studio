@@ -73,3 +73,42 @@ Post-sweep targeted hardening: `npm test -- --maxWorkers=2
 proves an existing foreign .htaccess is preserved and no public artifact or
 ready callback occurs. This makes 125 distinct covered tests across the sweep
 and follow-up; the 124-test combined sweep was not relabeled as a 125-test run.
+
+## Independent-review corrections
+
+Code commit: 118201eeb06e5cc39954c67238fd5b773e76e013.
+The earlier QA claim was too broad: loading and screenshot parity did not detect
+missing navigation targets or stylesheets. Verifier selected-static-browser-v2
+now intercepts all resource requests, serves only artifact-manifest bytes,
+checks declared resources, resolves internal links and verifies fragments in
+real Chromium. Evidence names broken hrefs, target paths, resources and reasons.
+Valid root/nested navigation, CSS imports and anchors pass without network.
+
+Both cPanel entry points now share directory-URL validation. A subfolder without
+its final slash is refused before credential lookup or HTTP. File/access/alias
+probes remain under the exact configured prefix; traversal probes are refused.
+The HTTP fixture now maps that prefix to the scoped remote root and derives
+anonymous denial, alias denial and noindex from its actual simulated .htaccess.
+Before protection is installed, it does not report those checks as passed.
+
+Worker tick reports a specifically busy claim and continues to other projects.
+The regression keeps the first live claim and its untouched job while a second
+project completes. Other claim errors and non-claim project_busy errors still
+propagate. A test teardown double-close was corrected before the final run.
+
+```sh
+SELECTED_STAGING_AGENCY_HARNESS=/Users/famtastic-fritz/Development/worktrees/fd-selected-staging-contract/scripts/test-selected-staging-contract.php \
+npm test -- --maxWorkers=2 \
+  tests/selected-review-qa.test.js tests/cpanel-directory-scope.test.js \
+  tests/staging-queue-progress.test.js tests/staging-agency-contract.test.js \
+  tests/staging-assembly.test.js tests/selected-continuation-plan.test.js \
+  tests/staging-ingress-worker.test.js tests/staging-worker.test.js \
+  tests/review-backup.test.js tests/staging-acceptance.test.js \
+  tests/invariant-p0-i1.test.js
+```
+
+43 tests in 11 files passed in 10.45 seconds. Lint and diff checks passed.
+Agency commit remains 92e0d4b68d15fd69b3afd803bb7adb6040b3ceeb; its actual
+serializer/receipt boundary was rerun in this suite. These tests supersede the
+previous insufficient static-navigation evidence; they do not establish live
+hosting, general application continuation or full Drupal runtime proof.

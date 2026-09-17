@@ -120,3 +120,12 @@ Existing .htaccess must exactly match this runtime's selected review policy.
 A foreign or authored policy is preserved and raises review_access_policy_changed
 before content upload. Migrating such a policy is a separate reviewed operation,
 not an incidental consequence of selecting or revising a site.
+
+Post-review verifier v2 validates internal href targets/fragments, declared
+resources and requested local dependencies using intercepted Chromium requests.
+Every emitted resource comes from the selected artifact manifest; missing and
+external resources fail with per-reference evidence. External navigation links
+are labeled unchecked and are never visited. Review URLs must be unambiguous
+directory URLs ending in slash. Both subdomain-root and approved subfolder
+probes use the same scope validation. A busy claim is reported by tick without
+blocking another project's work; unrelated errors still propagate.

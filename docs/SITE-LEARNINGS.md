@@ -108,3 +108,13 @@ together. Existing Drupal packets need full scope/design metadata; a DNA digest
 is not a reconstructible design contract. Natural-language revisions without an
 executable recipe remain explicit exceptions. Local mock-host success is not
 production integration proof.
+
+## 2026-09-17 - Verify navigation and resources, not only page appearance
+
+Independent review reproduced a missing link and stylesheet passing selected QA.
+Screenshot parity can faithfully reproduce a broken source. Validate internal
+paths/fragments and declared/runtime resource requests against the artifact,
+with per-reference evidence. Review URL prefixes must be directory URLs before
+resolution. A busy project must not prevent unrelated queued work. HTTP fixtures
+must derive access/noindex from installed protection, not return those facts
+unconditionally. The 43-test corrective run records these regression cases.

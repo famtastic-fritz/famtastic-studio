@@ -2,7 +2,7 @@
 
 ## Revisions and isolation
 
-Next code: d75caba (implementation b5a3a30 plus access-policy guard).
+Next code: 118201eeb06e5cc39954c67238fd5b773e76e013 (includes independent-review corrections; original implementation b5a3a30 and access guard d75caba).
 Branch codex/selected-staging-continuation.
 Worktree /Users/famtastic-fritz/Development/worktrees/studio-selected-staging.
 Base fbca6d1ab42bc9dde48e368773c9b58e7d3461ab.
@@ -67,6 +67,14 @@ rather than blind duplication. Foreign access policy is preserved, not replaced.
 Activation/rollback: ../capabilities/SELECTED-STAGING-CONSUMER.md and the agency
 runbook. These are explicit gates, not a declaration of production readiness.
 
+## Independent-review correction proof
+
+43 affected/cross-repo tests in 11 files passed with two workers, including
+real Chromium navigation/resource negatives and positives, directory/prefix
+scoping, protection-dependent HTTP fixtures and independent busy-queue progress.
+Lint and diff checks pass. Agency source remains unchanged at 92e0d4b.
+See selected-staging-proof-2026-09-17.md for the exact command and limitations.
+
 ## Exact changed files: Next
 
 ```text
@@ -75,6 +83,7 @@ docs/CHANGELOG.md
 docs/SITE-LEARNINGS.md
 docs/capabilities/SELECTED-STAGING-CONSUMER.md
 docs/contracts/CLIENT-SELECTED-BUILD-FLOW.md
+docs/env/selected-staging-handoff-2026-09-17.md
 docs/env/selected-staging-proof-2026-09-17.md
 docs/plans/SELECTED-CONTINUATION-2026-09-17.md
 scripts/selected-staging-runtime.example.mjs
@@ -84,25 +93,29 @@ server/kernel/cpanel-review.js
 server/kernel/pipeline-executors.js
 server/kernel/pipeline.js
 server/kernel/review-backup.js
+server/kernel/review-directory-url.js
 server/kernel/selected-continuation-plan.js
 server/kernel/selected-provenance.js
 server/kernel/selected-review-qa.js
 server/kernel/selected-staging-assembly.js
+server/kernel/selected-static-navigation.js
 server/kernel/staging-callback.js
 server/kernel/staging-contract.js
 server/kernel/staging-runtime.js
 server/kernel/staging-store.js
 server/kernel/staging-worker.js
 server/modules/pipeline/index.js
+tests/cpanel-directory-scope.test.js
 tests/cpanel-http-fixture.mjs
 tests/review-backup.test.js
 tests/selected-continuation-plan.test.js
+tests/selected-review-qa.test.js
 tests/staging-agency-contract.test.js
 tests/staging-assembly.test.js
 tests/staging-ingress-worker.test.js
+tests/staging-queue-progress.test.js
 tests/staging-worker-fixture.mjs
 tests/staging-worker.test.js
-docs/env/selected-staging-handoff-2026-09-17.md
 ```
 
 ## Exact changed files: Agency
