@@ -112,7 +112,9 @@ export function createCpanelHttpTransport({ paths, journal, binding, credentialP
     backup: backups.backup, restore: backups.restore,
     async protect() {
       const gate = `RewriteEngine On\nRewriteCond %{HTTP_HOST} !^${url.hostname.replaceAll('.', '\\.')}(:443)?$ [NC]\nRewriteRule ^ - [F,L]\nAuthType Basic\nAuthName "Client review"\nAuthUserFile ${authFile}\nRequire valid-user\nHeader always set X-Robots-Tag "noindex, nofollow"\nHeader always set Cache-Control "no-store"\nOptions -Indexes\n`;
-      await writeFile('.htaccess', Buffer.from(gate));
+      if ((await listing(target.target_path)).some(row => row.file === '.htaccess')) {
+        if (await readText(target.target_path, '.htaccess') !== gate) throw stagingError('review_access_policy_changed');
+      } else await writeFile('.htaccess', Buffer.from(gate));
       if (await readText(target.target_path, '.htaccess') !== gate) throw stagingError('access_file_verification_failed');
     },
     async verifyAccess() {

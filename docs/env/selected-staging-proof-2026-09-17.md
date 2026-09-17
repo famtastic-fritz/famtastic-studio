@@ -67,3 +67,9 @@ gates, not successful tests. Source for the HTTP assembly is implemented; only
 its injected contract is proven. Staging credentials/config/process setup and
 all production writes remain unauthorized. Running-service checkout stayed clean
 on codex/repository-standards at fbca6d1. No push, merge, cron or reload occurred.
+
+Post-sweep targeted hardening: `npm test -- --maxWorkers=2
+ tests/staging-assembly.test.js` passed 3 tests (3.37 seconds). The added case
+proves an existing foreign .htaccess is preserved and no public artifact or
+ready callback occurs. This makes 125 distinct covered tests across the sweep
+and follow-up; the 124-test combined sweep was not relabeled as a 125-test run.

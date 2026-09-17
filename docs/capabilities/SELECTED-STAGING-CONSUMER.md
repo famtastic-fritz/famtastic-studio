@@ -115,3 +115,8 @@ input/output hashes are retained in transformation evidence and DNA. No
 research, concept/copy generation or layout redesign occurs. Missing pages
 without this recipe remain unsupported. This is a narrow static continuation
 capability, not a general application or natural-language revision engine.
+
+Existing .htaccess must exactly match this runtime's selected review policy.
+A foreign or authored policy is preserved and raises review_access_policy_changed
+before content upload. Migrating such a policy is a separate reviewed operation,
+not an incidental consequence of selecting or revising a site.
