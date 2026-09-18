@@ -1,5 +1,13 @@
 # Normal record-writer proof, first bounded profile
 
+## Current result and navigation
+
+Code checkpoints: Next `7b44be4`, agency `cd030113`. Implementation verification: **1,022 tests / 99 files in 70.01s**. Independent parent verification: **1,022 / 99 in 77.73s**, plus PHP42 contract assertions/3 selection cases/3 portal API cases and lint/diff checks. Both full sweeps enabled all three PHP harnesses and actual portal component/browser dependencies.
+
+The normal Designs-first static writers, exact private-reference flow, separate existing-request Studio source association, automatic source outbox/backoff and same-repository partial-ancestor continuation are locally proven. Combined build-and-associate is rejected before work; generic apps/editors/media licensing/new-agency-customer creation are unsupported. Real Drupal runtime/transactions/customer lifecycle, target allocation/configuration and live protected hosting/activation remain separate evidence. No live or Drive changes occurred.
+
+Read the [current handoff](selected-staging-handoff-2026-09-17.md), [writer status](../plans/NORMAL-SELECTED-WRITERS-2026-09-17.md), and [source-association contract](../plans/SOURCE-ASSOCIATION-2026-09-17.md). The entries below preserve historical checkpoints; their older totals and then-remaining work are superseded by this synopsis.
+
 Final uploaded-reference verification including anonymous-share hardening: **1,011 tests / 98 files in 55.85s** with all PHP/browser harnesses enabled. PHP 42 contract assertions/3 selection cases, 34 portal DNA checks, brand check, routing YAML, syntax, lint and diff checks pass. No live or Drive writes.
 
 ## 2026-09-17 - Private uploaded reference reuse (local)

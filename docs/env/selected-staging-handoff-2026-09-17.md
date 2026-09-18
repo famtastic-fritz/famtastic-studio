@@ -1,6 +1,41 @@
 # Selected staging implementation handoff, 2026-09-17
 
-## Revisions and isolation
+## Current handoff synopsis
+
+Code checkpoints: Next **7b44be49053b0a5541b14acb4e0df3cc2383af9c** and agency **cd0301130f9ea9f553a0e35442c8f68651bd81bd**. These identify the reviewed implementation before this documentation refresh; all commits remain local.
+
+- Next: branch `codex/selected-staging-continuation`, worktree `/Users/famtastic-fritz/Development/worktrees/studio-selected-staging`.
+- Agency: branch `codex/selected-staging-contract`, worktree `/Users/famtastic-fritz/Development/worktrees/fd-selected-staging-contract`.
+- Implementation sweep: **1,022 tests / 99 files in 70.01 seconds**, all three PHP harnesses and actual portal component/browser dependencies enabled. Eleven source-association cases cover the final route/backoff corrections.
+- Final independent parent review of these code checkpoints: **1,022 tests / 99 files in 77.73 seconds**, the same PHP/browser environments, plus PHP 42 contract assertions, 3 selection cases, 3 portal API cases and Next lint/diff checks. No open code findings remain within the bounded local scope.
+- Final post-documentation cleanup will verify and remove only the exact temporary `node_modules` symlink in the Next worktree. It was retained for independent verification and is not committed. Do not treat historical cleanup notes below as current status.
+
+### Supported local flows
+
+**Designs-first selected static source:** real proof callback/raw capture, ordinary request/page-copy writers, selection/project creation, immutable artifact reader, derived marked shell, durable source mapping and matched receipt are connected. The normal request can produce executable records without a preseeded continuation/permission/source-authority blob. Package existing static source unchanged, or assemble missing authored pages using one unambiguous intro/hero with exactly the supported heading/body text fields. Original template bytes need not be invented: derivation from selected bytes is explicit.
+
+**Uploaded private references:** exact active same-customer/request uploads bind to selected manifest bytes for protected review only. Distinct sharing/AI/likeness statements remain separate. Multiple declared aliases preserve each output path. Withdrawal invalidates pending work and acceptance; reuploading inactive bytes returns an explicit conflict. Current rights are rechecked, private restrictions survive source exports/receipts, and anonymous proof sharing/public consumers are denied. This is not a generated-media license or public-use grant.
+
+**Studio source association to an existing agency request:** create the normal Studio source once, obtain a grant through `/api/pipeline/source/association`, then associate its existing site/run through `/api/pipeline/source/associate`. The agency grants only the current canonical unpaid selection, binding source/design/scope/customer/project/request and validity. Actual Git/file/browser evidence and completed-copy fields are checked. First source registration refreshes the request without another Select. A complete source packages unchanged; a verified partial source continues only missing pages in the same repository. The combined `/api/pipeline/run` association option is explicitly rejected before work, preventing callback failure from causing a rebuild.
+
+**Revisions and recovery:** normal request changes advance the current work and clear stale acceptance. Verified completed pages survive callback/upload delay and process restart, including partial-association ancestry. The existing worker wake drains the source outbox with exact acknowledgements and shared project claims. Transient failures, including timeout/408/429/503, retain the same envelope with persisted exponential backoff from 5 to 300 seconds within grant validity. Permanent rejection or expired/stale authority enters actionable non-ready reconciliation; unrelated projects continue. No duplicate repository or retry rebuild is authorized by a transport failure.
+
+Source finalization, source acknowledgement, protected hosting, customer acceptance and checkout remain distinct. No source callback creates hosting readiness or customer acceptance; checkout requires explicit acceptance of the current exact hosted receipt.
+
+### Unsupported profiles and remaining operational proof
+
+Generic application/backend generation, arbitrary layouts or existing-page edits, unspecified copy, arbitrary media transformations/licensing, and creating new agency customers/requests from Studio are not implemented by this profile. Unsupported requests retain explicit planning/exception states. Initial Studio association is static and assetless; private-reference continuation has its own separately verified rights path. See [current normal-record proof](normal-selected-records-proof-2026-09-17.md), [current writer status](../plans/NORMAL-SELECTED-WRITERS-2026-09-17.md), and [source association contract and limits](../plans/SOURCE-ASSOCIATION-2026-09-17.md).
+
+Remaining evidence: matching Drupal vendor/runtime and real SQL transaction/concurrency/controller/customer lifecycle proof; production metadata reconciliation where applicable; actual installation-owned review target allocation and capability configuration; real credential/TLS/access/hosting/served-browser verification; authorized narrow consumer activation and rollback. Synthetic Drupal persistence and protected-host responses are not live service proof. The [consumer runbook](../capabilities/SELECTED-STAGING-CONSUMER.md) remains the activation reference. Routine in-scope protected builds retain the existing owner-approved policy; no new per-site engineering approval gate was added.
+
+No push, merge, production/config/cron/DNS/hosting activation, provider execution/spend, customer send, payment or Drive write occurred in this task.
+Production cron/email behavior and the Kakes delivery issue are not repaired merely by these local commits.
+
+## Historical initial checkpoint — superseded by the synopsis above
+
+The remainder preserves earlier evidence and file lists. Its missing-writer and cleanup statements describe those earlier checkpoints, not the current implementation.
+
+### Historical revisions and isolation
 
 Next code: 118201eeb06e5cc39954c67238fd5b773e76e013 (includes independent-review corrections; original implementation b5a3a30 and access guard d75caba).
 Branch codex/selected-staging-continuation.
@@ -18,7 +53,7 @@ job/message/payment, credential read, public upload, DNS/config/cron/reload.
 Disk began at 2.4GiB free and finished near 1GiB; no installs or user-file deletion.
 Temporary task dependency symlinks were removed. Both feature worktrees clean.
 
-## Delivered behavior
+## Historical delivered behavior
 
 Durable selected intent, immutable revision/account binding, explicit packaging
 versus narrow static continuation, real cPanel HTTP/runtime source, private
@@ -40,7 +75,7 @@ the displayed exact receipt hash and refreshes stale replies without accepting
 the replacement. Initiation matrix distinguishes existing Studio-local build,
 Designs selected dispatch and proposed-only reverse business initiation.
 
-## Evidence
+## Historical evidence
 
 Next: 124-test/16-file bounded sweep passed; then 3 targeted HTTP assembly tests
 passed including one added access-policy preservation test (125 distinct tests).
@@ -56,7 +91,7 @@ Sparse font/hero assets and existing chunk-size warnings mean the frontend
 build is not proof of complete deployment assets or canonical Node22 readiness.
 See agency docs/plans/SELECTED_STAGING_CONTINUATION_LOCAL_2026-09-17.md.
 
-## Remaining gates
+## Historical remaining-work assessment
 
 Planning-wire follow-on: unresolved selections now take the existing durable
 dispatch/planning/callback path, distinct from executable work. The real legacy
@@ -86,7 +121,7 @@ rather than blind duplication. Foreign access policy is preserved, not replaced.
 Activation/rollback: ../capabilities/SELECTED-STAGING-CONSUMER.md and the agency
 runbook. These are explicit gates, not a declaration of production readiness.
 
-## Independent-review correction proof
+## Historical independent-review correction proof
 
 43 affected/cross-repo tests in 11 files passed with two workers, including
 real Chromium navigation/resource negatives and positives, directory/prefix
@@ -98,7 +133,7 @@ Parent independently retested Next 1e678ad and agency 92e0d4b: 134 tests in
 3 portal API tests. The dependency symlink was removed and checkout was clean.
 See selected-staging-proof-2026-09-17.md for the exact command and limitations.
 
-## Exact changed files: Next
+## Historical changed files: Next
 
 ```text
 config/paths.json
@@ -141,7 +176,7 @@ tests/staging-worker-fixture.mjs
 tests/staging-worker.test.js
 ```
 
-## Exact changed files: Agency
+## Historical changed files: Agency
 
 ```text
 .site-context/SITE-LEARNINGS.md
@@ -165,9 +200,9 @@ scripts/test-selected-staging-contract.php
 scripts/test-staging-review-browser.mjs
 scripts/test-staging-review-flow.mjs
 ```
-# Shared-shell follow-on
+## Historical shared-shell follow-on
 
 The bounded `legacy-shared-shell-v1` adapter is now implemented locally, including mapped same-repository continuation and existing-output preflight. See [local evidence](legacy-shared-shell-proof-2026-09-17.md) for 69 passing tests, source/permission contracts and remaining normal producer writers. General automatic build completion and runtime activation are not claimed.
-# Parent review corrections
+## Historical parent review corrections
 
 Inherited phone/email/address/testimonial marker kinds now pass unchanged; editing them is rejected. Finalized exports use lossless source-wire v2, and planning/scope hashes bind producer bytes. Evidence: `source-wire-v2-2026-09-17.md`. Remaining normal-writer connection plan: `../plans/NORMAL-SELECTED-WRITERS-2026-09-17.md`. No general automatic-build completion claim.

@@ -1,5 +1,7 @@
 # Canonical request to Studio source association
 
+Current code checkpoints: Next `7b44be4` / agency `cd030113`. Implementation full suite: **1,022/99 in70.01s**; independent parent full suite: **1,022/99 in77.73s**, with all PHP and portal browser environments. See the [current handoff](../env/selected-staging-handoff-2026-09-17.md) and [normal-writer evidence](../env/normal-selected-records-proof-2026-09-17.md). Historical totals below are retained as dated progress evidence.
+
 Status: local implementation and synthetic transport proof. This associates a normal Studio-authored source with an **existing canonical agency request**, not arbitrary creation of agency customers or requests. No production activation, hosting allocation, mail, payments, external provider execution or Drive writes.
 
 ## Authority and sequence

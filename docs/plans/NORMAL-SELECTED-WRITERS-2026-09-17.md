@@ -1,12 +1,27 @@
 # Normal selected-build connection plan
 
-## Bounded uploaded-reference increment
+## Current status
 
-Normal upload rights now bind exact same-request/customer proof asset bytes for protected review only. Current authenticated artifact access is rechecked before hosting and successful callback. Durable source metadata/export/receipt policy denies public consumers and requires private hosting access. Withdrawal and agency anonymous-share gates are covered across the normal writer harness. No generated-media licensing or public publication claim. Next: authenticated fresh Studio source association to an existing canonical agency request, without seeded source authority, a second repository or needless rebuild.
+The bounded normal-writer connection is implemented and locally proven at Next `7b44be4` / agency `cd030113`. The latest full implementation sweep is **1,022 tests / 99 files**, using real service writers and browser QA with synthetic Drupal persistence/hosting. This is not generic automatic site/application completion or live Drupal proof.
+The final independent parent sweep also passed **1,022/99 in77.73s**, plus PHP42/3 selection/3 portal API cases and lint/diff checks; no bounded-scope code finding remains.
 
-Scope: two isolated Next/agency worktrees only. The target is a normal selection producing its executable recipe from records, not a prefilled `selected_build_continuation` fixture. Current adapters and synthetic proofs do not complete that goal.
+Supported: normal Designs proof callback/raw capture, request scope/page-copy writers, first selection/project creation, derived intro/hero missing-page recipes, immutable artifact reads, receipt-created mapping, current-input invalidation, exact private-upload reuse/withdrawal, and same-repository completion reconciliation across callback/upload delays. Static source already complete can package without an intro/hero assembly recipe.
 
-Progress: callback/raw capture, request copy, first selection/project creation, derived intro/hero recipe, immutable reader, receipt-created source mapping, request-driven invalidation and local missing-callback reconciliation are connected and tested through real service writers with synthetic persistence/hosting. Original template bytes are not mandatory: marked selected source may be explicitly derived. Remaining work is fresh Studio-first account/source association, normal output-media permission linkage, and full Drupal/portal integration. Existing-page edits remain explicit unsupported executor issues. See `docs/env/normal-selected-records-proof-2026-09-17.md` for current evidence and limitations.
+Studio association is also implemented for an **existing canonical selected unpaid agency request**. Create the source once, obtain the authenticated current-selection grant, then associate its stored site/run separately. First source callback refreshes the request automatically; ordinary worker wakes retry the exact durable outbox with persisted backoff. Complete source is reused without rebuilding; verified partial ancestry supports only missing-page additions. Combined build-and-associate requests are rejected before work. This does not create agency customers/requests from Studio.
+
+Still unsupported: arbitrary existing-page edits/layouts, applications/backends, unsupplied copy and generic media generation/transformation/licensing. Initial Studio association is assetless; exact unchanged private references are supported through their own scoped rights path. Still requiring operational evidence: matching Drupal runtime/SQL/controller/customer lifecycle, installation-owned review target allocation/configuration, real protected-host/TLS/browser proof and authorized activation. No new routine engineering approval gate is introduced.
+
+Current references: [handoff synopsis](../env/selected-staging-handoff-2026-09-17.md), [normal-record evidence](../env/normal-selected-records-proof-2026-09-17.md), and [source-association behavior and limits](SOURCE-ASSOCIATION-2026-09-17.md).
+
+## Private uploaded-reference support
+
+Normal upload rights bind exact same-request/customer proof asset bytes for protected review only. Current authenticated artifact access is rechecked before hosting and successful callback. Durable source metadata/export/receipt policy denies public consumers and requires private hosting access. Withdrawal and agency anonymous-share gates are covered across the normal writer harness. No generated-media licensing or public publication claim is made.
+
+## Historical writer connection plan
+
+This original seam inventory is retained as implementation history. Its imperative wording describes the plan that led to the current bounded support above; it is not an open-task list. Scope remains the two isolated Next/agency worktrees.
+
+Original template bytes are not mandatory in the implemented profile: marked selected source may be explicitly derived. Source association and exact private-reference permission linkage have since been connected; generic output-media licensing and full live Drupal/portal proof remain outside the proven profile.
 
 | Order / writer seam | Existing authoritative inputs | Minimal connection and record | New customer input? |
 | --- | --- | --- | --- |
@@ -19,7 +34,7 @@ Progress: callback/raw capture, request copy, first selection/project creation, 
 
 Connect these writers through the existing selected intent/history, ledger and staging dispatch. A changed source/content/scope/permission/target binding advances revision. The resolver chooses exactly one planning or executable packet. Existing repository preflight, zero-provider assembly, final-page QA, protected hosting and receipt matching remain in place.
 
-The first completion test must exercise normal callback/source capture, ordinary request/content updates and selection, then observe a derived recipe, same-repository build, QA and matched callback. Only genuine inputs may be fixtures; no bespoke continuation/authority/permission blobs inserted into project or variant state. Actual production activation and customer delivery are later evidence, not implied by this test.
+The original completion-test requirement was fulfilled through normal callback/source capture, ordinary request/content updates and selection, derived records, same-repository build, QA and matched callback. Inputs/persistence/hosting are synthetic; continuation/permission/source association records are produced by the actual writers. Production activation and customer delivery remain separate evidence.
 ## 2026-09-17 - Reference aliases and inactive reupload correction
 
 Independent review found two bounded edge cases. Hash-addressed reads now validate every same-packet declared alias and return exact bytes without dropping either output path; tenant/current-rights/containment checks remain required. Reuploading withdrawn bytes returns an explicit inactive-reference conflict, preserving withdrawal evidence. The dashboard clears stale success notices before actions; its existing API error path displays the conflict. Actual controller and two-path worker completion plus browser API error propagation are covered locally. No regrant, live action or Drive write.
