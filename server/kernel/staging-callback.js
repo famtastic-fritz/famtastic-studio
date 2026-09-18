@@ -8,7 +8,8 @@ export function createStagingCallback({ endpoint, secret, request }) {
     const raw = JSON.stringify(body);
     const response = await request(endpoint, { method: 'POST', redirect: 'error', body: raw,
       headers: { 'Content-Type': 'application/json', 'X-FAMtastic-Signature': `sha256=${crypto.createHmac('sha256', secret).update(raw).digest('hex')}` } });
-    if (response.status !== 200 || response.body?.ok !== true) throw stagingError('callback_rejected');
+    if (response.status !== 200 || response.body?.ok !== true) throw Object.assign(stagingError('callback_rejected'), { responseStatus: response.status,
+      reasonCode: /^source_association_[a-z_]+$/.test(response.body?.message || '') ? response.body.message : response.body?.error || null });
     return response.body;
   };
 }

@@ -70,7 +70,7 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
   async function run(id) {
     let claim;
     try { claim = store.claim(id); } catch (error) {
-      if (error.code === 'project_busy') error.stagingClaimBusy = true;
+      if (error.code === 'project_busy' || error.code === 'source_association_not_ready') error.stagingClaimBusy = true;
       throw error;
     }
     const { job, token } = claim;
@@ -169,8 +169,8 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
     for (const j of store.list().filter(j => ['queued', 'retry', 'running'].includes(j.state))) {
       try { results.push(await run(j.id)); }
       catch (error) {
-        if (error.code !== 'project_busy' || error.stagingClaimBusy !== true) throw error;
-        results.push({ id: j.id, state: 'busy', stage: j.stage, code: 'project_busy' });
+        if (!['project_busy', 'source_association_not_ready'].includes(error.code) || error.stagingClaimBusy !== true) throw error;
+        results.push({ id: j.id, state: error.code === 'project_busy' ? 'busy' : 'waiting_source_association', stage: j.stage, code: error.code });
       }
     }
     return results;

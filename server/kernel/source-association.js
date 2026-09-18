@@ -22,14 +22,28 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
   async function deliver(id) {
     const entry = store.readAssociation(id);
     if (!entry) throw stagingError('source_association_missing');
-    verifySourceAssociation(entry.envelope.association, secret, now());
-    const exported = decodeSourceExport(entry.envelope.source_export);
-    const result = JSON.parse(fs.readFileSync(paths.within('dna', exported.run_id, 'build-result.json'), 'utf8'));
-    const checked = exportFinalizedSource({ paths, result, brief: { completion_scope: exported.scope }, reviewQa: exported.review_qa });
-    if (checked.sha256 !== entry.envelope.source_export.sha256) throw stagingError('source_association_finalized_bytes_changed');
-    if (entry.state === 'acknowledged') return entry;
-    await callback(entry.envelope);
-    return store.acknowledgeAssociation(id);
+    if (entry.state !== 'callback_pending') return entry;
+    const { value, token } = store.claimAssociation(id);
+    let verified = false;
+    try {
+      verifySourceAssociation(value.envelope.association, secret, now());
+      const exported = decodeSourceExport(value.envelope.source_export);
+      const result = JSON.parse(fs.readFileSync(paths.within('dna', exported.run_id, 'build-result.json'), 'utf8'));
+      const checked = exportFinalizedSource({ paths, result, brief: { completion_scope: exported.scope }, reviewQa: exported.review_qa });
+      if (checked.sha256 !== value.envelope.source_export.sha256) throw stagingError('source_association_finalized_bytes_changed');
+      verified = true;
+      const ack = await callback(value.envelope);
+      if (ack?.ok !== true || ack.status !== 'source_associated' || typeof ack.newly_processed !== 'boolean'
+        || ack.association_id !== id || ack.source_export_sha256 !== value.envelope.source_export.sha256
+        || ['project_id', 'customer_id', 'request_id'].some(key => ack[key] !== value.envelope[key])) throw Object.assign(stagingError('source_association_ack_mismatch'), { permanent: true });
+      return store.settleAssociation(id, token, { state: 'acknowledged', acknowledgement: ack, last_error: null });
+    } catch (error) {
+      const permanent = !verified || error.permanent || (error.responseStatus >= 400 && error.responseStatus < 500) || value.attempts >= 3;
+      store.settleAssociation(id, token, { state: permanent ? 'reconciliation_required' : 'callback_pending',
+        last_error: { code: error.code || (/^source_[a-z_]+$/.test(error.message) ? error.message : 'source_association_transport_failed'), reason: error.reasonCode || null },
+        action: permanent ? 'Reconcile the current agency selection and verified source before retrying this association.' : 'Retry the same source callback on the next worker wake.' });
+      throw error;
+    } finally { store.releaseAssociation(id, token); }
   }
   async function finalize({ site_id, run_id, association }) {
     const grant = verifySourceAssociation(association, secret, now());
@@ -68,12 +82,23 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
     const record = decodeSourceExport(wire);
     if (record.issues.some(issue => issue !== 'required_pages_incomplete')) throw stagingError('source_association_scope_unsupported');
     const mapping = { project_id: grant.project_id, customer_id: grant.customer_id, request_id: grant.request_id, site_id, run_id,
-      association_id: grant.association_id, repository_path: result.repository.repository_path, source_export_sha256: wire.sha256, source_export: wire,
+      association_id: grant.association_id, association_scope_sha256: grant.scope_sha256, repository_path: result.repository.repository_path, source_export_sha256: wire.sha256, source_export: wire,
       evidence_ref: `source-association:${grant.association_id}`, originating_system: 'studio', handoff_initiator: 'studio', content_records, completed_steps: {}, source_history: [] };
     store.recordAssociation(mapping, { schema: 'famtastic.site-studio.source-finalized.v1', project_id: grant.project_id, customer_id: grant.customer_id, request_id: grant.request_id,
       association, source_export: wire, source_completion: mapping, content_evidence });
     return deliver(grant.association_id);
   }
-  return { finalize, deliver, validate: grant => verifySourceAssociation(grant, secret, now()),
+  async function tick() {
+    const results = [];
+    let attempted = 0;
+    for (const entry of store.listAssociations().filter(e => e.state === 'callback_pending')) {
+      if (attempted >= 8) break;
+      try { results.push(await deliver(entry.id)); }
+      catch (error) { if (error.code === 'project_busy') { results.push({ id: entry.id, state: 'busy', code: error.code }); continue; } results.push(store.readAssociation(entry.id)); }
+      attempted++;
+    }
+    return results;
+  }
+  return { finalize, deliver, tick, validate: grant => verifySourceAssociation(grant, secret, now()),
     request: identity => callback({ schema: 'famtastic.site-studio.association-request.v1', project_id: identity.project_id, customer_id: identity.customer_id, request_id: identity.request_id }) };
 }

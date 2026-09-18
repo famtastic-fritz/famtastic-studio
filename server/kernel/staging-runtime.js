@@ -10,9 +10,12 @@ export function createStagingRuntime({ paths, journal, ...capabilities }) {
   const worker = createStagingWorker({ ...capabilities, store, resolveSource });
   let pending = null;
   function wake() {
-    pending ||= worker.tick().finally(() => { pending = null; });
+    pending ||= (async () => {
+      const associations = sourceAssociation ? await sourceAssociation.tick() : [];
+      return [...associations, ...await worker.tick()];
+    })().finally(() => { pending = null; });
     return pending;
   }
-  const sourceAssociation = capabilities.associationSecret ? createSourceAssociation({ paths, store, qa: capabilities.qa, callback: capabilities.callback, secret: capabilities.associationSecret }) : null;
+  const sourceAssociation = capabilities.associationSecret ? createSourceAssociation({ paths, store, qa: capabilities.qa, callback: capabilities.callback, secret: capabilities.associationSecret, now: capabilities.associationNow }) : null;
   return { store, worker, sourceAssociation, wake, close: () => store.close() };
 }

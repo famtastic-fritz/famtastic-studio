@@ -57,6 +57,8 @@ export function createStagingStore({ paths, journal }) {
       const job = read(id);
       if (!job) throw stagingError('job_not_found', 404);
       const project = job.packet.project_id;
+      const association = db.prepare('SELECT data FROM source_associations WHERE project=?').get(project);
+      if (association && JSON.parse(association.data).state !== 'acknowledged') throw stagingError('source_association_not_ready', 409);
       const held = db.prepare('SELECT * FROM claims WHERE project=?').get(project);
       if (held && alive(held.pid)) throw stagingError('project_busy', 409);
       const token = crypto.randomUUID();
@@ -91,7 +93,7 @@ export function createStagingStore({ paths, journal }) {
         evidence_ref: `verified-staging-source:${job.id}`, content_records, completed_steps, source_export: wire,
         originating_system: prior?.originating_system || job.packet.continuation.initiating_system, handoff_initiator: job.packet.continuation.initiating_system };
       mapping.source_history = [...(prior?.source_history || [])];
-      if (prior?.association_id) mapping.association_id = prior.association_id;
+      if (prior?.association_id) { mapping.association_id = prior.association_id; mapping.association_scope_sha256 = prior.association_scope_sha256; }
       if (prior && prior.source_export_sha256 !== wire.sha256) mapping.source_history.push({ run_id: prior.run_id, source_export_sha256: prior.source_export_sha256 });
       db.prepare('INSERT OR REPLACE INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
       return mapping;
@@ -121,12 +123,31 @@ export function createStagingStore({ paths, journal }) {
     });
   }
   function readAssociation(id) { const row = db.prepare('SELECT data FROM source_associations WHERE id=?').get(id); return row ? JSON.parse(row.data) : null; }
-  function acknowledgeAssociation(id) {
-    const value = readAssociation(id); if (!value) throw stagingError('source_association_missing');
-    value.state = 'acknowledged'; db.prepare('UPDATE source_associations SET data=? WHERE id=?').run(JSON.stringify(value), id); return value;
+  function claimAssociation(id) {
+    return transaction(() => {
+      const value = readAssociation(id); if (!value) throw stagingError('source_association_missing');
+      const project = value.envelope.project_id;
+      const held = db.prepare('SELECT * FROM claims WHERE project=?').get(project);
+      if (held && alive(held.pid)) throw stagingError('project_busy', 409);
+      const token = crypto.randomUUID();
+      db.prepare('INSERT OR REPLACE INTO claims VALUES (?,?,?)').run(project, token, process.pid);
+      value.attempts = (value.attempts || 0) + 1;
+      value.last_attempted_at = new Date().toISOString();
+      db.prepare('UPDATE source_associations SET data=? WHERE id=?').run(JSON.stringify(value), id);
+      return { value, token };
+    });
+  }
+  function settleAssociation(id, token, fields) {
+    return transaction(() => {
+      const value = readAssociation(id); if (!value) throw stagingError('source_association_missing');
+      if (!db.prepare('SELECT 1 FROM claims WHERE project=? AND token=?').get(value.envelope.project_id, token)) throw stagingError('claim_lost', 409);
+      Object.assign(value, fields); db.prepare('UPDATE source_associations SET data=? WHERE id=?').run(JSON.stringify(value), id); return value;
+    });
   }
   return { accept, read, claim, checkpoint, recordSource, sourceMappings, resolveSource, readMappedArtifact, resolveCompleted,
-    recordAssociation, readAssociation, acknowledgeAssociation,
+    recordAssociation, readAssociation, claimAssociation, settleAssociation,
+    listAssociations: () => db.prepare('SELECT data FROM source_associations ORDER BY rowid').all().map(r => JSON.parse(r.data)),
+    releaseAssociation: (id, token) => db.prepare('DELETE FROM claims WHERE project=? AND token=?').run(readAssociation(id).envelope.project_id, token),
     list: () => db.prepare('SELECT data FROM jobs ORDER BY rowid').all().map(r => JSON.parse(r.data)),
     release: (job, token) => db.prepare('DELETE FROM claims WHERE project=? AND token=?').run(job.packet.project_id, token),
     close: () => db.close() };

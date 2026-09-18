@@ -1,6 +1,5 @@
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
-import { Readable } from 'node:stream';
 import fs from 'node:fs';
 import { afterEach, expect, it } from 'vitest';
 import { fixture } from './staging-worker-fixture.mjs';
@@ -8,13 +7,12 @@ import { shellFixture } from './legacy-shared-shell-fixture.mjs';
 import { createArtifactBundle } from '../server/kernel/artifact-bundle.js';
 import { createSourceAssociation, verifySourceAssociation } from '../server/kernel/source-association.js';
 import { createSelectedReviewQa } from '../server/kernel/selected-review-qa.js';
-import { createStagingWorker } from '../server/kernel/staging-worker.js';
 import { digest } from '../server/kernel/staging-store.js';
-import pipelineModule from '../server/modules/pipeline/index.js';
-import { createEvents } from '../server/kernel/events.js';
+import { createStagingRuntime } from '../server/kernel/staging-runtime.js';
+import { createSelectedSourceResolver } from '../server/kernel/selected-source-binding.js';
 const harness = process.env.NORMAL_SELECTED_RECORDS_HARNESS;
-let f, child;
-afterEach(() => { child?.stdin.end(); child?.kill(); child = null; f?.cleanup(); f = null; });
+let f, child, runtime;
+afterEach(() => { child?.stdin.end(); child?.kill(); child = null; runtime?.close(); runtime = null; f?.cleanup(); f = null; });
 function agency(input) {
   child = spawn('php', [harness, '--association'], { stdio: ['pipe', 'pipe', 'pipe'] });
   let stderr = '', queue = [], pending = [];
@@ -25,7 +23,8 @@ function agency(input) {
   child.stdin.write(JSON.stringify(input) + '\n');
   return { ready: read(), send: value => { child.stdin.write(JSON.stringify(value) + '\n'); return read(); } };
 }
-it.skipIf(!harness).each([[false, false], [true, false], [true, true]])('normal Studio source associates without seeded mapping (complete: %s, mismatched copy: %s)', async (complete, wrongCopy) => {
+it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true, null], ...['expired', 'paid', 'reselected', 'ack_mismatch', 'bytes', 'callback_delay', 'upload_failure'].map(mode => [false, false, mode])])('normal Studio source associates without seeded mapping (complete: %s, mismatched copy: %s, outbox: %s)', async (complete, wrongCopy, pendingCase) => {
+  const delayed = ['callback_delay', 'upload_failure'].includes(pendingCase);
   const html = shellFixture().selected.replace('href="about.html"', 'href="index.html"');
   const copy = { page_name: 'About', title: 'About us', description: 'Our story', heading: 'Our story', body: 'Actual supplied page copy.' };
   const input = { raw_callback: JSON.stringify({ event_id: 'normal-event', campaign_id: 'normal-proof', job_id: 'normal-job', variants: ['a', 'b', 'c'].map(direction_id => ({ direction_id, html, design_dna: {} })) }),
@@ -48,7 +47,7 @@ it.skipIf(!harness).each([[false, false], [true, false], [true, true]])('normal 
   expect(() => verifySourceAssociation(grant, 'synthetic-association-secret', 1789603601)).toThrow('expired');
   let failCallback = true, acknowledged;
   const capabilities = () => ({ paths: f.paths, store: f.store, qa: createSelectedReviewQa({ paths: f.paths }), secret: 'synthetic-association-secret', now: () => 1789600000,
-    callback: async body => { if (failCallback) throw new Error('synthetic_callback_delayed'); acknowledged = await a.send({ callback: body }); if (acknowledged.status !== 200) throw new Error(JSON.stringify(acknowledged.response)); return acknowledged.response; } });
+    callback: async body => { if (failCallback) throw new Error('synthetic_callback_delayed'); acknowledged = await a.send({ callback: body }); if (acknowledged.status !== 200) throw Object.assign(new Error(JSON.stringify(acknowledged.response)), { code: 'callback_rejected', responseStatus: acknowledged.status, reasonCode: acknowledged.response.message }); return pendingCase === 'ack_mismatch' ? { ...acknowledged.response, association_id: 'wrong-association' } : acknowledged.response; } });
   const args = { site_id: built.site_id, run_id: built.run_id, association: grant };
   if (wrongCopy) {
     await expect(createSourceAssociation(capabilities()).finalize(args)).rejects.toThrow('completed_content_changed');
@@ -58,10 +57,7 @@ it.skipIf(!harness).each([[false, false], [true, false], [true, true]])('normal 
   await expect(createSourceAssociation(capabilities()).finalize(args)).rejects.toThrow('synthetic_callback_delayed');
   expect(f.store.sourceMappings()).toHaveLength(1); expect(f.counters.uploads).toBe(0); expect(f.counters.builds).toBe(1);
   const envelope = f.store.readAssociation(JSON.parse(grant.payload_json).association_id).envelope;
-  const homePath = f.paths.within('sites', built.site_id, 'index.html');
-  fs.appendFileSync(homePath, '<p>Unverified change</p>');
-  await expect(createSourceAssociation(capabilities()).deliver(envelope.source_completion.association_id)).rejects.toThrow('source_repository_changed');
-  fs.writeFileSync(homePath, html);
+  if (pendingCase === 'bytes') fs.appendFileSync(f.paths.within('sites', built.site_id, 'index.html'), '<p>Unverified change</p>');
   for (const row_change of [{ commerce_order_id: 9 }, { selected_proof_direction: 'b' }, { customer_id: 999 }]) {
     const rejected = await a.send({ row_change, callback: envelope }); expect(rejected.status).toBe(422);
     await a.send({ row_change: { commerce_order_id: null, selected_proof_direction: 'a', customer_id: 903 } });
@@ -77,11 +73,36 @@ it.skipIf(!harness).each([[false, false], [true, false], [true, true]])('normal 
   expect((await a.send({ callback: { ...envelope, source_completion: { ...envelope.source_completion, repository_path: '/unrelated' } } })).status).toBe(422);
   if (complete) expect((await a.send({ callback: { ...envelope, content_evidence: { 'about.html': Buffer.from('incorrect content').toString('base64') } } })).status).toBe(422);
   f.restart(); failCallback = false;
-  const routes = new Map();
-  pipelineModule.register({ app: { route: (method, path, handler) => routes.set(path, handler) }, paths: f.paths, journal: f.journal, events: createEvents({ paths: f.paths }), stagingRuntime: { sourceAssociation: createSourceAssociation(capabilities()) } });
-  const response = await routes.get('/api/pipeline/source/associate')({ req: Readable.from([JSON.stringify(args)]) });
-  expect(response.status, JSON.stringify(response.body)).toBe(200);
-  const registered = response.body;
+  const normal = f.options();
+  const makeRuntime = () => createStagingRuntime({ paths: f.paths, journal: f.journal, ...normal, associationSecret: 'synthetic-association-secret', associationNow: () => pendingCase === 'expired' ? 1789603601 : 1789600000,
+    fetchArtifact: async ({ url }) => Buffer.from(acknowledged.artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64'),
+    callback: body => body.schema === 'famtastic.site-studio.source-finalized.v1' ? capabilities().callback(body) : normal.callback(body) });
+  runtime = makeRuntime();
+  if (pendingCase && !delayed) {
+    if (pendingCase === 'paid') await a.send({ row_change: { commerce_order_id: 9 } });
+    if (pendingCase === 'reselected') await a.send({ row_change: { selected_proof_direction: 'b' } });
+    const waiting = runtime.store.accept(initial.packet);
+    const unrelated = runtime.store.accept({ ...initial.packet, schema: 'famtastic.site-studio.planning-packet.v1', project_id: '999', request_id: 'unrelated-request', packet_id: 'unrelated-packet', idempotency_key: 'unrelated-idem', intent: { ...JSON.parse(grant.payload_json).intent, project_id: '999', request_id: 'unrelated-request' } });
+    if (pendingCase === 'expired') {
+      const held = runtime.store.claimAssociation(envelope.source_completion.association_id);
+      const busy = await runtime.wake();
+      expect(busy.some(r => r.id === envelope.source_completion.association_id && r.state === 'busy')).toBe(true);
+      expect(runtime.store.read(unrelated.id).state).toBe('complete');
+      runtime.store.releaseAssociation(envelope.source_completion.association_id, held.token);
+    }
+    const refused = await runtime.wake();
+    const entry = runtime.store.readAssociation(envelope.source_completion.association_id);
+    expect(entry.state, JSON.stringify(refused)).toBe('reconciliation_required');
+    expect(entry.envelope).toEqual(envelope); expect(entry.action).toContain('Reconcile');
+    expect(runtime.store.read(waiting.id).stage).toBe('materialize');
+    expect(runtime.store.read(unrelated.id).state).toBe('complete');
+    expect(f.counters.builds).toBe(1); expect(f.counters.uploads).toBe(0);
+    await runtime.wake(); expect(runtime.store.readAssociation(entry.id).attempts).toBe(entry.attempts);
+    await a.send({ close: true }).catch(() => {}); return;
+  }
+  const wake = await runtime.wake();
+  const registered = wake.find(r => r.id === envelope.source_completion.association_id);
+  expect(registered, JSON.stringify(wake)).toBeDefined();
   expect(registered.state).toBe('acknowledged');
   const duplicate = await a.send({ callback: envelope });
   expect(duplicate.status, JSON.stringify(duplicate.response)).toBe(200); expect(duplicate.response.newly_processed).toBe(false);
@@ -89,14 +110,40 @@ it.skipIf(!harness).each([[false, false], [true, false], [true, true]])('normal 
   await expect(createSourceAssociation(capabilities()).finalize({ ...args, site_id: 'another-site' })).rejects.toThrow('conflicting_reuse');
   expect(acknowledged.state.selected_source_mapping.originating_system).toBe('studio');
   expect(acknowledged.row.staging_review_status).not.toBe('accepted');
-  const p = acknowledged.state.selected_dispatch_packet;
+  let p = acknowledged.state.selected_dispatch_packet;
   expect(p.schema, p.dispatch_issue).toBe('famtastic.site-studio.build-packet.v1');
   expect(p.continuation.operation).toBe(complete ? 'package_existing' : 'continue_build');
-  const worker = createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(acknowledged.artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
-  const done = await worker.run(f.store.accept(p).id);
+  const job = runtime.store.accept(p);
+  if (delayed) f.controls[pendingCase === 'callback_delay' ? 'callbackFails' : 'uploadFails'] = true;
+  let done = (await runtime.wake()).find(r => r.id === job.id);
+  if (delayed) {
+    expect(done.state).toBe('retry'); expect(f.counters.builds).toBe(2);
+    const savedAbout = fs.readFileSync(f.paths.within('sites', built.site_id, 'about.html'));
+    const team = { ...copy, page_name: 'Team', title: 'Our team', heading: 'Our team', body: 'Actual supplied team copy.' };
+    acknowledged = await a.send({ update: { ...input.request, page_count: 3, page_list: 'Home, About, Team', page_content: [copy, team] } });
+    p = acknowledged.state.selected_dispatch_packet;
+    expect(p.continuation.source_export_sha256).toBe(envelope.source_export.sha256);
+    const mapping = runtime.store.sourceMappings()[0];
+    for (const change of [{ association_id: 'unrelated-association' }, { association_scope_sha256: '0'.repeat(64) }]) await expect(createSelectedSourceResolver({ paths: f.paths, mappings: [{ ...mapping, ...change }] })(p, { reconcile: true })).rejects.toThrow('ancestor_mismatch');
+    await expect(runtime.store.resolveSource({ ...p, continuation: { ...p.continuation, source_export_sha256: '0'.repeat(64) } }, { reconcile: true })).rejects.toThrow('mapping_stale');
+    await expect(runtime.store.resolveSource({ ...p, continuation: { ...p.continuation, customer: { ...p.continuation.customer, id: '999' } } }, { reconcile: true })).rejects.toThrow('mapping_required');
+    const oldWirePath = f.paths.within('dna', built.run_id, `source-${envelope.source_export.sha256}.json`);
+    const oldWire = fs.readFileSync(oldWirePath);
+    fs.writeFileSync(oldWirePath, JSON.stringify({ ...envelope.source_export, payload_json: envelope.source_export.payload_json + ' ' }));
+    await expect(runtime.store.resolveSource(p, { reconcile: true })).rejects.toThrow('digest_mismatch');
+    fs.writeFileSync(oldWirePath, oldWire);
+    runtime.close(); runtime = null; f.restart(); f.controls.callbackFails = false; f.controls.uploadFails = false;
+    runtime = makeRuntime();
+    const next = runtime.store.accept(p);
+    done = (await runtime.wake()).find(r => r.id === next.id);
+    expect(done.selected?.transformations.map(t => t.path)).toEqual(['team.html']);
+    expect(fs.readFileSync(f.paths.within('sites', built.site_id, 'about.html'))).toEqual(savedAbout);
+    expect(f.counters.builds).toBe(3);
+    await runtime.wake(); expect(f.counters.builds).toBe(3);
+  }
   expect(done.state, JSON.stringify({ history: done.history, failure: done.failure, build: done.build?.error })).toBe('complete');
   expect(done.build.site_id).toBe(built.site_id); expect(done.build.repository.repository_path).toBe(built.repository.repository_path);
-  expect(f.counters.builds).toBe(complete ? 1 : 2); expect(f.counters.generation).toBe(0);
+  expect(f.counters.builds).toBe(delayed ? 3 : complete ? 1 : 2); expect(f.counters.generation).toBe(0);
   expect(f.remote.get('index.html').toString()).toBe(html);
   if (complete) expect(f.remote.get('about.html').toString()).toBe(about);
   expect(fs.readdirSync(f.paths.within('sites'))).toEqual([built.site_id]);

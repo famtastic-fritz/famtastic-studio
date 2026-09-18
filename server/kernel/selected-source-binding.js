@@ -3,6 +3,15 @@ import { decodeSourceExport } from './source-export-wire.js';
 import { git } from '../../vendor/site-foundation/index.js';
 import { digest, stagingError } from './staging-store.js';
 
+function verifiedPartialAssociation(record, mapping) {
+  const qa = record.review_qa;
+  return !!mapping.association_id && /^[a-f0-9]{64}$/.test(mapping.association_scope_sha256 || '')
+    && record.scope?.evidence_ref === `association:${mapping.association_id}` && record.scope.request_scope_sha256 === mapping.association_scope_sha256
+    && record.issues?.length === 1 && record.issues[0] === 'required_pages_incomplete' && record.source_verification?.passed === true
+    && qa?.passed === true && qa.verifier === 'selected-static-browser-v2' && !qa.problems?.length && qa.evidence?.length > 0
+    && qa.source_binding?.site_id === record.site_id && qa.source_binding.run_id === record.run_id && qa.source_binding.manifest_sha256 === record.manifest_sha256;
+}
+
 // Mapping is installation-owned capability data, never inferred from a packet ID.
 export function createSelectedSourceResolver({ paths, mappings = [], getMappings = () => [] }) {
   return async (packet, { reconcile = false } = {}) => {
@@ -17,8 +26,7 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     if (!m.evidence_ref || ((!reconcile || c.source_export_sha256) && m.source_export_sha256 !== c.source_export_sha256 && !ancestor) || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
     const wire = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
     const record = decodeSourceExport(wire);
-    const verifiedPartialAssociation = m.association_id && record.review_qa?.passed === true && record.issues?.length === 1 && record.issues[0] === 'required_pages_incomplete';
-    if (record.sha256 !== m.source_export_sha256 || (!record.scope_complete && !verifiedPartialAssociation) || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
+    if (record.sha256 !== m.source_export_sha256 || (!record.scope_complete && !verifiedPartialAssociation(record, m)) || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
     const dir = paths.within('sites', m.site_id);
     if (fs.realpathSync(dir) !== fs.realpathSync(m.repository_path) || fs.realpathSync(dir) !== fs.realpathSync(record.repository.repository_path)
       || git(dir, ['rev-parse', 'HEAD']) !== record.repository.commit || git(dir, ['branch', '--show-current']) !== record.repository.branch || git(dir, ['status', '--porcelain']) !== '') throw stagingError('source_repository_changed');
@@ -28,7 +36,7 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     const pathsInPacket = c.files.map(f => f.path).sort();
     if (ancestor) {
       const old = decodeSourceExport(JSON.parse(fs.readFileSync(paths.within('dna', ancestor.run_id, `source-${ancestor.source_export_sha256}.json`), 'utf8')));
-      if (old.sha256 !== ancestor.source_export_sha256 || old.run_id !== ancestor.run_id || !old.scope_complete || old.site_id !== record.site_id || old.repository.repository_path !== record.repository.repository_path
+      if (old.sha256 !== ancestor.source_export_sha256 || old.run_id !== ancestor.run_id || (!old.scope_complete && !verifiedPartialAssociation(old, m)) || old.site_id !== record.site_id || old.repository.repository_path !== record.repository.repository_path
         || old.repository.branch !== record.repository.branch || old.repository.remote_url !== record.repository.remote_url
         || JSON.stringify(pathsInPacket) !== JSON.stringify(old.files.map(f => f.path).sort())) throw stagingError('source_repository_ancestor_mismatch');
       try { git(dir, ['merge-base', '--is-ancestor', old.repository.commit, record.repository.commit]); }
