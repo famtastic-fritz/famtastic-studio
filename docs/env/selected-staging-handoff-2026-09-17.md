@@ -8,7 +8,7 @@ Code checkpoints: Next **7b44be49053b0a5541b14acb4e0df3cc2383af9c** and agency *
 - Agency: branch `codex/selected-staging-contract`, worktree `/Users/famtastic-fritz/Development/worktrees/fd-selected-staging-contract`.
 - Implementation sweep: **1,022 tests / 99 files in 70.01 seconds**, all three PHP harnesses and actual portal component/browser dependencies enabled. Eleven source-association cases cover the final route/backoff corrections.
 - Final independent parent review of these code checkpoints: **1,022 tests / 99 files in 77.73 seconds**, the same PHP/browser environments, plus PHP 42 contract assertions, 3 selection cases, 3 portal API cases and Next lint/diff checks. No open code findings remain within the bounded local scope.
-- Final post-documentation cleanup will verify and remove only the exact temporary `node_modules` symlink in the Next worktree. It was retained for independent verification and is not committed. Do not treat historical cleanup notes below as current status.
+- Final cleanup verified that the Next worktree's `node_modules` was a symlink targeting `/Users/famtastic-fritz/Development/FAMtastic-Repos/site-studio-next/node_modules`, then removed only that link. The dependency target remains intact. Both worktrees are clean after the documentation commits; no dependency installation or customer-file deletion occurred.
 
 ### Supported local flows
 
