@@ -34,3 +34,9 @@ Do not copy business branding or imagery into a neutral package. Extract an inst
 Third independent fixture: https://github.com/famtastic-fritz/site-coastbound-electric deployed application `c760bf071613504f3fb31ea765c1f9438df345c0`. Evidence: 51 isolated integration checks, 17 hosted checks, actual browser inquiry/signup/private withdrawal, and precise synthetic cleanup. Source docs retain version-specific fresh-clone evidence.
 
 Store reply previews separately with `preview_only` status; never equate persistence with email delivery. Require explicit mailing consent, unique normalized subscriber email, a hashed private withdrawal token, and nonredeemable review coupon labeling. Duplicate signup must not reveal an existing withdrawal secret. Keep public contact/credential forms explicitly POST even without JavaScript. No mail transport or domain provisioning is implied. This remains a documented candidate, not a promoted executable recipe.
+
+### Tuff E Nuff revision: tested owner onboarding and invitation
+
+The same independent fixture was rebranded to its user-supplied business name while preserving the site ID, private state and shared URL. Source release 126c105 adds a 22-second invitation, capped once per tab session, deferred during form focus and suppressed after successful submissions. Native dialog supports close, Escape, backdrop and reduced motion. Eight deterministic timing scenarios passed.
+
+Owner onboarding uses a privately supplied starter password, forced change before inbox rendering or protected mutations, current-password confirmation, atomic private config update and session version revocation. 62 isolated integration checks and live password-change/old-rejection/new-login/final-gate checks passed. Starter resets require explicit owner authorization; never publish credentials or copy fixture-specific identity/artwork into a shared package. Candidate remains unpromoted.
