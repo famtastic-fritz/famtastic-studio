@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
 import { afterEach, expect, it } from 'vitest';
 import { shellFixture, footer } from './legacy-shared-shell-fixture.mjs';
 import { fixture } from './staging-worker-fixture.mjs';
@@ -91,6 +92,56 @@ it.skipIf(!harness).each(['intro', 'hero'])('actual callback and request writers
   expect(call({ request: { ...request, page_content: [] } }).packet.dispatch_issue).toContain('authored_copy_missing_about.html');
   expect(call({ request: { ...request, booking_details: 'Accept bookings' } }).packet.dispatch_issue).toContain('unsupported_feature_booking_details');
   expect(call({ installation: { ...installation, authored_shell_policy: {} } }).packet.dispatch_issue).toContain('shell_rights_binding_missing');
+}, 20000);
+
+it.skipIf(!harness).each(['callbackFails', 'uploadFails'])('reconciles a verified older agency source through three revisions after %s', async failure => {
+  const html = shellFixture().selected;
+  const copy = { page_name: 'About', title: 'Our story', description: 'Our story', heading: 'Our story', body: 'Actual authored story.' };
+  const request = { project_name: 'Synthetic', business_name: 'Synthetic', action: 'save', page_count: 2, page_list: 'Home, About', page_content: [copy] };
+  const team = { ...request, page_count: 3, page_list: 'Home, About, Team', page_content: [copy, { ...copy, page_name: 'Team', title: 'Team', heading: 'Our team' }] };
+  const faq = { ...team, page_count: 4, page_list: 'Home, About, Team, FAQ', page_content: [...team.page_content, { ...copy, page_name: 'FAQ', title: 'Questions', heading: 'Your questions' }] };
+  const input = { raw_callback: JSON.stringify({ event_id: 'normal-event', campaign_id: 'normal-proof', job_id: 'normal-job', variants: ['a', 'b', 'c'].map(direction_id => ({ direction_id, html, design_dna: {} })) }), request,
+    installation: { artifact_base_url: 'https://agency.example.invalid', authored_shell_policy: { status: 'approved', evidence_ref: 'synthetic-owned-code' }, targets: { '902': { customer_id: '903', staging_url: 'https://synthetic.famtasticinc.com/', target_path: '/home/nineoo/public_html/synthetic', remote_subdirectory: 'synthetic' } } } };
+  const call = extra => JSON.parse(execFileSync('php', [harness], { input: JSON.stringify({ ...input, ...extra }), encoding: 'utf8', maxBuffer: 12 * 1024 * 1024 }));
+  const initial = call({}); f = fixture({ producerPacket: initial.packet });
+  const workerFor = bytes => createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
+  const first = await workerFor(initial.artifact_bytes).run(f.store.accept(initial.packet).id);
+  expect(first.state).toBe('complete');
+  const aboutBytes = Buffer.from(f.remote.get('about.html'));
+  const secondInput = call({ receipt: first.callback_body, followup_request: team });
+  f.controls[failure] = true;
+  const secondId = f.store.accept(secondInput.final_packet).id;
+  const second = await workerFor(secondInput.final_artifact_bytes).run(secondId);
+  expect(second.state).toBe('retry'); expect(second.source_mapping.source_export_sha256).not.toBe(first.source_mapping.source_export_sha256);
+  const teamBytes = fs.readFileSync(f.paths.within('sites', second.build.site_id, 'team.html'));
+  const thirdInput = call({ receipt: first.callback_body, followup_requests: [team, faq] });
+  const packet = thirdInput.final_packet;
+  expect(packet.continuation.selection_revision).toBe(3);
+  expect(packet.continuation.source_export_sha256).toBe(first.source_mapping.source_export_sha256);
+  expect(packet.continuation.recipe.steps.map(s => s.path)).toEqual(['team.html', 'faq.html']);
+  f.restart(); f.controls[failure] = false;
+  const unknown = structuredClone(packet); unknown.continuation.source_export_sha256 = 'f'.repeat(64);
+  await expect(f.store.resolveCompleted(unknown)).rejects.toThrow('source_repository_mapping_stale');
+  const tampered = structuredClone(packet); tampered.artifacts.find(a => a.path.endsWith('/about.html')).sha256 = 'e'.repeat(64);
+  await expect(f.store.resolveCompleted(tampered)).rejects.toThrow('source_repository_ancestor_bytes_changed');
+  const unrelated = structuredClone(packet); unrelated.continuation.customer.id = 'other';
+  await expect(f.store.resolveCompleted(unrelated)).rejects.toThrow('source_repository_mapping_required');
+  const changed = call({ receipt: first.callback_body, followup_requests: [team, { ...faq, page_content: faq.page_content.map(p => p.page_name === 'Team' ? { ...p, body: 'Changed team copy.' } : p) }] });
+  await expect(materializeSelection(changed.final_packet, { ...f.options(), resolveCompleted: f.store.resolveCompleted, readMappedArtifact: f.store.readMappedArtifact,
+    fetchArtifact: async ({ url }) => Buffer.from(changed.final_artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') })).rejects.toThrow('completed_page_copy_requires_edit_recipe');
+  const thirdWorker = workerFor(thirdInput.final_artifact_bytes), thirdId = f.store.accept(packet).id;
+  const done = await thirdWorker.run(thirdId);
+  expect(done.state, JSON.stringify({ failure: done.failure, error: done.build?.error })).toBe('complete');
+  expect(done.selected.transformations.map(t => t.path)).toEqual(['faq.html']);
+  expect(done.selected.execution_packet.local_source_reconciliation.reused_pages).toEqual(['team.html']);
+  expect(done.build.repository.repository_path).toBe(first.build.repository.repository_path);
+  expect(f.remote.get('about.html')).toEqual(aboutBytes);
+  expect(f.remote.get('team.html')).toEqual(teamBytes);
+  expect(f.remote.get('faq.html').toString()).toContain('Your questions');
+  expect(done.packet).toEqual(packet);
+  expect((await thirdWorker.run(secondId)).state).toBe('superseded');
+  expect((await thirdWorker.run(thirdId)).state).toBe('complete');
+  expect(f.counters.builds).toBe(3); expect(f.counters.generation).toBe(0);
 }, 20000);
 
 it.skipIf(!harness)('packages a non-intro Home source without assembling or generating pages', async () => {

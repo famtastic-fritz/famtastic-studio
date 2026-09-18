@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Reconcile before reading mapped artifacts
+
+An agency can name a real older verified source while its latest callback is delayed. Resolve that ancestor before mapped artifact reads, using durable history, Git ancestry and exact unchanged bytes; a missing digest and a verified older digest are distinct cases. Keep unknown hashes rejected. Test three revisions as well as the first callback delay.
+
 ## 2026-09-17 - Callback acknowledgement is not source completion
 
 A locally verified page remains complete when hosting or callback transport fails. Persist semantic completed-step bindings and reconcile authenticated incoming records before assembly, without weakening the existing-output guard or claiming hosting/agency acknowledgement. Keep original source origin separate from a later handoff initiator. Multi-cycle browser regressions need a bounded timeout that covers their real work, so timeout cleanup cannot race active browser reads.

@@ -13,7 +13,8 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     const matches = owned.length ? owned : configured;
     if (matches.length !== 1) throw stagingError('source_repository_mapping_required');
     const m = matches[0];
-    if (!m.evidence_ref || (!reconcile || c.source_export_sha256) && m.source_export_sha256 !== c.source_export_sha256 || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
+    const ancestor = reconcile && c.source_export_sha256 && m.source_history?.find(h => h.source_export_sha256 === c.source_export_sha256);
+    if (!m.evidence_ref || ((!reconcile || c.source_export_sha256) && m.source_export_sha256 !== c.source_export_sha256 && !ancestor) || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
     const wire = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
     const record = decodeSourceExport(wire);
     if (record.sha256 !== m.source_export_sha256 || !record.scope_complete || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
@@ -24,6 +25,18 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     if (git(dir, ['remote']).split('\n').includes('origin')) remote = git(dir, ['remote', 'get-url', 'origin']);
     if (remote !== (record.repository.remote_url || null) || (m.remote_url !== undefined && remote !== m.remote_url)) throw stagingError('source_repository_remote_changed');
     const pathsInPacket = c.files.map(f => f.path).sort();
+    if (ancestor) {
+      const old = decodeSourceExport(JSON.parse(fs.readFileSync(paths.within('dna', ancestor.run_id, `source-${ancestor.source_export_sha256}.json`), 'utf8')));
+      if (old.sha256 !== ancestor.source_export_sha256 || old.run_id !== ancestor.run_id || !old.scope_complete || old.site_id !== record.site_id || old.repository.repository_path !== record.repository.repository_path
+        || old.repository.branch !== record.repository.branch || old.repository.remote_url !== record.repository.remote_url
+        || JSON.stringify(pathsInPacket) !== JSON.stringify(old.files.map(f => f.path).sort())) throw stagingError('source_repository_ancestor_mismatch');
+      try { git(dir, ['merge-base', '--is-ancestor', old.repository.commit, record.repository.commit]); }
+      catch { throw stagingError('source_repository_ancestor_mismatch'); }
+      for (const file of old.files) {
+        const declared = c.files.find(f => f.path === file.path), artifact = packet.artifacts.find(a => a.path === declared.source_path);
+        if (artifact?.sha256 !== file.sha256 || artifact?.bytes !== file.bytes) throw stagingError('source_repository_ancestor_bytes_changed');
+      }
+    }
     if (!reconcile && JSON.stringify(pathsInPacket) !== JSON.stringify(record.files.map(f => f.path).sort())) throw stagingError('source_export_manifest_mismatch');
     if (reconcile && (pathsInPacket.some(p => !record.files.some(f => f.path === p)) || record.files.some(f => f.path.endsWith('.html') && !c.required_pages.includes(f.path)))) throw stagingError('source_export_manifest_mismatch');
     for (const file of record.files) {

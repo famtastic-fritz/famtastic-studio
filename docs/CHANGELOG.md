@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Verified ancestor reconciliation and portal browser proof
+
+Retain verified source history and check actual Git ancestry before reconciling an older acknowledged agency source with newer local completion. Three-revision callback/upload failures build only the missing page while preserving prior bytes; unrelated/tampered records remain rejected. Actual portal form/serializer proof at 390/1280 is included. Full suite: 1,010 tests / 97 files in 54.50s.
+
 ## 2026-09-17 - Reconcile completion before callback acknowledgement
 
 The worker projects a local execution plan from its verified durable source mapping before assembly. Matching completed-page content/template/permission bindings skip only that completed step; the signed packet and callback identity stay unchanged. Delayed callback and failed upload followed by a new Team request preserve About and assemble only Team after restart. Original source origin is immutable; the current handoff initiator is separate. Missing-page assembly also supports an unambiguous hero with the same strict text-field contract as intro.

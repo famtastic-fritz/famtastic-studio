@@ -1,5 +1,11 @@
 # Normal record-writer proof, first bounded profile
 
+## Verified source ancestors and portal form
+
+Latest full suite: **1,010 tests / 97 files in 54.50s**, all three PHP harness variables and the portal browser fixture enabled. The lifecycle table now covers an already acknowledged source A, a locally completed B whose callback/upload fails, and a third request still naming A. Before mapped reads, Next requires stored verified history, exact old manifest and current bytes, same source repository/branch/remote, actual Git ancestry and matching current content/permission. It builds only FAQ, retaining exact About/Team bytes after restart. Unknown hashes, altered manifest bytes, another customer and changed Team copy are rejected.
+
+The actual React intake editor, portal CSS and shared `pageContentFromForm` serializer run in Chromium at 390/1280: unchanged input preserves records, partial copy saves, edits retain exact text and removal emits an explicit empty list. No page errors or horizontal overflow. This is a component/form proof with a synthetic save wrapper; full dashboard authentication and live Drupal remain unproven. Existing React dependencies were read without installation.
+
 ## Timing and content regressions
 
 Verification after the timing/origin/Home fixes: full Next suite **1,007 tests / 96 files in 51.87s**, all three PHP harness variables enabled; PHP 42 contract assertions and 3 selection-seam cases pass, changed PHP syntax and Next lint/diff checks pass. The multi-cycle normal browser tests now have a bounded 20-second per-case limit after an initial 5-second timeout caused cleanup to race an active browser read; the final full run has no unhandled errors.

@@ -89,12 +89,14 @@ export function createStagingStore({ paths, journal }) {
         site_id: record.site_id, repository_path: record.repository.repository_path, run_id: record.run_id, source_export_sha256: wire.sha256,
         evidence_ref: `verified-staging-source:${job.id}`, content_records, completed_steps, source_export: wire,
         originating_system: prior?.originating_system || job.packet.continuation.initiating_system, handoff_initiator: job.packet.continuation.initiating_system };
+      mapping.source_history = [...(prior?.source_history || [])];
+      if (prior && prior.source_export_sha256 !== wire.sha256) mapping.source_history.push({ run_id: prior.run_id, source_export_sha256: prior.source_export_sha256 });
       db.prepare('INSERT OR REPLACE INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
       return mapping;
     });
   }
-  async function readMappedArtifact(packet, file) {
-    const resolved = await resolveSource(packet);
+  async function readMappedArtifact(packet, file, options) {
+    const resolved = await resolveSource(packet, options);
     const record = decodeSourceExport(resolved.source_export);
     const source = record.files.find(entry => entry.path === file.path);
     if (!source) throw stagingError('mapped_artifact_missing');

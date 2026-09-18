@@ -11,6 +11,7 @@ export async function materializeSelection(packet, { fetchArtifact, allowedArtif
   const errors = continuationErrors(packet);
   if (!errors.length) errors.push(...continuationPlanErrors(packet));
   if (errors.length) throw Object.assign(stagingError('continuation_not_executable'), { details: errors, permanent: true });
+  const completed = await resolveCompleted?.(packet);
   const c = packet.continuation;
   const files = [];
   let total = 0;
@@ -25,11 +26,11 @@ export async function materializeSelection(packet, { fetchArtifact, allowedArtif
   }
   for (const file of c.files) {
     const source = packet.artifacts.find(a => a.path === file.source_path);
-    const bytes = file.source_origin === 'mapped_repository' ? await readMappedArtifact(packet, file) : await fetchSource({ ...source, url: file.url });
+    const bytes = file.source_origin === 'mapped_repository' ? await readMappedArtifact(packet, file, completed ? { reconcile: true } : undefined) : await fetchSource({ ...source, url: file.url });
     if (!Buffer.isBuffer(bytes) || bytes.length !== source.bytes || digest(bytes) !== source.sha256) throw stagingError('artifact_digest_mismatch');
     files.push({ path: file.path, bytes });
   }
-  const execution = await reconcileCompletedSelection(packet, files, fetchSource, resolveCompleted, readMappedArtifact);
+  const execution = await reconcileCompletedSelection(packet, files, fetchSource, () => completed, readMappedArtifact);
   const transformations = await executeContinuationPlan(execution, files, fetchSource);
   const prepared = prepareStagingBuildPacket({
     source: { ...c.source, website_request_public_id: packet.request_id, customer_id: c.customer.id, current_proof_hash: c.current_selected_sha256 },
