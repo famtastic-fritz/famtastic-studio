@@ -1,5 +1,13 @@
 # Normal record-writer proof, first bounded profile
 
+## Timing and content regressions
+
+Verification after the timing/origin/Home fixes: full Next suite **1,007 tests / 96 files in 51.87s**, all three PHP harness variables enabled; PHP 42 contract assertions and 3 selection-seam cases pass, changed PHP syntax and Next lint/diff checks pass. The multi-cycle normal browser tests now have a bounded 20-second per-case limit after an initial 5-second timeout caused cleanup to race an active browser read; the final full run has no unhandled errors.
+
+Five normal writer cases cover intro and hero assembly, hero-only packaging, delayed callback, and upload failure. In each failure case, the agency receives no source receipt before a new Team request; Next reconciles verified local About content, preserves its bytes, assembles only Team in the same repository after restart, supersedes the old job and does not rebuild on retry. Changed About copy during the callback delay is rejected before another build. Signed incoming packets remain exact; only a separate local execution projection skips proven completed steps.
+
+New Home text is a pending existing-page edit, never silently ignored. Removing a previously built page's supplied copy is a pending review of withdrawn source copy, not an instruction to erase live content. Both invalidate prior acceptance. Studio re-registration updates handoff initiator while retaining original Designs provenance. These tests use synthetic persistence and hosting, not real customer delivery.
+
 ## Follow-on verification: durable mapping and normal edits
 
 Full Next suite passed **1,004 tests / 96 files in 44.48s**, with all three PHP harness environment variables enabled. PHP contract assertions (42) and selection seam cases (3) also pass. The added normal regression uses actual service methods with synthetic persistence, no running Drupal database.

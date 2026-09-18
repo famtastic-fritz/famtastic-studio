@@ -16,7 +16,7 @@ function edits(source, changes) {
   }
   return output;
 }
-export function assembleLegacySharedShell({ selectedBytes, templateBytes, contentBytes, permissionBytes, step, sharedStyleBytes = null }) {
+export function validateShellAuthority({ selectedBytes, templateBytes, contentBytes, permissionBytes, step }) {
   if (!/^[A-Za-z0-9_-][A-Za-z0-9_.-]*\.html$/.test(step.path) || step.path.includes('..')) fail('shell_output_path_unsupported');
   const decode = bytes => { const value = bytes.toString('utf8'); if (!Buffer.from(value).equals(bytes)) fail('shell_utf8_required'); return value; };
   const selectedHash = digest(selectedBytes), templateHash = digest(templateBytes), contentHash = digest(contentBytes);
@@ -32,6 +32,11 @@ export function assembleLegacySharedShell({ selectedBytes, templateBytes, conten
     || !Array.isArray(permission.component_ids) || !Array.isArray(permission.fields)
     || JSON.stringify(permission.component_ids) !== JSON.stringify(step.component_ids)
     || JSON.stringify([...(permission.fields || [])].sort()) !== JSON.stringify(Object.keys(content.fields).sort())) fail('shell_transformation_permission_stale');
+  return { content, permission, selectedHash, templateHash, contentHash };
+}
+export function assembleLegacySharedShell({ selectedBytes, templateBytes, contentBytes, permissionBytes, step, sharedStyleBytes = null }) {
+  const { content, permission, selectedHash, templateHash, contentHash } = validateShellAuthority({ selectedBytes, templateBytes, contentBytes, permissionBytes, step });
+  const decode = bytes => { const value = bytes.toString('utf8'); if (!Buffer.from(value).equals(bytes)) fail('shell_utf8_required'); return value; };
   const selected = parseSourceHtml(decode(selectedBytes)), template = parseSourceHtml(decode(templateBytes));
   const selectedBody = one(selected.nodes, n => n.tag === 'body', 'shell_body_ambiguous');
   const main = one(selected.nodes, n => n.tag === 'main' && n.parent === selectedBody, 'shell_main_ambiguous');

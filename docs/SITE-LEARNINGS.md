@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Callback acknowledgement is not source completion
+
+A locally verified page remains complete when hosting or callback transport fails. Persist semantic completed-step bindings and reconcile authenticated incoming records before assembly, without weakening the existing-output guard or claiming hosting/agency acknowledgement. Keep original source origin separate from a later handoff initiator. Multi-cycle browser regressions need a bounded timeout that covers their real work, so timeout cleanup cannot race active browser reads.
+
 ## 2026-09-17 - Separate completed source from changed customer intent
 
 Source finalization is an output of an existing selection, so its arrival must not itself invalidate customer acceptance. Compare semantic page records, preserve completed packet identity for unchanged input, and advance on actual scope/content changes. Resolve missing work before requiring assembler fields; a transfer-only hero page needs no intro component. Writer-created mappings must survive process restart and retain exact existing page bytes.

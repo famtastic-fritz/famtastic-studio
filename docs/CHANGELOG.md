@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Reconcile completion before callback acknowledgement
+
+The worker projects a local execution plan from its verified durable source mapping before assembly. Matching completed-page content/template/permission bindings skip only that completed step; the signed packet and callback identity stay unchanged. Delayed callback and failed upload followed by a new Team request preserve About and assemble only Team after restart. Original source origin is immutable; the current handoff initiator is separate. Missing-page assembly also supports an unambiguous hero with the same strict text-field contract as intro.
+
 ## 2026-09-17 - Durable source mapping and normal request revisions
 
 - Verified worker finalization writes the project/source mapping into SQLite and includes it in the matched receipt. Later missing-page work reads exact mapped artifacts and continues the same repository after restart.

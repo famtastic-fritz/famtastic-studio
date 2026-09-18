@@ -81,10 +81,14 @@ export function createStagingStore({ paths, journal }) {
       const prior = sourceMappings().find(m => m.project_id === job.packet.project_id);
       if (prior && (prior.customer_id !== job.packet.continuation.customer.id || prior.request_id !== job.packet.request_id || prior.site_id !== record.site_id || prior.repository_path !== record.repository.repository_path)) throw stagingError('source_mapping_identity_changed');
       const content_records = { ...(prior?.content_records || {}) };
+      const completed_steps = { ...(prior?.completed_steps || {}) };
       for (const t of job.selected?.transformations || []) if (t.content_record_id) content_records[t.path] = t.content_record_id;
+      for (const t of job.selected?.transformations || []) if (t.content_record) completed_steps[t.path] = { content_record_id: t.content_record_id, fields_sha256: digest(t.content_record.fields), selected_sha256: t.selected_sha256, template_sha256: t.template_sha256, component_ids: t.component_ids,
+        design_contract_sha256: job.packet.continuation.recipe.steps.find(s => s.path === t.path).design_contract_sha256 };
       const mapping = { project_id: job.packet.project_id, customer_id: job.packet.continuation.customer.id, request_id: job.packet.request_id,
         site_id: record.site_id, repository_path: record.repository.repository_path, run_id: record.run_id, source_export_sha256: wire.sha256,
-        evidence_ref: `verified-staging-source:${job.id}`, content_records, source_export: wire };
+        evidence_ref: `verified-staging-source:${job.id}`, content_records, completed_steps, source_export: wire,
+        originating_system: prior?.originating_system || job.packet.continuation.initiating_system, handoff_initiator: job.packet.continuation.initiating_system };
       db.prepare('INSERT OR REPLACE INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
       return mapping;
     });
@@ -96,7 +100,8 @@ export function createStagingStore({ paths, journal }) {
     if (!source) throw stagingError('mapped_artifact_missing');
     return fs.readFileSync(paths.within('sites', resolved.site_id, source.path));
   }
-  return { accept, read, claim, checkpoint, recordSource, sourceMappings, resolveSource, readMappedArtifact,
+  const resolveCompleted = packet => sourceMappings().some(m => m.project_id === packet.project_id) ? resolveSource(packet, { reconcile: true }) : null;
+  return { accept, read, claim, checkpoint, recordSource, sourceMappings, resolveSource, readMappedArtifact, resolveCompleted,
     list: () => db.prepare('SELECT data FROM jobs ORDER BY rowid').all().map(r => JSON.parse(r.data)),
     release: (job, token) => db.prepare('DELETE FROM claims WHERE project=? AND token=?').run(job.packet.project_id, token),
     close: () => db.close() };

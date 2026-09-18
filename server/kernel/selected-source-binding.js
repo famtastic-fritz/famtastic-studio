@@ -5,7 +5,7 @@ import { digest, stagingError } from './staging-store.js';
 
 // Mapping is installation-owned capability data, never inferred from a packet ID.
 export function createSelectedSourceResolver({ paths, mappings = [], getMappings = () => [] }) {
-  return async packet => {
+  return async (packet, { reconcile = false } = {}) => {
     const c = packet.continuation;
     const owned = getMappings().filter(m => String(m.project_id) === String(packet.project_id) && String(m.customer_id) === String(c.customer.id));
     const configured = mappings.filter(m => String(m.project_id) === String(packet.project_id) && String(m.customer_id) === String(c.customer.id));
@@ -13,7 +13,7 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     const matches = owned.length ? owned : configured;
     if (matches.length !== 1) throw stagingError('source_repository_mapping_required');
     const m = matches[0];
-    if (!m.evidence_ref || m.source_export_sha256 !== c.source_export_sha256 || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
+    if (!m.evidence_ref || (!reconcile || c.source_export_sha256) && m.source_export_sha256 !== c.source_export_sha256 || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
     const wire = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
     const record = decodeSourceExport(wire);
     if (record.sha256 !== m.source_export_sha256 || !record.scope_complete || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
@@ -24,15 +24,16 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     if (git(dir, ['remote']).split('\n').includes('origin')) remote = git(dir, ['remote', 'get-url', 'origin']);
     if (remote !== (record.repository.remote_url || null) || (m.remote_url !== undefined && remote !== m.remote_url)) throw stagingError('source_repository_remote_changed');
     const pathsInPacket = c.files.map(f => f.path).sort();
-    if (JSON.stringify(pathsInPacket) !== JSON.stringify(record.files.map(f => f.path).sort())) throw stagingError('source_export_manifest_mismatch');
+    if (!reconcile && JSON.stringify(pathsInPacket) !== JSON.stringify(record.files.map(f => f.path).sort())) throw stagingError('source_export_manifest_mismatch');
+    if (reconcile && (pathsInPacket.some(p => !record.files.some(f => f.path === p)) || record.files.some(f => f.path.endsWith('.html') && !c.required_pages.includes(f.path)))) throw stagingError('source_export_manifest_mismatch');
     for (const file of record.files) {
       const bytes = fs.readFileSync(paths.within('sites', m.site_id, file.path));
       const declared = c.files.find(f => f.path === file.path);
-      const artifact = packet.artifacts.find(a => a.path === declared.source_path);
-      if (bytes.length !== file.bytes || digest(bytes) !== file.sha256 || artifact?.sha256 !== file.sha256 || artifact?.bytes !== file.bytes) throw stagingError('source_export_bytes_changed');
+      const artifact = packet.artifacts.find(a => a.path === declared?.source_path);
+      if (bytes.length !== file.bytes || digest(bytes) !== file.sha256 || (declared || !reconcile) && (artifact?.sha256 !== file.sha256 || artifact?.bytes !== file.bytes)) throw stagingError('source_export_bytes_changed');
     }
     return { outcome: 'success', site_id: record.site_id, run_id: record.run_id,
       repository: record.repository, verify: record.source_verification,
-      source_export: wire, reused_existing_source: true, source_mapping_ref: m.evidence_ref };
+      source_export: wire, reused_existing_source: true, source_mapping_ref: m.evidence_ref, mapping: m };
   };
 }

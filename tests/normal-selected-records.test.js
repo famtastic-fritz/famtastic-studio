@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { afterEach, expect, it } from 'vitest';
 import { shellFixture, footer } from './legacy-shared-shell-fixture.mjs';
 import { fixture } from './staging-worker-fixture.mjs';
-import { createStagingWorker } from '../server/kernel/staging-worker.js';
+import { createStagingWorker, materializeSelection } from '../server/kernel/staging-worker.js';
 import { stagingPacketErrors, continuationErrors } from '../server/kernel/staging-contract.js';
 import { Readable } from 'node:stream';
 import { createApp } from '../server/kernel/app.js';
@@ -12,8 +12,8 @@ import { selectedArtifactAuthorization } from '../server/kernel/selected-artifac
 const harness = process.env.NORMAL_SELECTED_RECORDS_HARNESS;
 let f;
 afterEach(() => { f?.cleanup(); f = null; delete process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET; });
-it.skipIf(!harness)('actual callback and request writers derive a recipe and authenticated bytes without seeded continuation records', async () => {
-  const html = shellFixture().selected;
+it.skipIf(!harness).each(['intro', 'hero'])('actual callback and request writers derive a %s recipe and authenticated bytes without seeded continuation records', async sectionType => {
+  const html = shellFixture().selected.replace('data-section-type="intro"', `data-section-type="${sectionType}"`);
   const raw_callback = JSON.stringify({ event_id: 'normal-event', campaign_id: 'normal-proof', job_id: 'normal-job', variants: ['a', 'b', 'c'].map(direction_id => ({ direction_id, html,
     design_dna: { direction_name: 'Synthetic', spec_snapshot: { extra: {}, list: [], numeric: 1e-7 }, template_path: '/never-follow-callback-path' } })) });
   const request = { project_name: 'Synthetic request', business_name: 'Synthetic', action: 'save', page_count: 2, page_list: 'Home, About', page_content: [{ page_name: 'About', title: 'Our story', description: 'Our authored story', heading: 'Our story', body: 'This is the actual customer supplied page copy.' }] };
@@ -63,17 +63,27 @@ it.skipIf(!harness)('actual callback and request writers derive a recipe and aut
   const changed = call({ receipt: done.callback_body, accept_review: true, followup_request: { ...request, page_content: [{ ...request.page_content[0], body: 'Changed authored copy.' }] } });
   expect(changed.final_packet.dispatch_issue).toContain('existing_page_copy_requires_edit_recipe');
   expect(changed.final_row.staging_review_status).not.toBe('accepted');
+  const homeChange = call({ receipt: done.callback_body, accept_review: true, followup_request: { ...request, page_content: [...request.page_content, { ...request.page_content[0], page_name: 'Home', heading: 'Changed home' }] } });
+  expect(homeChange.final_packet.dispatch_issue).toContain('existing_page_copy_requires_edit_recipe:index.html');
+  expect(homeChange.final_row.staging_review_status).not.toBe('accepted');
+  const removedCopy = call({ receipt: done.callback_body, accept_review: true, followup_request: { ...request, page_content: [] } });
+  expect(removedCopy.final_packet.dispatch_issue).toContain('existing_page_copy_removed_requires_review:about.html');
+  expect(removedCopy.final_row.staging_review_status).not.toBe('accepted');
   const more = call({ receipt: done.callback_body, accept_review: true, studio_origin: true, followup_request: { ...request, page_count: 3, page_list: 'Home, About, Team', page_content: [...request.page_content, { ...request.page_content[0], page_name: 'Team', title: 'Team', heading: 'Our team' }] } });
   expect(more.final_packet.schema, more.final_packet.dispatch_issue).toBe('famtastic.site-studio.build-packet.v1');
   expect(more.final_packet.continuation.recipe.steps.map(s => s.path)).toEqual(['team.html']);
   expect(more.final_row.staging_review_status).not.toBe('accepted');
   expect(continuationErrors(more.final_packet)).toEqual([]);
   expect(more.final_packet.continuation.initiating_system).toBe('studio');
+  expect(more.final_state.selected_source_mapping.originating_system).toBe('designs');
+  expect(more.final_state.selected_source_mapping.handoff_initiator).toBe('studio');
   f.restart();
   const worker2 = createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(more.final_artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
   const done2 = await worker2.run(f.store.accept(more.final_packet).id);
   expect(done2.state, JSON.stringify({ failure: done2.failure, build: done2.build?.error })).toBe('complete');
   expect(done2.source_mapping.site_id).toBe(done.source_mapping.site_id);
+  expect(done2.source_mapping.originating_system).toBe('designs');
+  expect(done2.source_mapping.handoff_initiator).toBe('studio');
   expect(f.remote.get('about.html').toString()).toContain(request.page_content[0].body);
   expect(f.remote.get('team.html').toString()).toContain('Our team');
   expect(f.counters.generation).toBe(0);
@@ -81,7 +91,7 @@ it.skipIf(!harness)('actual callback and request writers derive a recipe and aut
   expect(call({ request: { ...request, page_content: [] } }).packet.dispatch_issue).toContain('authored_copy_missing_about.html');
   expect(call({ request: { ...request, booking_details: 'Accept bookings' } }).packet.dispatch_issue).toContain('unsupported_feature_booking_details');
   expect(call({ installation: { ...installation, authored_shell_policy: {} } }).packet.dispatch_issue).toContain('shell_rights_binding_missing');
-});
+}, 20000);
 
 it.skipIf(!harness)('packages a non-intro Home source without assembling or generating pages', async () => {
   const html = shellFixture().selected.replace('data-section-type="intro"', 'data-section-type="hero"').replace('href="about.html"', 'href="#main"');
@@ -100,3 +110,38 @@ it.skipIf(!harness)('packages a non-intro Home source without assembling or gene
   expect(f.counters.generation).toBe(0);
   expect(done.build.transformations || []).toEqual([]);
 });
+
+it.skipIf(!harness).each(['callbackFails', 'uploadFails'])('reconciles completed pages after %s without waiting for the agency receipt', async failure => {
+  const html = shellFixture().selected;
+  const copy = { page_name: 'About', title: 'Our story', description: 'Our story', heading: 'Our story', body: 'Actual authored story.' };
+  const request = { project_name: 'Synthetic', business_name: 'Synthetic', action: 'save', page_count: 2, page_list: 'Home, About', page_content: [copy] };
+  const input = { raw_callback: JSON.stringify({ event_id: 'normal-event', campaign_id: 'normal-proof', job_id: 'normal-job', variants: ['a', 'b', 'c'].map(direction_id => ({ direction_id, html, design_dna: {} })) }), request,
+    installation: { artifact_base_url: 'https://agency.example.invalid', authored_shell_policy: { status: 'approved', evidence_ref: 'synthetic-owned-code' }, targets: { '902': { customer_id: '903', staging_url: 'https://synthetic.famtasticinc.com/', target_path: '/home/nineoo/public_html/synthetic', remote_subdirectory: 'synthetic' } } } };
+  const call = extra => JSON.parse(execFileSync('php', [harness], { input: JSON.stringify({ ...input, ...extra }), encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 }));
+  const first = call({}); f = fixture({ producerPacket: first.packet });
+  f.controls[failure] = true;
+  const worker = createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(first.artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
+  const oldId = f.store.accept(first.packet).id, interrupted = await worker.run(oldId);
+  expect(interrupted.state).toBe('retry'); expect(interrupted.source_mapping).toBeTruthy();
+  const before = await import('node:fs').then(fs => fs.readFileSync(f.paths.within('sites', interrupted.build.site_id, 'about.html')));
+  const next = call({ followup_request: { ...request, page_count: 3, page_list: 'Home, About, Team', page_content: [copy, { ...copy, page_name: 'Team', title: 'Team', heading: 'Our team' }] } });
+  expect(next.final_packet.continuation.source_export_sha256).toBeUndefined();
+  expect(next.final_packet.continuation.recipe.steps.map(s => s.path)).toEqual(['about.html', 'team.html']);
+  const changed = call({ followup_request: { ...request, page_content: [{ ...copy, body: 'Changed while callback was delayed.' }] } });
+  await expect(materializeSelection(changed.final_packet, { ...f.options(), resolveCompleted: f.store.resolveCompleted, readMappedArtifact: f.store.readMappedArtifact,
+    fetchArtifact: async ({ url }) => Buffer.from(changed.final_artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') })).rejects.toThrow('completed_page_copy_requires_edit_recipe');
+  expect(f.counters.builds).toBe(1);
+  f.controls[failure] = false; f.restart();
+  const nextWorker = createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(next.final_artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
+  const id = f.store.accept(next.final_packet).id, done = await nextWorker.run(id);
+  expect(done.state, JSON.stringify({ failure: done.failure, error: done.build?.error })).toBe('complete');
+  expect(done.selected.transformations.map(t => t.path)).toEqual(['team.html']);
+  expect(done.selected.execution_packet.local_source_reconciliation.reused_pages).toEqual(['about.html']);
+  expect(done.packet).toEqual(next.final_packet);
+  expect(f.remote.get('about.html')).toEqual(before);
+  expect(done.build.repository.repository_path).toBe(interrupted.build.repository.repository_path);
+  expect(f.counters.builds).toBe(2); expect(f.counters.generation).toBe(0);
+  expect((await nextWorker.run(id)).state).toBe('complete');
+  expect((await nextWorker.run(oldId)).state).toBe('superseded');
+  expect(f.counters.builds).toBe(2);
+}, 20000);

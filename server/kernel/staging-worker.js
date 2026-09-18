@@ -5,8 +5,9 @@ import { createArtifactBundle } from './artifact-bundle.js';
 import { prepareStagingBuildPacket, packetToBuildBrief } from './selected-build-adapter.js';
 import { planSelectedSource } from './selected-source-plan.js';
 import { PLANNING_SCHEMA } from './selected-planning-contract.js';
+import { reconcileCompletedSelection } from './selected-completion-reconciliation.js';
 
-export async function materializeSelection(packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact }) {
+export async function materializeSelection(packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact, resolveCompleted }) {
   const errors = continuationErrors(packet);
   if (!errors.length) errors.push(...continuationPlanErrors(packet));
   if (errors.length) throw Object.assign(stagingError('continuation_not_executable'), { details: errors, permanent: true });
@@ -28,7 +29,8 @@ export async function materializeSelection(packet, { fetchArtifact, allowedArtif
     if (!Buffer.isBuffer(bytes) || bytes.length !== source.bytes || digest(bytes) !== source.sha256) throw stagingError('artifact_digest_mismatch');
     files.push({ path: file.path, bytes });
   }
-  const transformations = await executeContinuationPlan(packet, files, fetchSource);
+  const execution = await reconcileCompletedSelection(packet, files, fetchSource, resolveCompleted, readMappedArtifact);
+  const transformations = await executeContinuationPlan(execution, files, fetchSource);
   const prepared = prepareStagingBuildPacket({
     source: { ...c.source, website_request_public_id: packet.request_id, customer_id: c.customer.id, current_proof_hash: c.current_selected_sha256 },
     customer: c.customer, selection: { ...c.selection, approved: true, direction_id: packet.selected_direction_ids[0], proof_hash: c.current_selected_sha256 },
@@ -36,6 +38,7 @@ export async function materializeSelection(packet, { fetchArtifact, allowedArtif
     origin: c.origin, created: packet.created_at,
   }).packet;
   prepared.transformations = transformations;
+  if (execution !== packet) prepared.execution_packet = execution;
   return prepared;
 }
 
@@ -88,19 +91,20 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             if (job.packet.dispatch_issue) job.plan.issues.push({ stage: 'dispatch', code: 'agency_execution_binding_incomplete', detail: job.packet.dispatch_issue, owner: 'designs' });
             job.stage = 'callback';
           } else if (stage === 'materialize') {
-            job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact: store.readMappedArtifact });
+            job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact: store.readMappedArtifact, resolveCompleted: store.resolveCompleted });
             job.stage = 'build';
           } else if (stage === 'build') {
             let mapped = null;
-            if (job.packet.continuation.initiating_system === 'studio' || job.packet.continuation.source_export_sha256) {
+            const executionPacket = job.selected.execution_packet || job.packet;
+            if (executionPacket.continuation.initiating_system === 'studio' || executionPacket.continuation.source_export_sha256) {
               if (!resolveSource) throw Object.assign(stagingError('source_repository_mapping_required'), { permanent: true });
-              mapped = await resolveSource(job.packet);
+              mapped = await resolveSource(executionPacket);
               if (mapped?.reused_existing_source !== true || decodeSourceExport(mapped.source_export).scope_complete !== true) throw stagingError('source_export_invalid');
             }
-            if (mapped && job.packet.continuation.operation === 'package_existing') job.build = mapped;
+            if (mapped && executionPacket.continuation.operation === 'package_existing') job.build = mapped;
             else {
               const brief = packetToBuildBrief(job.selected);
-              brief.handoff = { operation: job.packet.continuation.operation, correlation_id: job.packet.continuation.correlation_id, initiating_system: job.packet.continuation.initiating_system, source_sha256: job.hash, transformations: job.selected.transformations };
+              brief.handoff = { operation: executionPacket.continuation.operation, correlation_id: job.packet.continuation.correlation_id, initiating_system: job.packet.continuation.initiating_system, source_sha256: job.hash, transformations: job.selected.transformations };
               brief.business_owner = { id: job.packet.continuation.customer.id, name: job.packet.continuation.customer.name };
               if (mapped) brief.repository = { url: mapped.repository.remote_url, branch: mapped.repository.branch };
               job.build = await pipeline.run({ site_id: mapped?.site_id || `project-${job.packet.project_id}`, brief, composer: 'artifact', initiator: job.id });
