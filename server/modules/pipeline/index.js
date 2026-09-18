@@ -90,8 +90,7 @@ export default {
       try {
         const body = await readJsonBody(req);
         if (body.association) {
-          if (!stagingRuntime?.sourceAssociation) throw Object.assign(new Error('Source association is unconfigured.'), { statusCode: 503 });
-          stagingRuntime.sourceAssociation.validate(body.association);
+          throw Object.assign(new Error('Create the source once, then associate its existing site_id and run_id through /api/pipeline/source/associate.'), { statusCode: 409, code: 'source_association_separate_handoff_required' });
         }
         const targetSiteId = identity?.site_id || body.site_id || (body.brief?.business_name ? `site-${body.brief.business_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}` : null);
         if (!targetSiteId) {
@@ -106,7 +105,6 @@ export default {
           recipe_ref: body.recipe_ref || null,
           initiator: identity?.conversation_id || 'console',
         });
-        if (body.association && result.outcome === 'success') result.source_association = await stagingRuntime.sourceAssociation.finalize({ site_id: result.site_id, run_id: result.run_id, association: body.association });
         return { status: result.outcome === 'success' ? 201 : 422, body: result };
       } catch (error) {
         return errorResponse(error);

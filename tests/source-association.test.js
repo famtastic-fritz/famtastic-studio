@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
+import { Readable } from 'node:stream';
 import fs from 'node:fs';
 import { afterEach, expect, it } from 'vitest';
 import { fixture } from './staging-worker-fixture.mjs';
@@ -10,6 +11,9 @@ import { createSelectedReviewQa } from '../server/kernel/selected-review-qa.js';
 import { digest } from '../server/kernel/staging-store.js';
 import { createStagingRuntime } from '../server/kernel/staging-runtime.js';
 import { createSelectedSourceResolver } from '../server/kernel/selected-source-binding.js';
+import pipelineModule from '../server/modules/pipeline/index.js';
+import { createEvents } from '../server/kernel/events.js';
+import { git } from '../vendor/site-foundation/index.js';
 const harness = process.env.NORMAL_SELECTED_RECORDS_HARNESS;
 let f, child, runtime;
 afterEach(() => { child?.stdin.end(); child?.kill(); child = null; runtime?.close(); runtime = null; f?.cleanup(); f = null; });
@@ -23,7 +27,7 @@ function agency(input) {
   child.stdin.write(JSON.stringify(input) + '\n');
   return { ready: read(), send: value => { child.stdin.write(JSON.stringify(value) + '\n'); return read(); } };
 }
-it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true, null], ...['expired', 'paid', 'reselected', 'ack_mismatch', 'bytes', 'callback_delay', 'upload_failure'].map(mode => [false, false, mode])])('normal Studio source associates without seeded mapping (complete: %s, mismatched copy: %s, outbox: %s)', async (complete, wrongCopy, pendingCase) => {
+it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true, null], ...['expired', 'paid', 'reselected', 'ack_mismatch', 'bytes', 'callback_delay', 'upload_failure', 'transport_recovery'].map(mode => [false, false, mode])])('normal Studio source associates without seeded mapping (complete: %s, mismatched copy: %s, outbox: %s)', async (complete, wrongCopy, pendingCase) => {
   const delayed = ['callback_delay', 'upload_failure'].includes(pendingCase);
   const html = shellFixture().selected.replace('href="about.html"', 'href="index.html"');
   const copy = { page_name: 'About', title: 'About us', description: 'Our story', heading: 'Our story', body: 'Actual supplied page copy.' };
@@ -43,11 +47,20 @@ it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true
   const issued = await a.send({ callback: { schema: 'famtastic.site-studio.association-request.v1', request_id: 'normal-request', project_id: '902', customer_id: '903' } });
   expect(issued.status, JSON.stringify(issued.response)).toBe(200);
   const grant = issued.response.association;
+  const routes = new Map();
+  pipelineModule.register({ app: { route: (method, path, handler) => routes.set(`${method} ${path}`, handler) }, paths: f.paths, journal: f.journal, events: createEvents({ paths: f.paths }) });
+  const countBefore = f.dna.list().length;
+  for (const body of [{ site_id: built.site_id, association: grant }, { site_id: 'conflicting-source', association: grant }]) {
+    const responses = await Promise.all([1, 2].map(() => routes.get('POST /api/pipeline/run')({ req: Readable.from([JSON.stringify(body)]) })));
+    for (const response of responses) expect(response).toMatchObject({ status: 409, body: { error: 'source_association_separate_handoff_required' } });
+  }
+  expect(f.dna.list()).toHaveLength(countBefore); expect(git(built.repository.repository_path, ['rev-parse', 'HEAD'])).toBe(built.repository.commit);
   expect(() => verifySourceAssociation({ ...grant, payload_json: grant.payload_json + ' ' }, 'synthetic-association-secret', 1789600000)).toThrow('signature');
   expect(() => verifySourceAssociation(grant, 'synthetic-association-secret', 1789603601)).toThrow('expired');
-  let failCallback = true, acknowledged;
-  const capabilities = () => ({ paths: f.paths, store: f.store, qa: createSelectedReviewQa({ paths: f.paths }), secret: 'synthetic-association-secret', now: () => 1789600000,
-    callback: async body => { if (failCallback) throw new Error('synthetic_callback_delayed'); acknowledged = await a.send({ callback: body }); if (acknowledged.status !== 200) throw Object.assign(new Error(JSON.stringify(acknowledged.response)), { code: 'callback_rejected', responseStatus: acknowledged.status, reasonCode: acknowledged.response.message }); return pendingCase === 'ack_mismatch' ? { ...acknowledged.response, association_id: 'wrong-association' } : acknowledged.response; } });
+  let failCallback = true, acknowledged, localNow = 1789600000;
+  const transient = pendingCase === 'transport_recovery' ? [503, 429, 503] : [];
+  const capabilities = () => ({ paths: f.paths, store: f.store, qa: createSelectedReviewQa({ paths: f.paths }), secret: 'synthetic-association-secret', now: () => localNow,
+    callback: async body => { if (failCallback) throw new Error('synthetic_callback_delayed'); if (transient.length) throw Object.assign(new Error('temporary upstream failure'), { code: 'callback_rejected', responseStatus: transient.shift() }); acknowledged = await a.send({ callback: body }); if (acknowledged.status !== 200) throw Object.assign(new Error(JSON.stringify(acknowledged.response)), { code: 'callback_rejected', responseStatus: acknowledged.status, reasonCode: acknowledged.response.message }); return pendingCase === 'ack_mismatch' ? { ...acknowledged.response, association_id: 'wrong-association' } : acknowledged.response; } });
   const args = { site_id: built.site_id, run_id: built.run_id, association: grant };
   if (wrongCopy) {
     await expect(createSourceAssociation(capabilities()).finalize(args)).rejects.toThrow('completed_content_changed');
@@ -73,12 +86,27 @@ it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true
   expect((await a.send({ callback: { ...envelope, source_completion: { ...envelope.source_completion, repository_path: '/unrelated' } } })).status).toBe(422);
   if (complete) expect((await a.send({ callback: { ...envelope, content_evidence: { 'about.html': Buffer.from('incorrect content').toString('base64') } } })).status).toBe(422);
   f.restart(); failCallback = false;
+  localNow = f.store.readAssociation(envelope.source_completion.association_id).next_attempt_at;
   const normal = f.options();
-  const makeRuntime = () => createStagingRuntime({ paths: f.paths, journal: f.journal, ...normal, associationSecret: 'synthetic-association-secret', associationNow: () => pendingCase === 'expired' ? 1789603601 : 1789600000,
+  const makeRuntime = () => createStagingRuntime({ paths: f.paths, journal: f.journal, ...normal, associationSecret: 'synthetic-association-secret', associationNow: () => pendingCase === 'expired' ? 1789603601 : localNow,
     fetchArtifact: async ({ url }) => Buffer.from(acknowledged.artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64'),
     callback: body => body.schema === 'famtastic.site-studio.source-finalized.v1' ? capabilities().callback(body) : normal.callback(body) });
   runtime = makeRuntime();
-  if (pendingCase && !delayed) {
+  if (pendingCase === 'transport_recovery') {
+    const unrelated = runtime.store.accept({ ...initial.packet, schema: 'famtastic.site-studio.planning-packet.v1', project_id: '998', request_id: 'backoff-unrelated', packet_id: 'backoff-packet', idempotency_key: 'backoff-idem', intent: { ...JSON.parse(grant.payload_json).intent, project_id: '998', request_id: 'backoff-unrelated' } });
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await runtime.wake();
+      expect(runtime.store.read(unrelated.id).state).toBe('complete');
+      const pending = runtime.store.readAssociation(envelope.source_completion.association_id);
+      expect(pending.state).toBe('callback_pending'); expect(pending.attempts).toBe(attempt + 2);
+      expect(pending.next_attempt_at).toBeGreaterThan(localNow); expect(pending.envelope).toEqual(envelope);
+      await runtime.wake(); expect(runtime.store.readAssociation(pending.id).attempts).toBe(pending.attempts);
+      localNow = pending.next_attempt_at;
+    }
+    runtime.close(); runtime = null; f.restart(); runtime = makeRuntime();
+    expect(f.counters.builds).toBe(1); expect(f.counters.uploads).toBe(0);
+  }
+  if (pendingCase && !delayed && pendingCase !== 'transport_recovery') {
     if (pendingCase === 'paid') await a.send({ row_change: { commerce_order_id: 9 } });
     if (pendingCase === 'reselected') await a.send({ row_change: { selected_proof_direction: 'b' } });
     const waiting = runtime.store.accept(initial.packet);

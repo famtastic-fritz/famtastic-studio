@@ -19,10 +19,14 @@ export function verifySourceAssociation(grant, secret, now = Math.floor(Date.now
 
 /** Link an actual normal pipeline result, including already completed sources. */
 export function createSourceAssociation({ paths, store, qa, callback, secret, now = () => Math.floor(Date.now() / 1000) }) {
+  function due(entry) {
+    try { if (JSON.parse(entry.envelope.association.payload_json).expires_at < now()) return true; } catch { return true; }
+    return !entry.next_attempt_at || entry.next_attempt_at <= now();
+  }
   async function deliver(id) {
     const entry = store.readAssociation(id);
     if (!entry) throw stagingError('source_association_missing');
-    if (entry.state !== 'callback_pending') return entry;
+    if (entry.state !== 'callback_pending' || !due(entry)) return entry;
     const { value, token } = store.claimAssociation(id);
     let verified = false;
     try {
@@ -36,12 +40,13 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
       if (ack?.ok !== true || ack.status !== 'source_associated' || typeof ack.newly_processed !== 'boolean'
         || ack.association_id !== id || ack.source_export_sha256 !== value.envelope.source_export.sha256
         || ['project_id', 'customer_id', 'request_id'].some(key => ack[key] !== value.envelope[key])) throw Object.assign(stagingError('source_association_ack_mismatch'), { permanent: true });
-      return store.settleAssociation(id, token, { state: 'acknowledged', acknowledgement: ack, last_error: null });
+      return store.settleAssociation(id, token, { state: 'acknowledged', acknowledgement: ack, last_error: null, next_attempt_at: null });
     } catch (error) {
-      const permanent = !verified || error.permanent || (error.responseStatus >= 400 && error.responseStatus < 500) || value.attempts >= 3;
+      const permanent = !verified || error.permanent || (error.responseStatus >= 400 && error.responseStatus < 500 && ![408, 429].includes(error.responseStatus));
       store.settleAssociation(id, token, { state: permanent ? 'reconciliation_required' : 'callback_pending',
+        next_attempt_at: permanent ? null : now() + Math.min(300, 5 * 2 ** Math.min(value.attempts - 1, 6)),
         last_error: { code: error.code || (/^source_[a-z_]+$/.test(error.message) ? error.message : 'source_association_transport_failed'), reason: error.reasonCode || null },
-        action: permanent ? 'Reconcile the current agency selection and verified source before retrying this association.' : 'Retry the same source callback on the next worker wake.' });
+        action: permanent ? 'Reconcile the current agency selection and verified source before retrying this association.' : 'The existing worker will retry this exact source callback when its persisted backoff is due, within the grant validity window.' });
       throw error;
     } finally { store.releaseAssociation(id, token); }
   }
@@ -91,7 +96,7 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
   async function tick() {
     const results = [];
     let attempted = 0;
-    for (const entry of store.listAssociations().filter(e => e.state === 'callback_pending')) {
+    for (const entry of store.listAssociations().filter(e => e.state === 'callback_pending' && due(e))) {
       if (attempted >= 8) break;
       try { results.push(await deliver(entry.id)); }
       catch (error) { if (error.code === 'project_busy') { results.push({ id: entry.id, state: 'busy', code: error.code }); continue; } results.push(store.readAssociation(entry.id)); }
