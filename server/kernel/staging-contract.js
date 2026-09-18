@@ -76,7 +76,9 @@ export function continuationErrors(packet) {
     names.add(f.path);
     if (!packet.artifacts.some(a => a.path === f.source_path && a.role !== 'render_evidence')) errors.push('source_binding');
     if (f.rights?.status !== 'approved' || !f.rights?.evidence_ref) errors.push('asset_rights');
-    try { const u = new URL(f.url); if (u.protocol !== 'https:' || u.username || u.password || u.hash || u.search) errors.push('artifact_url'); } catch { errors.push('artifact_url'); }
+    if (f.source_origin === 'mapped_repository') {
+      if (!/^[a-f0-9]{64}$/.test(c.source_export_sha256 || '') || f.url !== undefined) errors.push('mapped_artifact_binding');
+    } else try { const u = new URL(f.url); if (u.protocol !== 'https:' || u.username || u.password || u.hash || u.search) errors.push('artifact_url'); } catch { errors.push('artifact_url'); }
   }
   for (const evidence of Array.isArray(c.completed_stages) ? c.completed_stages : []) {
     if (evidence.stage !== 'source_build' || evidence.artifact_manifest_sha256 !== packet.artifact_manifest_sha256

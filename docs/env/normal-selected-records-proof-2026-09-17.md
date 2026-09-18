@@ -1,5 +1,18 @@
 # Normal record-writer proof, first bounded profile
 
+## Follow-on verification: durable mapping and normal edits
+
+Full Next suite passed **1,004 tests / 96 files in 44.48s**, with all three PHP harness environment variables enabled. PHP contract assertions (42) and selection seam cases (3) also pass. The added normal regression uses actual service methods with synthetic persistence, no running Drupal database.
+
+- First selection with no linked project creates exactly one project across retry.
+- The real worker writes a durable source mapping and exact finalized wire; actual receipt acceptance persists that mapping in agency project storage.
+- Actual customer review acceptance followed by serialization-only request update retains the same packet and acceptance.
+- Changed existing page copy automatically invalidates acceptance and reports the unsupported edit recipe. Adding Team through the request writer alone emits only Team's assembly step, reuses the original repository after SQLite restart, and preserves completed About bytes.
+- Studio `registerSourceExport` can re-register that actual completed mapping idempotently, and the later missing-page packet follows the Studio origin. This is not yet proof of a fresh Studio-first source with no prior mapping.
+- A one-page Home source with a hero marker packages unchanged with no recipe, transformations or generation. Initial source import still invokes the pipeline once; this does not claim zero repository initialization.
+
+Remaining: fresh Studio-first mapping writer, media-rights propagation from normal uploads, existing-page edit executor, full portal browser/Drupal integration. Hosting/callback adapters are synthetic; no production, credentials, provider spend, external messages, push/merge or Drive writes occurred.
+
 Verification: 52 tests in 7 files passed in 7.71s with both PHP harnesses and the normal-writer harness enabled; PHP 42 contract assertions and 3 normal-selection seam cases pass, Next lint/diff checks pass, and all three changed JSX files parse with the existing esbuild dependency. An earlier harness wake stub returned no Promise; replacing it with the actual worker tick removed the unhandled errors before this passing sweep.
 
 Actual agency service methods exercised: `ProofCampaignService::acceptCallback` (including protected artifact writes, raw capture and request attachment), `CustomerPortalService::updateWebsiteRequest`, `saveWebsiteRequestProofResearchSnapshot`, `approveWebsiteRequestProof`, `decideWebsiteRequestProof`, derived `SelectedRecordResolver`, existing `AutomationWorker` / `SiteStudioStagingClient`, immutable `readSelectedArtifact`, and `StagingReceiptService::accept`.

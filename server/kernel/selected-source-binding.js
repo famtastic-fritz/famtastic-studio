@@ -4,13 +4,16 @@ import { git } from '../../vendor/site-foundation/index.js';
 import { digest, stagingError } from './staging-store.js';
 
 // Mapping is installation-owned capability data, never inferred from a packet ID.
-export function createSelectedSourceResolver({ paths, mappings = [] }) {
+export function createSelectedSourceResolver({ paths, mappings = [], getMappings = () => [] }) {
   return async packet => {
     const c = packet.continuation;
-    const matches = mappings.filter(m => String(m.project_id) === String(packet.project_id) && String(m.customer_id) === String(c.customer.id));
+    const owned = getMappings().filter(m => String(m.project_id) === String(packet.project_id) && String(m.customer_id) === String(c.customer.id));
+    const configured = mappings.filter(m => String(m.project_id) === String(packet.project_id) && String(m.customer_id) === String(c.customer.id));
+    if (owned.length && configured.some(m => m.site_id !== owned[0].site_id || m.repository_path !== owned[0].repository_path)) throw stagingError('source_repository_mapping_conflict');
+    const matches = owned.length ? owned : configured;
     if (matches.length !== 1) throw stagingError('source_repository_mapping_required');
     const m = matches[0];
-    if (!m.evidence_ref || m.source_export_sha256 !== c.source_export_sha256) throw stagingError('source_repository_mapping_stale');
+    if (!m.evidence_ref || m.source_export_sha256 !== c.source_export_sha256 || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
     const wire = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
     const record = decodeSourceExport(wire);
     if (record.sha256 !== m.source_export_sha256 || !record.scope_complete || record.site_id !== m.site_id) throw stagingError('source_export_invalid');

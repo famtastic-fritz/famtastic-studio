@@ -11,7 +11,6 @@ import { createSelectedReviewQa } from './selected-review-qa.js';
 import { createCpanelReview } from './cpanel-review.js';
 import { createCpanelHttpTransport } from './cpanel-http-transport.js';
 import { stagingError } from './staging-store.js';
-import { createSelectedSourceResolver } from './selected-source-binding.js';
 
 export async function boundedBytes(response, maxBytes) {
   const chunks = []; let count = 0;
@@ -44,7 +43,7 @@ export function createSelectedStagingAssembly({ paths = createPaths(), bindings,
     let body; try { body = JSON.parse(bytes); } catch { throw stagingError('callback_json_invalid'); }
     return { status: response.status, body };
   } });
-  return createStagingRuntime({ paths, journal, pipeline, callback, resolveSource: createSelectedSourceResolver({ paths, mappings: sourceMappings }), allowedArtifactOrigins: artifactOrigins,
+  return createStagingRuntime({ paths, journal, pipeline, callback, sourceMappings, allowedArtifactOrigins: artifactOrigins,
     fetchArtifact: async ({ url, maxBytes }) => {
       const origin = new URL(url).origin;
       if (!artifactOrigins.includes(origin)) throw stagingError('artifact_origin_rejected');

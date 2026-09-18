@@ -3,6 +3,8 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
+import { decodeSourceExport } from './source-export-wire.js';
+import { createSelectedSourceResolver } from './selected-source-binding.js';
 export const digest = value => crypto.createHash('sha256').update(typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value)).digest('hex');
 export const stagingError = (code, statusCode = 422) => Object.assign(new Error(code), { code, statusCode });
 function alive(pid) { try { process.kill(pid, 0); return true; } catch (e) { return e.code !== 'ESRCH'; } }
@@ -14,7 +16,8 @@ export function createStagingStore({ paths, journal }) {
   db.exec(`PRAGMA journal_mode=DELETE; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000;
     CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, idem TEXT UNIQUE, packet_id TEXT UNIQUE,
       project TEXT, request TEXT, account TEXT, revision INTEGER, hash TEXT, data TEXT);
-    CREATE TABLE IF NOT EXISTS claims (project TEXT PRIMARY KEY, token TEXT, pid INTEGER);`);
+    CREATE TABLE IF NOT EXISTS claims (project TEXT PRIMARY KEY, token TEXT, pid INTEGER);
+    CREATE TABLE IF NOT EXISTS source_mappings (project TEXT PRIMARY KEY, data TEXT);`);
   function transaction(fn) {
     db.exec('BEGIN IMMEDIATE');
     try { const value = fn(); db.exec('COMMIT'); return value; }
@@ -68,7 +71,32 @@ export function createStagingStore({ paths, journal }) {
       return save(job);
     });
   }
-  return { accept, read, claim, checkpoint,
+  const sourceMappings = () => db.prepare('SELECT data FROM source_mappings').all().map(r => JSON.parse(r.data));
+  const resolveSource = createSelectedSourceResolver({ paths, getMappings: sourceMappings });
+  function recordSource(job, token) {
+    return transaction(() => {
+      if (!db.prepare('SELECT 1 FROM claims WHERE project=? AND token=?').get(job.packet.project_id, token) || job.qa?.passed !== true || job.build?.outcome !== 'success') throw stagingError('source_mapping_writer_unverified');
+      const wire = job.source_export || job.build.source_export, record = decodeSourceExport(wire);
+      if (!record.scope_complete || record.site_id !== job.build.site_id || record.repository.repository_path !== job.build.repository.repository_path) throw stagingError('source_mapping_writer_mismatch');
+      const prior = sourceMappings().find(m => m.project_id === job.packet.project_id);
+      if (prior && (prior.customer_id !== job.packet.continuation.customer.id || prior.request_id !== job.packet.request_id || prior.site_id !== record.site_id || prior.repository_path !== record.repository.repository_path)) throw stagingError('source_mapping_identity_changed');
+      const content_records = { ...(prior?.content_records || {}) };
+      for (const t of job.selected?.transformations || []) if (t.content_record_id) content_records[t.path] = t.content_record_id;
+      const mapping = { project_id: job.packet.project_id, customer_id: job.packet.continuation.customer.id, request_id: job.packet.request_id,
+        site_id: record.site_id, repository_path: record.repository.repository_path, run_id: record.run_id, source_export_sha256: wire.sha256,
+        evidence_ref: `verified-staging-source:${job.id}`, content_records, source_export: wire };
+      db.prepare('INSERT OR REPLACE INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
+      return mapping;
+    });
+  }
+  async function readMappedArtifact(packet, file) {
+    const resolved = await resolveSource(packet);
+    const record = decodeSourceExport(resolved.source_export);
+    const source = record.files.find(entry => entry.path === file.path);
+    if (!source) throw stagingError('mapped_artifact_missing');
+    return fs.readFileSync(paths.within('sites', resolved.site_id, source.path));
+  }
+  return { accept, read, claim, checkpoint, recordSource, sourceMappings, resolveSource, readMappedArtifact,
     list: () => db.prepare('SELECT data FROM jobs ORDER BY rowid').all().map(r => JSON.parse(r.data)),
     release: (job, token) => db.prepare('DELETE FROM claims WHERE project=? AND token=?').run(job.packet.project_id, token),
     close: () => db.close() };

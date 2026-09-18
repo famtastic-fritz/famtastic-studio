@@ -1,5 +1,11 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Durable source mapping and normal request revisions
+
+- Verified worker finalization writes the project/source mapping into SQLite and includes it in the matched receipt. Later missing-page work reads exact mapped artifacts and continues the same repository after restart.
+- Normal writer regression covers first project creation, accepted-preview invalidation from request edits, serialization-only idempotency, Studio re-registration of completed source, and non-intro package-only source.
+- Full local suite: 1,004 tests / 96 files in 44.48s. See `docs/env/normal-selected-records-proof-2026-09-17.md` for remaining boundaries.
+
 ## 2026-09-17 - First normal record-writer continuation
 
 - Consume a marked shell derived from exact selected HTML, explicitly recording that no original template was received. Added an artifact-only source-preservation design contract; no fabricated design tokens.

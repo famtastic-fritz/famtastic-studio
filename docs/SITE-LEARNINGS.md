@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Separate completed source from changed customer intent
+
+Source finalization is an output of an existing selection, so its arrival must not itself invalidate customer acceptance. Compare semantic page records, preserve completed packet identity for unchanged input, and advance on actual scope/content changes. Resolve missing work before requiring assembler fields; a transfer-only hero page needs no intro component. Writer-created mappings must survive process restart and retain exact existing page bytes.
+
 ## 2026-09-17 - Derive from source rather than require an absent template
 
 Exact selected HTML can supply a marked shell without claiming receipt of an original template. Retain the full unchanged document and record parsed shell offsets/hashes. A source-preservation contract is valid for artifact import; it is not permission to invent palette/typography or to run a generic composer.

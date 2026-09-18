@@ -6,7 +6,7 @@ import { prepareStagingBuildPacket, packetToBuildBrief } from './selected-build-
 import { planSelectedSource } from './selected-source-plan.js';
 import { PLANNING_SCHEMA } from './selected-planning-contract.js';
 
-export async function materializeSelection(packet, { fetchArtifact, allowedArtifactOrigins }) {
+export async function materializeSelection(packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact }) {
   const errors = continuationErrors(packet);
   if (!errors.length) errors.push(...continuationPlanErrors(packet));
   if (errors.length) throw Object.assign(stagingError('continuation_not_executable'), { details: errors, permanent: true });
@@ -24,7 +24,9 @@ export async function materializeSelection(packet, { fetchArtifact, allowedArtif
   }
   for (const file of c.files) {
     const source = packet.artifacts.find(a => a.path === file.source_path);
-    files.push({ path: file.path, bytes: await fetchSource({ ...source, url: file.url }) });
+    const bytes = file.source_origin === 'mapped_repository' ? await readMappedArtifact(packet, file) : await fetchSource({ ...source, url: file.url });
+    if (!Buffer.isBuffer(bytes) || bytes.length !== source.bytes || digest(bytes) !== source.sha256) throw stagingError('artifact_digest_mismatch');
+    files.push({ path: file.path, bytes });
   }
   const transformations = await executeContinuationPlan(packet, files, fetchSource);
   const prepared = prepareStagingBuildPacket({
@@ -53,12 +55,12 @@ export function stagingCallback(job) {
   return { ...identity, schema: 'famtastic.site-studio.staging-receipt.v1', status: 'deployed',
     staging_url: job.host.url, artifact_sha256: job.host.manifest_sha256, target_path: job.host.target_path,
     remote_subdirectory: job.host.remote_subdirectory, repository: { mode: 'local_only', branch: job.build.repository.branch, commit: job.build.repository.commit, remote_url: job.build.repository.remote_url || null },
-    qa: job.qa.checks.map(name => ({ name, status: 'passed' })), source_export_sha256: job.source_export?.sha256 || job.build.source_export?.sha256 || null, evidence: job.host };
+    qa: job.qa.checks.map(name => ({ name, status: 'passed' })), source_export_sha256: job.source_export?.sha256 || job.build.source_export?.sha256 || null, source_completion: job.source_mapping || null, evidence: job.host };
 }
 
 // Injected capabilities are mandatory. There is deliberately no ambient fetch,
 // payment client, mailer, or production deploy adapter in this coordinator.
-export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArtifactOrigins, qa, host, callback, resolveSource = null, maxAttempts = 3 }) {
+export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArtifactOrigins, qa, host, callback, resolveSource = store.resolveSource, maxAttempts = 3 }) {
   async function run(id) {
     let claim;
     try { claim = store.claim(id); } catch (error) {
@@ -86,11 +88,11 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             if (job.packet.dispatch_issue) job.plan.issues.push({ stage: 'dispatch', code: 'agency_execution_binding_incomplete', detail: job.packet.dispatch_issue, owner: 'designs' });
             job.stage = 'callback';
           } else if (stage === 'materialize') {
-            job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins });
+            job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact: store.readMappedArtifact });
             job.stage = 'build';
           } else if (stage === 'build') {
             let mapped = null;
-            if (job.packet.continuation.initiating_system === 'studio') {
+            if (job.packet.continuation.initiating_system === 'studio' || job.packet.continuation.source_export_sha256) {
               if (!resolveSource) throw Object.assign(stagingError('source_repository_mapping_required'), { permanent: true });
               mapped = await resolveSource(job.packet);
               if (mapped?.reused_existing_source !== true || decodeSourceExport(mapped.source_export).scope_complete !== true) throw stagingError('source_export_invalid');
@@ -120,6 +122,7 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
               } }, job.qa);
               if (!decodeSourceExport(job.source_export).scope_complete) throw stagingError('source_scope_incomplete');
             }
+            if (store.recordSource && (job.source_export || job.build.source_export)) job.source_mapping = store.recordSource(job, token);
             job.stage = 'host';
           } else if (stage === 'host') {
             job.host = await host.deploy({ job, operation_id: job.id });
