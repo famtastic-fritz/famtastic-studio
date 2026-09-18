@@ -14,6 +14,11 @@ it.skipIf(!harness)('real selection and ledger dispatch reach durable planner an
   const produced = JSON.parse(execFileSync('php', [harness, '--planning-dispatch'], { encoding: 'utf8' }));
   const p = JSON.parse(produced.wire.body).packet;
   expect(planningPacketErrors(p)).toEqual([]);
+  expect(p.intent.source.design_dna.spec_snapshot.small_numeric).toBe(1e-7);
+  expect(p.intent.scope.snapshot.products_services.large).toBe(1e30);
+  expect(planningPacketErrors({ ...p, intent_payload_json: p.intent_payload_json + ' ' })).toContain('planning.intent_digest');
+  const tampered = structuredClone(p); tampered.intent.source.design_dna.spec_snapshot.small_numeric = 2e-7;
+  expect(planningPacketErrors(tampered)).toContain('planning.intent_digest');
   expect(produced.jobs).toHaveLength(2); // Two changed selections, identical retry adds no job.
   f = fixture(); process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET = 'synthetic-planning-secret';
   let rejectCallback = true, agency, callbacks = [], running;

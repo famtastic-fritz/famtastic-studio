@@ -1,5 +1,6 @@
 import { afterEach, expect, it } from 'vitest';
-import { shellFixture, css } from './legacy-shared-shell-fixture.mjs';
+import { shellFixture, css, footer } from './legacy-shared-shell-fixture.mjs';
+import { decodeSourceExport } from '../server/kernel/source-export-wire.js';
 import { assembleLegacySharedShell } from '../server/kernel/legacy-shared-shell.js';
 import { continuationPlanErrors } from '../server/kernel/selected-continuation-plan.js';
 import { fixture } from './staging-worker-fixture.mjs';
@@ -17,12 +18,13 @@ it.each([false, true])('assembles only the absent authored page with actual brow
   expect(done.failure).toBeUndefined(); expect(done.state, JSON.stringify({ history: done.history, qa: done.qa?.problems })).toBe('complete');
   expect(f.remote.get('index.html').toString()).toBe(s.selected);
   const about = f.remote.get('about.html').toString();
+  expect(about.slice(about.indexOf('<footer'), about.indexOf('</footer>') + 9)).toBe(footer);
   expect(about).toContain('Customer authored &lt;story&gt; &amp; care.');
   expect(about).toContain('<title>About the synthetic business</title>');
   expect(about).not.toContain('Original home description');
   if (externalCss) expect(f.remote.get('assets/styles.css').toString()).toBe(css);
   expect(done.qa.evidence.filter(e => e.path === 'about.html').map(e => e.width)).toEqual([390, 768, 1280]);
-  expect(done.source_export.scope_complete).toBe(true);
+  expect(decodeSourceExport(done.source_export).scope_complete).toBe(true);
   expect(done.selected.transformations[0]).toMatchObject({ recipe: 'legacy-shared-shell-v1', content_record_id: 'owned-content:about', content_revision: 1, generation_provider_calls: 0 });
   expect(done.selected.transformations[0].head_changes).toEqual(['head/title', 'head/description']);
   expect(f.counters.generation).toBe(0); expect(f.counters.builds).toBe(1);
@@ -43,6 +45,8 @@ it.each([
   [{ staleContent: c => { c.revision++; } }, 'shell_transformation_permission_stale'],
   [{ permission: p => { p.status = 'revoked'; } }, 'shell_transformation_permission_stale'],
   [{ permission: p => { p.output_path = 'different.html'; } }, 'shell_transformation_permission_stale'],
+  ...['phone', 'email', 'address', 'testimonial'].map(type => [{ content: c => { c.fields[`footer/footer-${type}`] = 'Changed'; } }, 'shell_content_fields_incomplete']),
+  ...['phone', 'email', 'address', 'testimonial'].map(type => [{ selected: s => s.replace('data-field-id="body" data-field-type="text"', `data-field-id="body" data-field-type="${type}"`) }, 'shell_content_fields_incomplete']),
   [{ selected: s => s.replace('</head>', '<link rel="canonical" href="index.html"></head>') }, 'shell_head_metadata_unsupported'],
 ])('refuses ambiguous renderer source or missing/stale content authority (%s)', (options, code) => {
   expect(() => assembleLegacySharedShell(shellFixture(options).renderer)).toThrow(code);
@@ -80,7 +84,7 @@ it('continues a mapped existing source in its one repository while preserving co
   next.p.continuation.files.push({ path: 'about.html', source_path: 'proof/about.html', url: 'https://assets.example.invalid/proof/about.html', rights: { status: 'approved', evidence_ref: 'existing-authorized-about-record' } });
   next.p.artifact_manifest_sha256 = digest(next.p.artifacts.map(a => ({ bytes: a.bytes, path: a.path, role: a.role, sha256: a.sha256 })).sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
   const resolveSource = createSelectedSourceResolver({ paths: f.paths, mappings: [{ project_id: '42', customer_id: 'customer-1', evidence_ref: 'existing-source-mapping',
-    site_id: initial.build.site_id, repository_path: initial.build.repository.repository_path, run_id: initial.source_export.run_id, source_export_sha256: initial.source_export.sha256 }] });
+    site_id: initial.build.site_id, repository_path: initial.build.repository.repository_path, run_id: decodeSourceExport(initial.source_export).run_id, source_export_sha256: initial.source_export.sha256 }] });
   const worker = createStagingWorker({ ...f.options(), resolveSource, fetchArtifact: async ({ url }) => next.source.get(new URL(url).pathname.slice(1)) });
   const done = await worker.run(f.store.accept(next.p).id);
   expect(done.failure).toBeUndefined(); expect(done.state).toBe('complete');

@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Hash producer bytes across languages
+
+Associative PHP JSON decoding loses empty-object distinctions, and PHP/Node number serialization differs. Preserve a versioned authoritative byte payload and verify before decoding. Never validate an export by re-encoding a consumer view. Faithful fixtures must include real immutable chrome marker kinds, not only editable text.
+
 ## 2026-09-17 - Shared shell is structural, not the entire head
 
 Legacy pages may have page-specific title, metadata and styles. Compare marked header/footer/shared CSS exactly; replace title and description explicitly. Require authored content and transformation permission independently of renderer validity. Check actual repository output absence before repository mutation, including case variants; packet manifests alone may omit existing files.

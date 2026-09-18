@@ -2,13 +2,15 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { afterEach, expect, it } from 'vitest';
 import { fixture, packet } from './staging-worker-fixture.mjs';
-import { exportFinalizedSource } from '../server/kernel/source-finalization.js';
+import { exportFinalizedSource as exportWire } from '../server/kernel/source-finalization.js';
+import { decodeSourceExport } from '../server/kernel/source-export-wire.js';
+const exportFinalizedSource = options => decodeSourceExport(exportWire(options));
 import { planSelectedSource } from '../server/kernel/selected-source-plan.js';
 let f;
 afterEach(() => { f?.cleanup(); f = null; });
 it('exports real committed pipeline output without equating pipeline success with completed scope', async () => {
   f = fixture(); const done = await f.worker().run(f.store.accept(packet()).id);
-  const initial = done.build.source_export;
+  const initial = decodeSourceExport(done.build.source_export);
   expect(initial.repository.commit).toBe(done.build.repository.commit);
   expect(initial.files.find(file => file.path === 'index.html').sha256).toBe(packet().artifacts[0].sha256);
   expect(initial.scope_complete).toBe(false);

@@ -47,7 +47,7 @@ export function stagingCallback(job) {
     customer_accepted: false, checkout_eligible: false, final_launch: false };
   if (p.schema === PLANNING_SCHEMA) return { ...identity,
     schema: 'famtastic.site-studio.planning-result.v1', status: job.failure ? 'planning_failed' : 'planning_complete',
-    intent_id: p.intent.intent_id, intent_sha256: digest(p.intent), ready: false,
+    intent_id: p.intent.intent_id, intent_sha256: p.intent_sha256, ready: false,
     ...(job.failure ? { error: job.failure } : { plan: job.plan }) };
   if (job.failure) return { ...identity, schema: 'famtastic.site-studio.staging-failure.v1', status: 'failed', error: job.failure };
   return { ...identity, schema: 'famtastic.site-studio.staging-receipt.v1', status: 'deployed',
@@ -93,7 +93,7 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             if (job.packet.continuation.initiating_system === 'studio') {
               if (!resolveSource) throw Object.assign(stagingError('source_repository_mapping_required'), { permanent: true });
               mapped = await resolveSource(job.packet);
-              if (mapped?.reused_existing_source !== true || mapped?.source_export?.scope_complete !== true) throw stagingError('source_export_invalid');
+              if (mapped?.reused_existing_source !== true || decodeSourceExport(mapped.source_export).scope_complete !== true) throw stagingError('source_export_invalid');
             }
             if (mapped && job.packet.continuation.operation === 'package_existing') job.build = mapped;
             else {
@@ -118,7 +118,7 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
                 required_pages: c.required_pages, features: ['static_navigation'],
                 pending_revisions: (c.requested_changes || []).filter(change => !resolved.has(change.id)),
               } }, job.qa);
-              if (!job.source_export.scope_complete) throw stagingError('source_scope_incomplete');
+              if (!decodeSourceExport(job.source_export).scope_complete) throw stagingError('source_scope_incomplete');
             }
             job.stage = 'host';
           } else if (stage === 'host') {
@@ -161,3 +161,4 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
     return results;
   } };
 }
+import { decodeSourceExport } from './source-export-wire.js';

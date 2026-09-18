@@ -1,5 +1,11 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Lossless source wire and faithful inherited markers
+
+- Finalized-source wire v2 hashes domain-separated exact UTF-8 payload bytes and retains original JSON semantics through PHP storage.
+- Fixed planning intent checksum reserialization; scope snapshots carry producer bytes and their declared digest strategy.
+- Inherited phone/email/address/testimonial markers pass unchanged; protected-field edits remain rejected. See `docs/env/source-wire-v2-2026-09-17.md` and the normal-writer connection plan.
+
 ## 2026-09-17 - Bounded legacy shared-shell continuation
 
 - Added source-offset parsing and authorized text-only assembly of absent root HTML pages, preserving selected header/footer/shared CSS and explicit page metadata.

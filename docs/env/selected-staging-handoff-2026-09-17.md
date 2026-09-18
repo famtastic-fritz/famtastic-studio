@@ -168,3 +168,6 @@ scripts/test-staging-review-flow.mjs
 # Shared-shell follow-on
 
 The bounded `legacy-shared-shell-v1` adapter is now implemented locally, including mapped same-repository continuation and existing-output preflight. See [local evidence](legacy-shared-shell-proof-2026-09-17.md) for 69 passing tests, source/permission contracts and remaining normal producer writers. General automatic build completion and runtime activation are not claimed.
+# Parent review corrections
+
+Inherited phone/email/address/testimonial marker kinds now pass unchanged; editing them is rejected. Finalized exports use lossless source-wire v2, and planning/scope hashes bind producer bytes. Evidence: `source-wire-v2-2026-09-17.md`. Remaining normal-writer connection plan: `../plans/NORMAL-SELECTED-WRITERS-2026-09-17.md`. No general automatic-build completion claim.

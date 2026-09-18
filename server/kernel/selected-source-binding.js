@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { decodeSourceExport } from './source-export-wire.js';
 import { git } from '../../vendor/site-foundation/index.js';
 import { digest, stagingError } from './staging-store.js';
 
@@ -10,9 +11,9 @@ export function createSelectedSourceResolver({ paths, mappings = [] }) {
     if (matches.length !== 1) throw stagingError('source_repository_mapping_required');
     const m = matches[0];
     if (!m.evidence_ref || m.source_export_sha256 !== c.source_export_sha256) throw stagingError('source_repository_mapping_stale');
-    const record = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
-    const { sha256, ...body } = record;
-    if (digest(body) !== sha256 || sha256 !== m.source_export_sha256 || !record.scope_complete || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
+    const wire = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
+    const record = decodeSourceExport(wire);
+    if (record.sha256 !== m.source_export_sha256 || !record.scope_complete || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
     const dir = paths.within('sites', m.site_id);
     if (fs.realpathSync(dir) !== fs.realpathSync(m.repository_path) || fs.realpathSync(dir) !== fs.realpathSync(record.repository.repository_path)
       || git(dir, ['rev-parse', 'HEAD']) !== record.repository.commit || git(dir, ['branch', '--show-current']) !== record.repository.branch || git(dir, ['status', '--porcelain']) !== '') throw stagingError('source_repository_changed');
@@ -29,6 +30,6 @@ export function createSelectedSourceResolver({ paths, mappings = [] }) {
     }
     return { outcome: 'success', site_id: record.site_id, run_id: record.run_id,
       repository: record.repository, verify: record.source_verification,
-      source_export: record, reused_existing_source: true, source_mapping_ref: m.evidence_ref };
+      source_export: wire, reused_existing_source: true, source_mapping_ref: m.evidence_ref };
   };
 }

@@ -89,7 +89,7 @@ export function parseSourceHtml(source) {
       if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(value) || identities.has(`${key}:${value}`)) fail('shell_identity_ambiguous');
       identities.set(`${key}:${value}`, node);
     }
-    if (attrs['data-field-type'] && !['text', 'link', 'image'].includes(attrs['data-field-type'].value)) fail('shell_field_type_unsupported');
+    if (attrs['data-field-type'] && !['text', 'link', 'image', 'phone', 'email', 'address', 'testimonial'].includes(attrs['data-field-type'].value)) fail('shell_field_type_unsupported');
     node.parent.children.push(node); nodes.push(node);
     i = end;
     if (tag === 'style') {

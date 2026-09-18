@@ -1,4 +1,4 @@
-import { digest } from './staging-store.js';
+import { decodeSourceExport } from './source-export-wire.js';
 
 // Planning accepts incomplete inherited evidence; execution and ready receipts do not.
 export function planSelectedSource(intent, sourceExport = null) {
@@ -11,9 +11,9 @@ export function planSelectedSource(intent, sourceExport = null) {
   if (changes.length) issues.push({ stage: 'build', code: 'requested_revisions_pending', owner: 'next' });
   if (!sourceExport) issues.push({ stage: 'build', code: 'selected_preserving_executor_required', owner: 'next' });
   else {
-    const { sha256, ...record } = sourceExport;
-    if (sha256 !== digest(record)) issues.push({ stage: 'materialize', code: 'source_export_digest_mismatch', owner: 'next' });
-    if (!sourceExport.scope_complete) issues.push({ stage: 'build', code: 'source_scope_incomplete', owner: 'next' });
+    try {
+      if (!decodeSourceExport(sourceExport).scope_complete) issues.push({ stage: 'build', code: 'source_scope_incomplete', owner: 'next' });
+    } catch { issues.push({ stage: 'materialize', code: 'source_export_digest_mismatch', owner: 'next' }); }
   }
   return { schema: 'famtastic.selected-source-plan.v1', intent_id: intent.intent_id,
     operation: 'continue_build', source_artifacts: intent.source.artifacts,

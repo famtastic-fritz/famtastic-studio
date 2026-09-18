@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { encodeSourceExport } from './source-export-wire.js';
 import { digest } from './staging-store.js';
 import { safePublicPath } from './staging-contract.js';
 import { git, readManifest } from '../../vendor/site-foundation/index.js';
@@ -39,7 +40,7 @@ export function exportFinalizedSource({ paths, result, brief, reviewQa = null })
       packet_sha256: digest(result.packet), inherited: result.packet.inherited_provenance || null },
     scope, scope_complete: issues.length === 0, issues, source_verification: result.verify,
     review_qa: reviewQa, human_accepted: false, hosting_verified: false };
-  const exported = { ...record, sha256: digest(record) };
+  const exported = encodeSourceExport(record);
   const exportDir = paths.within('dna', result.run_id);
   fs.mkdirSync(exportDir, { recursive: true });
   const file = paths.within('dna', result.run_id, `source-${exported.sha256}.json`);

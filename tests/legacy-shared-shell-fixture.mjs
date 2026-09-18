@@ -2,7 +2,7 @@ import { packet } from './staging-worker-fixture.mjs';
 import { digest } from '../server/kernel/staging-store.js';
 export const css = 'body{margin:0;font-family:Arial}main{max-width:64rem;margin:auto;padding:1rem}img{max-width:100%}';
 const header = '<header data-template="header"><nav aria-label="Main"><a href="index.html">Home</a> <a href="about.html">About</a></nav></header>';
-const footer = '<footer data-template="footer"><p>Synthetic owned fixture</p></footer>';
+export const footer = '<footer data-template="footer"><p>Synthetic owned fixture</p><a data-field-id="footer-phone" data-field-type="phone" href="tel:+15555550100">555-555-0100</a><a data-field-id="footer-email" data-field-type="email" href="mailto:hello@example.invalid">hello@example.invalid</a><address data-field-id="footer-address" data-field-type="address">Synthetic address</address><blockquote data-field-id="footer-testimonial" data-field-type="testimonial">Synthetic authored quotation</blockquote></footer>';
 const start = '<!doctype html><html lang="en">';
 export function shellFixture(options = {}) {
   const outputPath = options.outputPath || 'about.html';
