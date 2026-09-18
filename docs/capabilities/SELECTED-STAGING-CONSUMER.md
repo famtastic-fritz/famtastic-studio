@@ -1,5 +1,33 @@
 # Selected staging capability and activation boundary
 
+## September 18 release status — activation is still closed
+
+The server now injects the opt-in runtime, validates private JSON and credential
+bindings, and owns embedded polling or delegates it explicitly to the CLI.
+Startup/restart resumes durable checkpoints; shutdown drains with a bound. The
+actual production callback mount `/web/api/pipeline/site-studio/callback` is
+supported. A separate signed-accept-only proxy can cross a private SSH tunnel;
+it does not expose the Studio UI or generic mutation APIs.
+
+Current combined source verification: 1,090 tests passed across 104 files with
+all cross-repository and page-copy browser harnesses enabled. The real review
+component browser check and 54 installed Drupal/SQLite checks passed separately.
+An isolated synthetic artifact also passed the real cPanel protected-hosting
+transport and exact HTTPS byte verification. Its callback was captured locally,
+not accepted by production Drupal. See `docs/env/selected-staging-release-2026-09-18.md`.
+
+There is **no automatic review-target allocator**. Designs still requires a
+customer-bound target keyed by project, and Studio requires the matching private
+binding. Shipping code is not activation; no production tunnel, signing secrets,
+selected scheduler or client replay is implied. An empty binding list must not
+be used to fake readiness or permit a build that cannot be hosted. A future
+planning-only mode also needs explicit enforcement before any build stage.
+
+Existing public Kakes/PIT hosting is a separate manual delivery. Never migrate
+their access policy, replay old failed packets, or claim canonical acceptance
+from a manual hosting receipt. The historical checklist below describes the
+remaining boundaries; its local-only statements predate the September 18 proofs.
+
 ## Local implementation
 
 Fresh kernels; legacy behavior was reference evidence only. Durable jobs retain

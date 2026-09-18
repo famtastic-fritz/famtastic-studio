@@ -1,5 +1,16 @@
 # Site Studio learning record
 
+## 2026-09-18 — Boot, hosting and business activation are different gates
+
+A tested worker constructor does nothing if server boot never injects it. Test
+the real boot graph, credential/config refusal, restart polling, process claims
+and graceful shutdown. Verify deployed callback mounts rather than assuming
+root `/api` routing. A private loopback tunnel should expose only signed ingress,
+never the full operator interface. A successful synthetic protected-hosting
+receipt does not create client bindings or prove a production callback. Neither
+side currently allocates targets automatically; do not call this fully automatic
+until target allocation and exact normal customer delivery are proven.
+
 ## 2026-09-17 - Private uploaded reference reuse (local)
 
 Reference-sharing consent is neither a publication license nor AI permission. Persist restrictions outside and inside source repositories; register owned policy metadata with the build guard after bootstrap. Planning callbacks have no build artifacts and must not invoke build-only rights reads. Keep current rights checks ahead of both hosting and successful receipts.

@@ -1,6 +1,17 @@
 # Site Studio Next change log
 
-Final uploaded-reference verification including anonymous-share hardening: **1,011 tests / 98 files in 55.85s** with all PHP/browser harnesses enabled. PHP 42 contract assertions/3 selection cases, 34 portal DNA checks, brand check, routing YAML, syntax, lint and diff checks pass. No live or Drive writes.
+## 2026-09-18 — Runtime integration and real hosting proof; activation closed
+
+Wired opt-in private configuration, server runtime injection, embedded/external
+worker lifecycle and the production `/web` callback mount. Added a narrowly
+scoped signed ingress proxy. Combined suite: 1,090 passing tests / 104 files,
+no skips; lint passes. A real isolated cPanel upload
+verified protected HTTPS bytes; its callback remained local. Installed agency
+SQLite integration passed 54 checks. No production worker activation, customer
+replay, notification, payment or final launch. Automatic target allocation is
+still absent. Current status: `docs/env/selected-staging-release-2026-09-18.md`.
+
+Historical September 17 uploaded-reference verification including anonymous-share hardening: **1,011 tests / 98 files in 55.85s** with all PHP/browser harnesses enabled. PHP 42 contract assertions/3 selection cases, 34 portal DNA checks, brand check, routing YAML, syntax, lint and diff checks pass. No live or Drive writes in that pass.
 
 ## 2026-09-17 - Private uploaded reference reuse (local)
 

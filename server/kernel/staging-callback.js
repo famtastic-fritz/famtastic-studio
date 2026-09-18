@@ -3,7 +3,9 @@ import { stagingError } from './staging-store.js';
 // Endpoint is configuration, never a packet-provided callback URL.
 export function createStagingCallback({ endpoint, secret, request }) {
   const url = new URL(endpoint);
-  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || url.pathname !== '/api/pipeline/site-studio/callback' || !secret || !request) throw stagingError('callback_configuration_invalid');
+  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash
+    || !['/api/pipeline/site-studio/callback', '/web/api/pipeline/site-studio/callback'].includes(url.pathname)
+    || !secret || !request) throw stagingError('callback_configuration_invalid');
   return async body => {
     const raw = JSON.stringify(body);
     const response = await request(endpoint, { method: 'POST', redirect: 'error', body: raw,
