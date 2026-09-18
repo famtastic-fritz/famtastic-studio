@@ -28,3 +28,9 @@ Evidence is in each site's docs/verification/. Both first release sources passed
 ## Promotion boundary and opportunities
 
 Do not copy business branding or imagery into a neutral package. Extract an installer and independent fixtures before recipe promotion. Review data retention, notification approval, spam controls and owner-managed credential recovery before live customer operation. No evidence here implies payments, production DNS changes, historical data migration, bookings or email delivery.
+
+## Tested opt-in and reply-preview extension — 2026-09-18
+
+Third independent fixture: https://github.com/famtastic-fritz/site-coastbound-electric deployed application `c760bf071613504f3fb31ea765c1f9438df345c0`. Evidence: 51 isolated integration checks, 17 hosted checks, actual browser inquiry/signup/private withdrawal, and precise synthetic cleanup. Source docs retain version-specific fresh-clone evidence.
+
+Store reply previews separately with `preview_only` status; never equate persistence with email delivery. Require explicit mailing consent, unique normalized subscriber email, a hashed private withdrawal token, and nonredeemable review coupon labeling. Duplicate signup must not reveal an existing withdrawal secret. Keep public contact/credential forms explicitly POST even without JavaScript. No mail transport or domain provisioning is implied. This remains a documented candidate, not a promoted executable recipe.
