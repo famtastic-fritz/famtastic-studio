@@ -68,6 +68,11 @@ it.skipIf(!harness).each([[false, false], [true, false], [true, true]])('normal 
   }
   expect((await a.send({ now: 1789603601, callback: envelope })).status).toBe(422);
   await a.send({ now: 1789600000 });
+  expect((await a.send({ selected_html: html + '<!-- unrecorded change -->', callback: envelope })).response.message).toBe('source_association_current_source_changed');
+  await a.send({ selected_html: html });
+  const savedIntake = issued.row.intake_data;
+  expect((await a.send({ row_change: { intake_data: JSON.stringify({ ...JSON.parse(savedIntake), page_list: 'Home, Team' }) }, callback: envelope })).response.message).toBe('source_association_current_input_changed');
+  await a.send({ row_change: { intake_data: savedIntake } });
   expect((await a.send({ callback: { ...envelope, customer_id: '999' } })).status).toBe(422);
   expect((await a.send({ callback: { ...envelope, source_completion: { ...envelope.source_completion, repository_path: '/unrelated' } } })).status).toBe(422);
   if (complete) expect((await a.send({ callback: { ...envelope, content_evidence: { 'about.html': Buffer.from('incorrect content').toString('base64') } } })).status).toBe(422);
