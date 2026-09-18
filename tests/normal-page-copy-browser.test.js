@@ -11,7 +11,8 @@ it.skipIf(!frontend || !dependencies)('real portal editor serializes partial, ed
     import React, {useState} from 'react'; import {createRoot} from 'react-dom/client';
     import {WebsiteRequestIntakeEditor} from ${JSON.stringify(path.join(frontend || '', 'src/components/portal/PortalProjectsView.jsx'))};
     import {pageContentFromForm} from ${JSON.stringify(path.join(frontend || '', 'src/components/portal/pageContentForm.js'))};
-    import {withdrawWebsiteRequestAsset} from ${JSON.stringify(path.join(frontend || '', 'src/api/customer.js'))};
+    import {withdrawWebsiteRequestAsset,uploadWebsiteRequestAsset} from ${JSON.stringify(path.join(frontend || '', 'src/api/customer.js'))};
+    window.reupload=async()=>{try{await uploadWebsiteRequestAsset('00000000-0000-4000-8000-000000000901',new FormData());return 'unexpected success';}catch(error){return {message:error.message,status:error.status,code:error.code};}};
     function App() { const [request,setRequest] = useState({public_id:'00000000-0000-4000-8000-000000000901',project_name:'Synthetic project',business_name:'Synthetic',intake:{page_count:2,page_list:'Home, About'},assets:[{public_id:'00000000-0000-4000-8000-000000000001',name:'logo.png',size_bytes:68}]});
       return <WebsiteRequestIntakeEditor editingRequest={request} setEditingRequest={setRequest} busy={false} onUploadAsset={e=>e.preventDefault()}
         onWithdrawAsset={async id=>{await withdrawWebsiteRequestAsset(request.public_id,id);setRequest(current=>({...current,assets:[]}));window.withdrawn=id;}}
@@ -29,6 +30,7 @@ it.skipIf(!frontend || !dependencies)('real portal editor serializes partial, ed
         const pathname = new URL(route.request().url()).pathname;
         if (pathname === '/') return route.fulfill({ contentType: 'text/html', body: '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root" class="portal-page"></div></body></html>' });
         if (pathname === '/web/session/token') return route.fulfill({ contentType: 'text/plain', body: 'synthetic-csrf' });
+        if (pathname.endsWith('/assets')) return route.fulfill({ status:409,contentType:'application/json',body:JSON.stringify({ok:false,error:'reference_inactive',message:'This reference was withdrawn and remains inactive. Uploading it again does not restore permission to use it.'}) });
         if (pathname.endsWith('/assets/00000000-0000-4000-8000-000000000001/withdraw')) { requests.push({ method: route.request().method(), csrf: route.request().headers()['x-csrf-token'] }); return route.fulfill({ contentType: 'application/json', body: '{"ok":true,"status":"withdrawn"}' }); }
         return route.abort();
       });
@@ -51,6 +53,7 @@ it.skipIf(!frontend || !dependencies)('real portal editor serializes partial, ed
       await page.waitForFunction(() => window.withdrawn, null, { timeout: 3000 });
       expect(requests).toEqual([{ method: 'POST', csrf: 'synthetic-csrf' }]);
       expect(await page.getByRole('button', { name: 'Withdraw reference', exact: true }).count()).toBe(0);
+      expect(await page.evaluate(()=>window.reupload())).toMatchObject({status:409,code:'reference_inactive',message:expect.stringContaining('remains inactive')});
       expect(await page.locator('[name="page_copy_body"]').count(), await page.locator('#website-request-editor').innerText()).toBe(1);
       expect(await page.getByLabel('Page text', { exact: true }).inputValue()).toBe('Actual customer copy.');
       await page.getByRole('button', { name: 'Remove this page copy', exact: true }).click();

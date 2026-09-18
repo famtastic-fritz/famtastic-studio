@@ -70,9 +70,24 @@ it.skipIf(!harness)('actual owned upload permits exact protected reference reuse
   const revoked = call({ receipt: done.callback_body, accept_review: true, withdraw_after_receipt: true });
   expect(revoked.reader_negatives.asset_rights_changed).toBe(true);
   expect(revoked.reader_negatives.public_reference_denied).toBe(true);
+  expect(revoked.reader_negatives.withdrawn_reupload_rejected).toContain('remains inactive');
   expect(revoked.final_row.staging_review_status).not.toBe('accepted');
   expect(revoked.final_packet.dispatch_issue).toContain('asset_reference_binding_missing');
   const deploy = createDeploy({ paths: f.paths, journal: f.journal });
   for (const method of ['plan', 'deploy', 'goLive', 'rollback']) expect(() => deploy[method]({ site_id: done.build.site_id, initiator: 'synthetic-owner', receipt_id: 'unused' })).toThrow('source_use_protected_review_only');
   expect(() => createFamtasticIncAdapter({ env: {} }).plan({ site_id: done.build.site_id, manifest_hash: 'synthetic', environment: 'production', source_export: done.source_export })).toThrow('protected review transport');
+  f.cleanup(); f = null;
+  const aliasCallback = JSON.parse(input.raw_callback);
+  for (const variant of aliasCallback.variants) {
+    variant.html = variant.html.replace('</footer>', '<img src="assets/footer-logo.png" alt="Footer logo"></footer>');
+    variant.assets.push({ ...variant.assets[0], asset_id: 'footer-logo', relative_path: 'footer-logo.png' });
+  }
+  const alias = call({ raw_callback: JSON.stringify(aliasCallback) });
+  f = fixture({ producerPacket: alias.packet });
+  const aliasWorker = createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(alias.artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
+  const aliasDone = await aliasWorker.run(f.store.accept(alias.packet).id);
+  expect(aliasDone.state, JSON.stringify(aliasDone.failure)).toBe('complete');
+  expect(f.remote.get('assets/logo.png')).toEqual(bytes);
+  expect(f.remote.get('assets/footer-logo.png')).toEqual(bytes);
+  expect(f.remote.get('index.html').toString()).toBe(aliasCallback.variants[0].html);
 }, 20000);

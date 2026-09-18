@@ -177,3 +177,6 @@ with per-reference evidence. Review URL prefixes must be directory URLs before
 resolution. A busy project must not prevent unrelated queued work. HTTP fixtures
 must derive access/noindex from installed protection, not return those facts
 unconditionally. The 43-test corrective run records these regression cases.
+## 2026-09-17 - Reference aliases and inactive reupload correction
+
+Independent review found two bounded edge cases. Hash-addressed reads now validate every same-packet declared alias and return exact bytes without dropping either output path; tenant/current-rights/containment checks remain required. Reuploading withdrawn bytes returns an explicit inactive-reference conflict, preserving withdrawal evidence. The dashboard clears stale success notices before actions; its existing API error path displays the conflict. Actual controller and two-path worker completion plus browser API error propagation are covered locally. No regrant, live action or Drive write.

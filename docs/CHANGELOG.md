@@ -171,3 +171,6 @@ See [capability and learning](capabilities/OWNER-DESK-RECIPE-DISCOVERY.md).
 - Skip only busy claims while allowing independent queued projects to progress.
 - Derive mock-host access/noindex from installed protection; preserve foreign
   .htaccess guard. Corrective affected/cross-repo suite: 43 tests passed.
+## 2026-09-17 - Reference aliases and inactive reupload correction
+
+Independent review found two bounded edge cases. Hash-addressed reads now validate every same-packet declared alias and return exact bytes without dropping either output path; tenant/current-rights/containment checks remain required. Reuploading withdrawn bytes returns an explicit inactive-reference conflict, preserving withdrawal evidence. The dashboard clears stale success notices before actions; its existing API error path displays the conflict. Actual controller and two-path worker completion plus browser API error propagation are covered locally. No regrant, live action or Drive write.
