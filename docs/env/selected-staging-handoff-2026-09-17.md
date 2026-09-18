@@ -165,3 +165,6 @@ scripts/test-selected-staging-contract.php
 scripts/test-staging-review-browser.mjs
 scripts/test-staging-review-flow.mjs
 ```
+# Shared-shell follow-on
+
+The bounded `legacy-shared-shell-v1` adapter is now implemented locally, including mapped same-repository continuation and existing-output preflight. See [local evidence](legacy-shared-shell-proof-2026-09-17.md) for 69 passing tests, source/permission contracts and remaining normal producer writers. General automatic build completion and runtime activation are not claimed.

@@ -51,7 +51,7 @@ export function fixture({ producerPacket = null, artifactBytes = Buffer.from(htm
   const controls = { qaFails: false, callbackFails: false, probeFails: false, uploadFails: false };
   const api = createCpanelFileApi({ target: binding, request: async request => {
     wire.push(request.route);
-    if (request.form) { counters.uploads++; if (controls.uploadFails) throw Object.assign(new Error('upload'), { code: 'upload_failed' }); remote.set(request.form.name, request.form.bytes); return { status: 1 }; }
+    if (request.form) { counters.uploads++; if (controls.uploadFails) throw Object.assign(new Error('upload'), { code: 'upload_failed' }); remote.set(path.posix.join(path.posix.relative(binding.target_path, request.form.dir), request.form.name), request.form.bytes); return { status: 1 }; }
     return { event: { result: 1 } };
   } });
   const transport = { preflight: async () => ({ verified: true, target_path: binding.target_path, hostname: new URL(binding.url).hostname, site_id: binding.site_id }), backup: async () => { counters.backups++; return { verified: true, ref: 'private/backup', files: [...remote].map(([name, bytes]) => [name, bytes.toString('base64')]) }; }, protect: async () => {},

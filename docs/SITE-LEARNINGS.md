@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Shared shell is structural, not the entire head
+
+Legacy pages may have page-specific title, metadata and styles. Compare marked header/footer/shared CSS exactly; replace title and description explicitly. Require authored content and transformation permission independently of renderer validity. Check actual repository output absence before repository mutation, including case variants; packet manifests alone may omit existing files.
+
 ## 2026-09-17 - Wire ordering and existing semantic source contracts
 
 PHP strcmp and JavaScript localeCompare disagree for mixed case. Wire manifests

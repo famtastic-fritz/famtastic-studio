@@ -1,5 +1,12 @@
 # Site Studio Next change log
 
+## 2026-09-17 - Bounded legacy shared-shell continuation
+
+- Added source-offset parsing and authorized text-only assembly of absent root HTML pages, preserving selected header/footer/shared CSS and explicit page metadata.
+- Bound content, permission, template, selected bytes and component scope into lineage; unsafe or ambiguous source fails closed.
+- Continued mapped Studio source in its existing repository; preflight rejects existing output files and portable case collisions.
+- Synthetic browser and cross-language evidence is recorded in `docs/env/legacy-shared-shell-proof-2026-09-17.md`; no production activation.
+
 ## 2026-09-17 - Canonical mixed-case manifests and durable intent planning
 
 - Matched PHP strcmp ordering for ASCII artifact paths, retaining original

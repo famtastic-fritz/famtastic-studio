@@ -89,20 +89,23 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             job.selected = await materializeSelection(job.packet, { fetchArtifact, allowedArtifactOrigins });
             job.stage = 'build';
           } else if (stage === 'build') {
+            let mapped = null;
             if (job.packet.continuation.initiating_system === 'studio') {
               if (!resolveSource) throw Object.assign(stagingError('source_repository_mapping_required'), { permanent: true });
-              if (job.packet.continuation.operation !== 'package_existing') throw Object.assign(stagingError('mapped_source_continuation_recipe_required'), { permanent: true });
-              job.build = await resolveSource(job.packet);
-              if (job.build?.reused_existing_source !== true || job.build?.source_export?.scope_complete !== true) throw stagingError('source_export_invalid');
-              job.stage = 'qa';
-            } else {
-            const brief = packetToBuildBrief(job.selected);
-            brief.handoff = { operation: job.packet.continuation.operation, correlation_id: job.packet.continuation.correlation_id, initiating_system: job.packet.continuation.initiating_system, source_sha256: job.hash, transformations: job.selected.transformations };
-            brief.business_owner = { id: job.packet.continuation.customer.id, name: job.packet.continuation.customer.name };
-            job.build = await pipeline.run({ site_id: `project-${job.packet.project_id}`, brief, composer: 'artifact', initiator: job.id });
-            if (job.build?.outcome !== 'success' || job.build.verify?.passed !== true) throw Object.assign(stagingError('build_failed'), { permanent: true });
-            job.stage = 'qa';
+              mapped = await resolveSource(job.packet);
+              if (mapped?.reused_existing_source !== true || mapped?.source_export?.scope_complete !== true) throw stagingError('source_export_invalid');
             }
+            if (mapped && job.packet.continuation.operation === 'package_existing') job.build = mapped;
+            else {
+              const brief = packetToBuildBrief(job.selected);
+              brief.handoff = { operation: job.packet.continuation.operation, correlation_id: job.packet.continuation.correlation_id, initiating_system: job.packet.continuation.initiating_system, source_sha256: job.hash, transformations: job.selected.transformations };
+              brief.business_owner = { id: job.packet.continuation.customer.id, name: job.packet.continuation.customer.name };
+              if (mapped) brief.repository = { url: mapped.repository.remote_url, branch: mapped.repository.branch };
+              job.build = await pipeline.run({ site_id: mapped?.site_id || `project-${job.packet.project_id}`, brief, composer: 'artifact', initiator: job.id });
+              if (job.build?.outcome !== 'success' || job.build.verify?.passed !== true) throw Object.assign(stagingError('build_failed'), { permanent: true });
+              if (mapped) job.build.source_mapping_ref = mapped.source_mapping_ref;
+            }
+            job.stage = 'qa';
           } else if (stage === 'qa') {
             job.qa = await qa({ job });
             const required = ['functional', 'responsive', 'accessibility', 'asset_rights', 'visual_parity'];

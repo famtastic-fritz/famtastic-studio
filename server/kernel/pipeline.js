@@ -443,6 +443,12 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
 
   async function guarded(options, retry = false) {
     if (!options?.site_id) throw fail(400, 'identity_required', 'pipeline requires site_id');
+    if (!retry) for (const transformation of options.brief?.handoff?.transformations || []) {
+      const target = paths.within('sites', options.site_id, transformation.path);
+      if (fs.existsSync(target) || fs.existsSync(path.dirname(target)) && fs.readdirSync(path.dirname(target)).some(name => name.toLowerCase() === path.basename(target).toLowerCase())) {
+        throw fail(409, 'continuation_target_already_exists', 'Continuation may only create absent pages');
+      }
+    }
     if (retry) {
       if (!STAGES.includes(options.stage)) throw fail(400, 'unknown_stage', `unknown stage '${options.stage}'`);
       const record = dna.read(options.run_id);
