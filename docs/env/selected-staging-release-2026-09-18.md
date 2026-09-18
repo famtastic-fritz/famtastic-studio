@@ -4,6 +4,12 @@ Owner authorized implementing the official handoff repair after Kakes' manual
 staging delivery. Do not replay Kakes/PIT's failed legacy packets or overwrite
 their public access policy. Preserve current email-branding main in Designs.
 
+Source saved and pushed on the repair branches only: Next implementation
+`2e597d0423c37516094a72632b17bc0e122f58f9`, Designs implementation
+`accf1ec2468db3f76b1603d8bf31821f0a8d3ada`. Neither main, running Studio process,
+nor production agency files were changed by this repair pass. Activation is
+held; do not label either source push a production release.
+
 ## Corrections discovered during activation
 
 - The server boot did not pass stagingRuntime to HTTP modules. Source association
