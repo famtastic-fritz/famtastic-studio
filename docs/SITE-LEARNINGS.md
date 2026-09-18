@@ -94,3 +94,7 @@ Guidance: Resolve and execute imports before declaring a discovery failure. Test
 The captured Owner Desk implementation belongs to the FAMtastic Designs booking lane; reusable presentation source belongs to Component Studio. A future Studio build must bind the selected business's approved brand and backend adapter explicitly. Never transplant Tighten Up Your Locs identity or records into another business. Calendar and class enrollment are distinct domains sharing instructor time.
 
 Evidence: `tests/component-recipe-discovery.test.js`, `docs/capabilities/OWNER-DESK-RECIPE-DISCOVERY.md`; consumer implementation lineage is recorded in Designs `docs/evidence/owner-desk-implementation/`.
+
+## 2026-09-18: Hosted inquiry proof verification
+
+Two independent redesign proofs passed persisted inquiry, authenticated owner status, content editing and browser submission checks. HTTP 200 alone can be a host anti-bot page; require JSON success, pace live probes and reuse SSH. See [candidate and exact source evidence](recipes/independent-review-inbox-candidate.md). Customer assets and records remain in their owning repos; generator promotion is unproven.

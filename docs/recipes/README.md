@@ -66,3 +66,7 @@ site repo lesson
 This keeps improvements discoverable across a portfolio without copying one
 customer's implementation or allowing a one-off workaround to become a global
 default.
+
+## Independent review inbox candidate (2026-09-18)
+
+[Documented two-site pattern](independent-review-inbox-candidate.md): standalone PHP/SQLite inquiry and owner desk, public/private release separation and hosted browser verification. Tested site implementations; not a promoted executable recipe.
