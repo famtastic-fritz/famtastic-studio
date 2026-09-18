@@ -197,3 +197,6 @@ Independent POST-route review found that combining build and source association 
 ## 2026-09-17 - Current handoff synopsis and independent closeout
 
 Final independent parent code review passed 1,022 tests/99 files in77.73s with all PHP/browser environments, plus PHP42/3 selection/3 portal API cases and lint/diff. Refreshed the canonical handoff and writer-plan openings to describe current bounded support, explicit unsupported profiles and actual operational gates; marked older checkpoint claims historical. Append-only progress entries must not leave the current synopsis stale. No production or Drive changes; final dependency cleanup is separate from code proof.
+## 2026-09-18: Hosted inquiry proof verification
+
+Two independent redesign proofs passed persisted inquiry, authenticated owner status, content editing and browser submission checks. HTTP 200 alone can be a host anti-bot page; require JSON success, pace live probes and reuse SSH. See [candidate and exact source evidence](recipes/independent-review-inbox-candidate.md). Customer assets and records remain in their owning repos; generator promotion is unproven.
