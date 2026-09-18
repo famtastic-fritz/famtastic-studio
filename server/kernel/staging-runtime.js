@@ -1,6 +1,7 @@
 import { createStagingStore } from './staging-store.js';
 import { createStagingWorker } from './staging-worker.js';
 import { createSelectedSourceResolver } from './selected-source-binding.js';
+import { createSourceAssociation } from './source-association.js';
 // Installation-level capability injection, never data from an HTTP packet.
 // The serving module can share this runtime with a dedicated worker process.
 export function createStagingRuntime({ paths, journal, ...capabilities }) {
@@ -12,5 +13,6 @@ export function createStagingRuntime({ paths, journal, ...capabilities }) {
     pending ||= worker.tick().finally(() => { pending = null; });
     return pending;
   }
-  return { store, worker, wake, close: () => store.close() };
+  const sourceAssociation = capabilities.associationSecret ? createSourceAssociation({ paths, store, qa: capabilities.qa, callback: capabilities.callback, secret: capabilities.associationSecret }) : null;
+  return { store, worker, sourceAssociation, wake, close: () => store.close() };
 }

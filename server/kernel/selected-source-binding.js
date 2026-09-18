@@ -17,7 +17,8 @@ export function createSelectedSourceResolver({ paths, mappings = [], getMappings
     if (!m.evidence_ref || ((!reconcile || c.source_export_sha256) && m.source_export_sha256 !== c.source_export_sha256 && !ancestor) || m.request_id && m.request_id !== packet.request_id) throw stagingError('source_repository_mapping_stale');
     const wire = JSON.parse(fs.readFileSync(paths.within('dna', m.run_id, `source-${m.source_export_sha256}.json`), 'utf8'));
     const record = decodeSourceExport(wire);
-    if (record.sha256 !== m.source_export_sha256 || !record.scope_complete || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
+    const verifiedPartialAssociation = m.association_id && record.review_qa?.passed === true && record.issues?.length === 1 && record.issues[0] === 'required_pages_incomplete';
+    if (record.sha256 !== m.source_export_sha256 || (!record.scope_complete && !verifiedPartialAssociation) || record.site_id !== m.site_id) throw stagingError('source_export_invalid');
     const dir = paths.within('sites', m.site_id);
     if (fs.realpathSync(dir) !== fs.realpathSync(m.repository_path) || fs.realpathSync(dir) !== fs.realpathSync(record.repository.repository_path)
       || git(dir, ['rev-parse', 'HEAD']) !== record.repository.commit || git(dir, ['branch', '--show-current']) !== record.repository.branch || git(dir, ['status', '--porcelain']) !== '') throw stagingError('source_repository_changed');

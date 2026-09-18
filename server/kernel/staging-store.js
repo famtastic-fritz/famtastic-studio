@@ -17,7 +17,8 @@ export function createStagingStore({ paths, journal }) {
     CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, idem TEXT UNIQUE, packet_id TEXT UNIQUE,
       project TEXT, request TEXT, account TEXT, revision INTEGER, hash TEXT, data TEXT);
     CREATE TABLE IF NOT EXISTS claims (project TEXT PRIMARY KEY, token TEXT, pid INTEGER);
-    CREATE TABLE IF NOT EXISTS source_mappings (project TEXT PRIMARY KEY, data TEXT);`);
+    CREATE TABLE IF NOT EXISTS source_mappings (project TEXT PRIMARY KEY, data TEXT);
+    CREATE TABLE IF NOT EXISTS source_associations (id TEXT PRIMARY KEY, project TEXT UNIQUE, data TEXT);`);
   function transaction(fn) {
     db.exec('BEGIN IMMEDIATE');
     try { const value = fn(); db.exec('COMMIT'); return value; }
@@ -90,6 +91,7 @@ export function createStagingStore({ paths, journal }) {
         evidence_ref: `verified-staging-source:${job.id}`, content_records, completed_steps, source_export: wire,
         originating_system: prior?.originating_system || job.packet.continuation.initiating_system, handoff_initiator: job.packet.continuation.initiating_system };
       mapping.source_history = [...(prior?.source_history || [])];
+      if (prior?.association_id) mapping.association_id = prior.association_id;
       if (prior && prior.source_export_sha256 !== wire.sha256) mapping.source_history.push({ run_id: prior.run_id, source_export_sha256: prior.source_export_sha256 });
       db.prepare('INSERT OR REPLACE INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
       return mapping;
@@ -103,7 +105,28 @@ export function createStagingStore({ paths, journal }) {
     return fs.readFileSync(paths.within('sites', resolved.site_id, source.path));
   }
   const resolveCompleted = packet => sourceMappings().some(m => m.project_id === packet.project_id) ? resolveSource(packet, { reconcile: true }) : null;
+  function recordAssociation(mapping, envelope) {
+    return transaction(() => {
+      const prior = db.prepare('SELECT data FROM source_associations WHERE id=? OR project=?').get(mapping.association_id, mapping.project_id);
+      if (prior) {
+        const value = JSON.parse(prior.data);
+        if (JSON.stringify(value.envelope) !== JSON.stringify(envelope)) throw stagingError('source_association_conflicting_reuse');
+        return value;
+      }
+      if (db.prepare('SELECT 1 FROM claims WHERE project=?').get(mapping.project_id) || sourceMappings().some(m => m.project_id === mapping.project_id || m.site_id === mapping.site_id || m.repository_path === mapping.repository_path)) throw stagingError('source_association_already_bound');
+      const value = { id: mapping.association_id, state: 'callback_pending', envelope };
+      db.prepare('INSERT INTO source_associations VALUES (?,?,?)').run(value.id, mapping.project_id, JSON.stringify(value));
+      db.prepare('INSERT INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
+      return value;
+    });
+  }
+  function readAssociation(id) { const row = db.prepare('SELECT data FROM source_associations WHERE id=?').get(id); return row ? JSON.parse(row.data) : null; }
+  function acknowledgeAssociation(id) {
+    const value = readAssociation(id); if (!value) throw stagingError('source_association_missing');
+    value.state = 'acknowledged'; db.prepare('UPDATE source_associations SET data=? WHERE id=?').run(JSON.stringify(value), id); return value;
+  }
   return { accept, read, claim, checkpoint, recordSource, sourceMappings, resolveSource, readMappedArtifact, resolveCompleted,
+    recordAssociation, readAssociation, acknowledgeAssociation,
     list: () => db.prepare('SELECT data FROM jobs ORDER BY rowid').all().map(r => JSON.parse(r.data)),
     release: (job, token) => db.prepare('DELETE FROM claims WHERE project=? AND token=?').run(job.packet.project_id, token),
     close: () => db.close() };

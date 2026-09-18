@@ -43,7 +43,7 @@ export function createSelectedStagingAssembly({ paths = createPaths(), bindings,
     let body; try { body = JSON.parse(bytes); } catch { throw stagingError('callback_json_invalid'); }
     return { status: response.status, body };
   } });
-  return createStagingRuntime({ paths, journal, pipeline, callback, sourceMappings, allowedArtifactOrigins: artifactOrigins,
+  return createStagingRuntime({ paths, journal, pipeline, callback, associationSecret: callbackSecret, sourceMappings, allowedArtifactOrigins: artifactOrigins,
     fetchArtifact: async ({ url, maxBytes }) => {
       const origin = new URL(url).origin;
       if (!artifactOrigins.includes(origin)) throw stagingError('artifact_origin_rejected');

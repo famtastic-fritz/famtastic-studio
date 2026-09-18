@@ -33,7 +33,7 @@ export function packet() {
       brand: { design_contract: { schema_version: 1, tokens: { bg: '#fff', fg: '#111', accent: '#070', muted: '#555' }, typography: { body: 'Arial', headings: 'Arial' }, component_recipe: ['proof-shell'], layout: { max_width: '72rem', gutter: '1rem', grid: '1-col' }, responsive: { mobile: 'stack', tablet: 'stack', desktop: 'stack' }, asset_policy: { preserve: true, rights_safe_only: true }, evolution: { preserve_tokens: true, preserve_typography: true, additions_must_use_recipe: true, parity_required: true } } },
       research_packet_ref: { packet_id: 'rp-1', brief_hash: digest('source'), source_adapter: 'selected-source' } } };
 }
-export function fixture({ producerPacket = null, artifactBytes = Buffer.from(html), receiptRequest = null } = {}) {
+export function fixture({ producerPacket = null, artifactBytes = Buffer.from(html), receiptRequest = null, siteId = null } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'selected-worker-'));
   const config = loadPathsConfig(); config.data_root_default = root; config.data_root_env = 'SYNTHETIC_STAGING_DATA_ROOT'; config.source_root_default = null; config.portfolio_roots = {};
   const paths = createPaths(config), journal = createJournal({ paths }), events = createEvents({ paths }), dna = createDna({ paths });
@@ -47,6 +47,7 @@ export function fixture({ producerPacket = null, artifactBytes = Buffer.from(htm
     binding.site_id = `project-${producerPacket.project_id}`; binding.customer_id = producerPacket.continuation.customer.id;
     Object.assign(binding, { url: producerPacket.continuation.hosting_target.staging_url, target_path: producerPacket.continuation.hosting_target.target_path, remote_subdirectory: producerPacket.continuation.hosting_target.remote_subdirectory });
   }
+  if (siteId) binding.site_id = siteId;
   const remote = new Map(), wire = [], callbackBodies = [];
   const controls = { qaFails: false, callbackFails: false, probeFails: false, uploadFails: false };
   const api = createCpanelFileApi({ target: binding, request: async request => {

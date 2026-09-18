@@ -102,7 +102,9 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             if (executionPacket.continuation.initiating_system === 'studio' || executionPacket.continuation.source_export_sha256) {
               if (!resolveSource) throw Object.assign(stagingError('source_repository_mapping_required'), { permanent: true });
               mapped = await resolveSource(executionPacket);
-              if (mapped?.reused_existing_source !== true || decodeSourceExport(mapped.source_export).scope_complete !== true) throw stagingError('source_export_invalid');
+              const source = mapped?.source_export && decodeSourceExport(mapped.source_export);
+              const partial = mapped?.mapping?.association_id && executionPacket.continuation.operation === 'continue_build' && source?.issues?.length === 1 && source.issues[0] === 'required_pages_incomplete' && source.review_qa?.passed === true;
+              if (mapped?.reused_existing_source !== true || (source.scope_complete !== true && !partial)) throw stagingError('source_export_invalid');
             }
             if (mapped && executionPacket.continuation.operation === 'package_existing') job.build = mapped;
             else {

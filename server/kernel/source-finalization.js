@@ -14,6 +14,8 @@ export function exportFinalizedSource({ paths, result, brief, reviewQa = null })
     || git(dir, ['rev-parse', 'HEAD']) !== result.repository.commit
     || git(dir, ['branch', '--show-current']) !== result.repository.branch
     || git(dir, ['status', '--porcelain']) !== '') throw new Error('source_repository_changed');
+  const remote = git(dir, ['remote']).split('\n').includes('origin') ? git(dir, ['remote', 'get-url', 'origin']) : null;
+  if (remote !== (result.repository.remote_url || null)) throw new Error('source_repository_remote_changed');
   const issues = [];
   const files = [...result.composed.pages, ...result.composed.assets].filter(file => {
     if (safePublicPath(file.path)) return true;
@@ -44,6 +46,8 @@ export function exportFinalizedSource({ paths, result, brief, reviewQa = null })
   const exported = encodeSourceExport(record);
   const exportDir = paths.within('dna', result.run_id);
   fs.mkdirSync(exportDir, { recursive: true });
+  const { source_export: previousExport, ...buildResult } = result;
+  fs.writeFileSync(paths.within('dna', result.run_id, 'build-result.json'), JSON.stringify(buildResult), { mode: 0o600 });
   const file = paths.within('dna', result.run_id, `source-${exported.sha256}.json`);
   fs.writeFileSync(file, JSON.stringify(exported, null, 2), { mode: 0o600, flag: 'w' });
   return exported;

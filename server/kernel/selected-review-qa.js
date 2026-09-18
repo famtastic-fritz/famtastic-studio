@@ -67,7 +67,13 @@ export function createSelectedReviewQa({ paths, launchBrowser }) {
           await page.goto(`${origin}/${file.path}`);
           const baseline = await page.screenshot({ fullPage: true, animations: 'disabled' });
           if (digest(actual) !== digest(baseline)) problems.push('visual_parity');
-          evidence.push({ path: file.path, width, checks, navigation, declared_resources: declaredResources, resources: [...resourceChecks], output_screenshot_sha256: digest(actual), baseline_screenshot_sha256: digest(baseline) });
+          const authored_fields = await page.evaluate(() => {
+            const text = selector => { const nodes = document.querySelectorAll(selector); return nodes.length === 1 ? nodes[0].textContent : null; };
+            const descriptions = document.querySelectorAll('meta[name="description"]');
+            return { title: text('title'), description: descriptions.length === 1 ? descriptions[0].content : null,
+              heading: text('main h1[data-field-type="text"]'), body: text('main p[data-field-type="text"]') };
+          });
+          evidence.push({ path: file.path, width, checks, authored_fields, navigation, declared_resources: declaredResources, resources: [...resourceChecks], output_screenshot_sha256: digest(actual), baseline_screenshot_sha256: digest(baseline) });
           await page.close();
         }
         await context.close();

@@ -52,6 +52,14 @@ export default {
     const spec = createSpec({ paths, mutation });
     let stagingStore;
     const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation });
+    for (const [route, action] of [['/api/pipeline/source/association', 'request'], ['/api/pipeline/source/associate', 'finalize']]) {
+      app.route('POST', route, async ({ req }) => {
+        try {
+          if (!stagingRuntime?.sourceAssociation) return { status: 503, body: { error: 'source_association_unconfigured' } };
+          return { status: 200, body: await stagingRuntime.sourceAssociation[action](await readJsonBody(req)) };
+        } catch (error) { return errorResponse(error); }
+      }, { scope: 'global' });
+    }
 
     app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
       try {
@@ -81,6 +89,10 @@ export default {
     app.route('POST', '/api/pipeline/run', async ({ req, identity }) => {
       try {
         const body = await readJsonBody(req);
+        if (body.association) {
+          if (!stagingRuntime?.sourceAssociation) throw Object.assign(new Error('Source association is unconfigured.'), { statusCode: 503 });
+          stagingRuntime.sourceAssociation.validate(body.association);
+        }
         const targetSiteId = identity?.site_id || body.site_id || (body.brief?.business_name ? `site-${body.brief.business_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}` : null);
         if (!targetSiteId) {
           throw Object.assign(new Error('pipeline.run requires a site_id or a brief with business_name'), { statusCode: 400, code: 'identity_required' });
@@ -94,6 +106,7 @@ export default {
           recipe_ref: body.recipe_ref || null,
           initiator: identity?.conversation_id || 'console',
         });
+        if (body.association && result.outcome === 'success') result.source_association = await stagingRuntime.sourceAssociation.finalize({ site_id: result.site_id, run_id: result.run_id, association: body.association });
         return { status: result.outcome === 'success' ? 201 : 422, body: result };
       } catch (error) {
         return errorResponse(error);
