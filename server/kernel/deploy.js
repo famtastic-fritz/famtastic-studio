@@ -9,6 +9,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { createMutation } from './mutation.js';
 import { createSpec } from './spec.js';
+import { assertPublicSourceAllowed } from './source-use-restrictions.js';
 
 const PROVIDER = 'famtasticinc';
 
@@ -165,6 +166,7 @@ export function createDeploy({ paths, journal, events }) {
   // Confirmation without dispatch: same manifest/hash/target as deploy(), no writes.
   function plan({ site_id } = {}) {
     if (!site_id) throw fail(400, 'identity_required', 'plan requires site_id');
+    assertPublicSourceAllowed(paths, site_id);
     const siteDir = paths.within('sites', site_id);
     const manifest = buildManifest(siteDir);
     if (manifest.length === 0) {
@@ -207,6 +209,7 @@ export function createDeploy({ paths, journal, events }) {
   function deploy({ site_id, initiator } = {}) {
     if (!site_id) throw fail(400, 'identity_required', 'deploy requires site_id');
     if (!initiator) throw fail(400, 'initiator_required', 'deploy requires an initiator');
+    assertPublicSourceAllowed(paths, site_id);
 
     const siteDir = paths.within('sites', site_id);
     if (!fs.existsSync(siteDir) || !fs.statSync(siteDir).isDirectory()) {
@@ -346,6 +349,7 @@ export function createDeploy({ paths, journal, events }) {
   }
 
   function rollback({ site_id, receipt_id, initiator } = {}) {
+    if (site_id) assertPublicSourceAllowed(paths, site_id);
     if (!site_id) throw fail(400, 'identity_required', 'rollback requires site_id');
     if (!receipt_id) throw fail(400, 'receipt_id_required', 'rollback requires receipt_id');
     if (!initiator) throw fail(400, 'initiator_required', 'rollback requires an initiator');
@@ -401,6 +405,7 @@ export function createDeploy({ paths, journal, events }) {
   // honestly as 'absent', environment/verified_at left unset (never
   // fabricated) so kernel/site.js's isLive() only reports live with evidence.
   function goLive({ site_id, receipt_id, dns_evidence, initiator } = {}) {
+    if (site_id) assertPublicSourceAllowed(paths, site_id);
     if (!site_id) throw fail(400, 'identity_required', 'go-live requires site_id');
     if (!receipt_id) throw fail(400, 'receipt_id_required', 'go-live requires receipt_id');
     if (!initiator) throw fail(400, 'initiator_required', 'go-live requires an initiator');

@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Private uploaded reference reuse (local)
+
+Reference-sharing consent is neither a publication license nor AI permission. Persist restrictions outside and inside source repositories; register owned policy metadata with the build guard after bootstrap. Planning callbacks have no build artifacts and must not invoke build-only rights reads. Keep current rights checks ahead of both hosting and successful receipts.
+
 ## 2026-09-17 - Reconcile before reading mapped artifacts
 
 An agency can name a real older verified source while its latest callback is delayed. Resolve that ancestor before mapped artifact reads, using durable history, Git ancestry and exact unchanged bytes; a missing digest and a verified older digest are distinct cases. Keep unknown hashes rejected. Test three revisions as well as the first callback delay.

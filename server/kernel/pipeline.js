@@ -32,6 +32,7 @@ import { makeExecutors } from './pipeline-executors.js';
 import { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY } from './pipeline-constants.js';
 import { createRepositoryLifecycle } from './repository-lifecycle.js';
 import { exportFinalizedSource } from './source-finalization.js';
+import { retainSourceRestrictions } from './source-use-restrictions.js';
 
 // Re-exported so existing importers of pipeline.js keep working.
 export { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY };
@@ -459,7 +460,9 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
     const session = repositories.begin({ ...options, retry });
     let result;
     try {
+      if (retainSourceRestrictions(paths, options.site_id, options.brief?.source_use_restrictions)) session.generated = [...(session.generated || []), '.famtastic/source-use.json'];
       result = await (retry ? retryUnchecked : runUnchecked)({ ...options, repository_session: session });
+      if (retainSourceRestrictions(paths, options.site_id, options.brief?.source_use_restrictions)) session.generated = [...(session.generated || []), '.famtastic/source-use.json'];
     } catch (error) {
       repositories.finish(session, { outcome: 'failed' });
       throw error;

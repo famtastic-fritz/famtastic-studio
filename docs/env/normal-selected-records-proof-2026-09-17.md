@@ -1,5 +1,11 @@
 # Normal record-writer proof, first bounded profile
 
+Final uploaded-reference verification including anonymous-share hardening: **1,011 tests / 98 files in 55.85s** with all PHP/browser harnesses enabled. PHP 42 contract assertions/3 selection cases, 34 portal DNA checks, brand check, routing YAML, syntax, lint and diff checks pass. No live or Drive writes.
+
+## 2026-09-17 - Private uploaded reference reuse (local)
+
+Actual PHP upload/request/proof/selection writers bind an unchanged PNG to its same customer/request/hash/size. Next builds only About with exact Home/logo bytes and zero providers. Cross-tenant, inactive, withdrawn, changed-byte and ownership negatives pass; AI consent alone grants nothing. Private access failures and revocation before hosting/callback prevent ready claims; restoration retries without rebuilding. Export/receipt policy stripping and public plan/deploy/goLive/rollback fail. Agency valid signed public proof shares are refused for exact private-reference manifests, including after withdrawal. React withdrawal uses the actual CSRF API helper at 390/1280 and preserves unsaved copy; API responses are synthetic, not live Drupal. Full suite before final share-route hardening: 1,011 tests/98 files in60.22s; focused asset test passes after hardening. Fresh Studio-first association remains the next bounded increment; generated licensing, public release and live hosting remain unproven.
+
 ## Verified source ancestors and portal form
 
 Latest full suite: **1,010 tests / 97 files in 54.50s**, all three PHP harness variables and the portal browser fixture enabled. The lifecycle table now covers an already acknowledged source A, a locally completed B whose callback/upload fails, and a third request still naming A. Before mapped reads, Next requires stored verified history, exact old manifest and current bytes, same source repository/branch/remote, actual Git ancestry and matching current content/permission. It builds only FAQ, retaining exact About/Team bytes after restart. Unknown hashes, altered manifest bytes, another customer and changed Team copy are rejected.

@@ -1,5 +1,11 @@
 # Site Studio Next change log
 
+Final uploaded-reference verification including anonymous-share hardening: **1,011 tests / 98 files in 55.85s** with all PHP/browser harnesses enabled. PHP 42 contract assertions/3 selection cases, 34 portal DNA checks, brand check, routing YAML, syntax, lint and diff checks pass. No live or Drive writes.
+
+## 2026-09-17 - Private uploaded reference reuse (local)
+
+Exact uploaded references retain protected-review restrictions through source metadata, exports, receipts and consumer gates. Revalidate agency access before hosting and success callback; reject anonymous/alias exposure and generic public deployment. Normal upload-to-About assembly preserves logo/Home bytes with zero generation. Full suite before final share-route hardening: 1,011/98; focused asset regression passes afterward.
+
 ## 2026-09-17 - Verified ancestor reconciliation and portal browser proof
 
 Retain verified source history and check actual Git ancestry before reconciling an older acknowledged agency source with newer local completion. Three-revision callback/upload failures build only the missing page while preserving prior bytes; unrelated/tampered records remain rejected. Actual portal form/serializer proof at 390/1280 is included. Full suite: 1,010 tests / 97 files in 54.50s.

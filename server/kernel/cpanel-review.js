@@ -4,6 +4,7 @@ import { reviewDirectoryUrl } from './review-directory-url.js';
 import fs from 'node:fs';
 import { digest, stagingError } from './staging-store.js';
 import { safePublicPath } from './staging-contract.js';
+import { readSourceRestrictions, assertProtectedSourceAccess } from './source-use-restrictions.js';
 
 export function createCpanelReview({ paths, journal, binding, transport }) {
   const target = structuredClone(binding);
@@ -53,6 +54,7 @@ export function createCpanelReview({ paths, journal, binding, transport }) {
     if (!state.backup?.verified || !state.backup?.ref) throw stagingError('backup_not_verified');
     await transport.protect({ target, operation_id });
     const access = await transport.verifyAccess(target);
+    assertProtectedSourceAccess(readSourceRestrictions(paths, target.site_id), job.packet, access);
     if (!access.anonymous_denied || !access.aliases_denied || !access.noindex) throw stagingError('review_access_failed');
     try {
       for (const f of files) {
@@ -74,6 +76,7 @@ export function createCpanelReview({ paths, journal, binding, transport }) {
         if (proof.status !== 200 || !proof.https_verified || !proof.noindex || digest(proof.bytes) !== f.sha256) throw stagingError('https_verification_failed');
       }
       const finalAccess = await transport.verifyAccess(target);
+      assertProtectedSourceAccess(readSourceRestrictions(paths, target.site_id), job.packet, finalAccess);
       if (!finalAccess.anonymous_denied || !finalAccess.aliases_denied || !finalAccess.noindex) throw stagingError('review_access_failed');
       state.status = 'verified'; save();
       return { verified: true, review_only: true, url: target.url, target_path: target.target_path,

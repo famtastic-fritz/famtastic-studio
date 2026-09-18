@@ -1,5 +1,9 @@
 # Normal selected-build connection plan
 
+## Bounded uploaded-reference increment
+
+Normal upload rights now bind exact same-request/customer proof asset bytes for protected review only. Current authenticated artifact access is rechecked before hosting and successful callback. Durable source metadata/export/receipt policy denies public consumers and requires private hosting access. Withdrawal and agency anonymous-share gates are covered across the normal writer harness. No generated-media licensing or public publication claim. Next: authenticated fresh Studio source association to an existing canonical agency request, without seeded source authority, a second repository or needless rebuild.
+
 Scope: two isolated Next/agency worktrees only. The target is a normal selection producing its executable recipe from records, not a prefilled `selected_build_continuation` fixture. Current adapters and synthetic proofs do not complete that goal.
 
 Progress: callback/raw capture, request copy, first selection/project creation, derived intro/hero recipe, immutable reader, receipt-created source mapping, request-driven invalidation and local missing-callback reconciliation are connected and tested through real service writers with synthetic persistence/hosting. Original template bytes are not mandatory: marked selected source may be explicitly derived. Remaining work is fresh Studio-first account/source association, normal output-media permission linkage, and full Drupal/portal integration. Existing-page edits remain explicit unsupported executor issues. See `docs/env/normal-selected-records-proof-2026-09-17.md` for current evidence and limitations.

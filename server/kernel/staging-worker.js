@@ -6,6 +6,7 @@ import { prepareStagingBuildPacket, packetToBuildBrief } from './selected-build-
 import { planSelectedSource } from './selected-source-plan.js';
 import { PLANNING_SCHEMA } from './selected-planning-contract.js';
 import { reconcileCompletedSelection } from './selected-completion-reconciliation.js';
+import { restrictionsForPacket, revalidateReferenceAccess } from './source-use-restrictions.js';
 
 export async function materializeSelection(packet, { fetchArtifact, allowedArtifactOrigins, readMappedArtifact, resolveCompleted }) {
   const errors = continuationErrors(packet);
@@ -59,7 +60,8 @@ export function stagingCallback(job) {
   return { ...identity, schema: 'famtastic.site-studio.staging-receipt.v1', status: 'deployed',
     staging_url: job.host.url, artifact_sha256: job.host.manifest_sha256, target_path: job.host.target_path,
     remote_subdirectory: job.host.remote_subdirectory, repository: { mode: 'local_only', branch: job.build.repository.branch, commit: job.build.repository.commit, remote_url: job.build.repository.remote_url || null },
-    qa: job.qa.checks.map(name => ({ name, status: 'passed' })), source_export_sha256: job.source_export?.sha256 || job.build.source_export?.sha256 || null, source_completion: job.source_mapping || null, evidence: job.host };
+    qa: job.qa.checks.map(name => ({ name, status: 'passed' })), source_export_sha256: job.source_export?.sha256 || job.build.source_export?.sha256 || null, source_completion: job.source_mapping || null,
+    use_restrictions: restrictionsForPacket(job.packet), evidence: job.host };
 }
 
 // Injected capabilities are mandatory. There is deliberately no ambient fetch,
@@ -105,6 +107,7 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             if (mapped && executionPacket.continuation.operation === 'package_existing') job.build = mapped;
             else {
               const brief = packetToBuildBrief(job.selected);
+              brief.source_use_restrictions = restrictionsForPacket(job.packet);
               brief.handoff = { operation: executionPacket.continuation.operation, correlation_id: job.packet.continuation.correlation_id, initiating_system: job.packet.continuation.initiating_system, source_sha256: job.hash, transformations: job.selected.transformations };
               brief.business_owner = { id: job.packet.continuation.customer.id, name: job.packet.continuation.customer.name };
               if (mapped) brief.repository = { url: mapped.repository.remote_url, branch: mapped.repository.branch };
@@ -130,10 +133,12 @@ export function createStagingWorker({ store, pipeline, fetchArtifact, allowedArt
             if (store.recordSource && (job.source_export || job.build.source_export)) job.source_mapping = store.recordSource(job, token);
             job.stage = 'host';
           } else if (stage === 'host') {
+            await revalidateReferenceAccess(job.packet, fetchArtifact, allowedArtifactOrigins);
             job.host = await host.deploy({ job, operation_id: job.id });
             if (job.host?.verified !== true || job.host?.review_only !== true) throw stagingError('hosting_not_verified');
             job.stage = 'callback';
           } else if (stage === 'callback') {
+            if (!job.failure && job.packet.schema !== PLANNING_SCHEMA) await revalidateReferenceAccess(job.packet, fetchArtifact, allowedArtifactOrigins);
             job.completed_at ||= new Date().toISOString();
             job.callback_body ||= stagingCallback(job);
             save(); // Exact callback bytes survive timeout, rejection and restart.

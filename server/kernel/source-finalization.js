@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { readSourceRestrictions } from './source-use-restrictions.js';
 import { encodeSourceExport } from './source-export-wire.js';
 import { digest } from './staging-store.js';
 import { safePublicPath } from './staging-contract.js';
@@ -39,7 +40,7 @@ export function exportFinalizedSource({ paths, result, brief, reviewQa = null })
     provenance: { packet_id: result.packet.packet_id, brief_hash: result.packet.brief_hash, source_adapter: result.packet.source_adapter,
       packet_sha256: digest(result.packet), inherited: result.packet.inherited_provenance || null },
     scope, scope_complete: issues.length === 0, issues, source_verification: result.verify,
-    review_qa: reviewQa, human_accepted: false, hosting_verified: false };
+    review_qa: reviewQa, use_restrictions: readSourceRestrictions(paths, result.site_id), human_accepted: false, hosting_verified: false };
   const exported = encodeSourceExport(record);
   const exportDir = paths.within('dna', result.run_id);
   fs.mkdirSync(exportDir, { recursive: true });

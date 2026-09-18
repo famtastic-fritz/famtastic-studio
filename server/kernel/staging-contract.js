@@ -76,6 +76,13 @@ export function continuationErrors(packet) {
     names.add(f.path);
     if (!packet.artifacts.some(a => a.path === f.source_path && a.role !== 'render_evidence')) errors.push('source_binding');
     if (f.rights?.status !== 'approved' || !f.rights?.evidence_ref) errors.push('asset_rights');
+    if (f.rights?.scope === 'protected_review_only') {
+      const a = packet.artifacts.find(a => a.path === f.source_path);
+      if (c.requested_next_action !== 'protected_review' || f.rights.usage !== 'exact_original_bytes' || !f.rights.request_asset_id
+        || f.rights.customer_id !== c.customer.id || String(f.rights.website_request_id) !== String(c.website_request_id)
+        || f.rights.sha256 !== a?.sha256 || f.rights.bytes !== a?.bytes
+        || f.rights.publication_authorized !== false || f.rights.ai_transformation_authorized !== false || f.rights.legal_license_asserted !== false) errors.push('protected_reference_scope');
+    }
     if (f.source_origin === 'mapped_repository') {
       if (!/^[a-f0-9]{64}$/.test(c.source_export_sha256 || '') || f.url !== undefined) errors.push('mapped_artifact_binding');
     } else try { const u = new URL(f.url); if (u.protocol !== 'https:' || u.username || u.password || u.hash || u.search) errors.push('artifact_url'); } catch { errors.push('artifact_url'); }
