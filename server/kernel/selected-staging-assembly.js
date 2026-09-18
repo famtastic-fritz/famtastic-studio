@@ -26,7 +26,7 @@ export async function boundedBytes(response, maxBytes) {
 // Actual assembly for an explicitly reviewed local configuration module. Secrets
 // enter via caller-supplied providers; construction performs no network call.
 export function createSelectedStagingAssembly({ paths = createPaths(), bindings, credentialProvider, callbackEndpoint, callbackSecret,
-  artifactOrigins, artifactAuthorizationProvider = async () => null, fetchImpl = fetch, sourceMappings = [] }) {
+  artifactOrigins, artifactAuthorizationProvider = null, artifactSecret = null, fetchImpl = fetch, sourceMappings = [] }) {
   if (!Array.isArray(bindings) || !bindings.length || !Array.isArray(artifactOrigins) || !artifactOrigins.length) throw stagingError('runtime_configuration_required');
   const journal = createJournal({ paths }), events = createEvents({ paths }), dna = createDna({ paths });
   const mutation = createMutation({ paths, journal, events }), spec = createSpec({ paths, mutation });
@@ -48,7 +48,7 @@ export function createSelectedStagingAssembly({ paths = createPaths(), bindings,
     fetchArtifact: async ({ url, maxBytes }) => {
       const origin = new URL(url).origin;
       if (!artifactOrigins.includes(origin)) throw stagingError('artifact_origin_rejected');
-      const auth = await artifactAuthorizationProvider(url);
+      const auth = artifactAuthorizationProvider ? await artifactAuthorizationProvider(url) : artifactSecret ? selectedArtifactAuthorization(url, artifactSecret) : null;
       let response;
       try { response = await fetchImpl(url, { headers: auth ? { Authorization: auth } : {}, redirect: 'error', signal: AbortSignal.timeout(30000) }); }
       catch { throw stagingError('artifact_fetch_failed'); }
@@ -60,3 +60,4 @@ export function createSelectedStagingAssembly({ paths = createPaths(), bindings,
       return host.deploy(options);
     } } });
 }
+import { selectedArtifactAuthorization } from './selected-artifact-authorization.js';

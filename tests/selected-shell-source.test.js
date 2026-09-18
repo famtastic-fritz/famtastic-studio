@@ -1,0 +1,24 @@
+import { expect, it } from 'vitest';
+import { shellFixture } from './legacy-shared-shell-fixture.mjs';
+import { deriveSelectedShell } from '../server/kernel/selected-shell-source.js';
+import { digest } from '../server/kernel/staging-store.js';
+import { executeContinuationPlan, continuationPlanErrors } from '../server/kernel/selected-continuation-plan.js';
+it('derives only from exact marked selected bytes and executes without an upstream template', async () => {
+  const s = shellFixture(), bytes = Buffer.from(s.selected), derived = deriveSelectedShell(bytes);
+  expect(derived.original_template_received).toBe(false);
+  expect(derived.selected_sha256).toBe(digest(bytes));
+  expect(derived.components[0].fields.map(f => f.id)).toEqual(['heading', 'body']);
+  Object.assign(s.step, { template_provenance: 'selected-shell-derivation.v1', template_source_path: 'proof/index.html', template_sha256: digest(bytes), template_url: s.p.continuation.files[0].url });
+  s.permission.template_sha256 = digest(bytes);
+  const permission = Buffer.from(JSON.stringify(s.permission));
+  Object.assign(s.p.artifacts.find(a => a.path === s.step.permission_source_path), { sha256: digest(permission), bytes: permission.length });
+  s.step.permission_sha256 = digest(permission); s.source.set(s.step.permission_source_path, permission);
+  s.p.artifacts = s.p.artifacts.filter(a => a.path !== 'proof/_template.html'); s.source.delete('proof/_template.html');
+  expect(continuationPlanErrors(s.p)).toEqual([]);
+  const files = [{ path: 'index.html', bytes }];
+  const records = await executeContinuationPlan(s.p, files, async source => s.source.get(source.path));
+  expect(files[0].bytes).toEqual(bytes); expect(files[1].path).toBe('about.html');
+  expect(records[0].derived_shell).toEqual(derived);
+  expect(() => deriveSelectedShell(Buffer.from(s.selected.replace('data-template="footer"', '')))).toThrow('selected_shell_boundary_ambiguous');
+  expect(() => deriveSelectedShell(Buffer.from(s.selected.replace('</main>', '')))).toThrow('shell_nesting_ambiguous');
+});

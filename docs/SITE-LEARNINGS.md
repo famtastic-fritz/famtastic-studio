@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-09-17 - Derive from source rather than require an absent template
+
+Exact selected HTML can supply a marked shell without claiming receipt of an original template. Retain the full unchanged document and record parsed shell offsets/hashes. A source-preservation contract is valid for artifact import; it is not permission to invent palette/typography or to run a generic composer.
+
 ## 2026-09-17 - Hash producer bytes across languages
 
 Associative PHP JSON decoding loses empty-object distinctions, and PHP/Node number serialization differs. Preserve a versioned authoritative byte payload and verify before decoding. Never validate an export by re-encoding a consumer view. Faithful fixtures must include real immutable chrome marker kinds, not only editable text.

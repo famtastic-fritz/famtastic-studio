@@ -1,5 +1,11 @@
 # Site Studio Next change log
 
+## 2026-09-17 - First normal record-writer continuation
+
+- Consume a marked shell derived from exact selected HTML, explicitly recording that no original template was received. Added an artifact-only source-preservation design contract; no fabricated design tokens.
+- Added scoped artifact request signing to the runtime assembly and actual agency callback/request/selection/dispatch/reader/receipt proof. Missing copy/rights/features remain planning issues.
+- This first profile is static intro-section pages without media. Automatic project-source mapping, normal media rights and both-direction revision proof remain follow-on work.
+
 ## 2026-09-17 - Lossless source wire and faithful inherited markers
 
 - Finalized-source wire v2 hashes domain-separated exact UTF-8 payload bytes and retains original JSON semantics through PHP storage.

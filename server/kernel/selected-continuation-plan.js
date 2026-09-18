@@ -1,6 +1,7 @@
 import { digest, stagingError } from './staging-store.js';
 import { safePublicPath } from './staging-contract.js';
 import { assembleLegacySharedShell } from './legacy-shared-shell.js';
+import { deriveSelectedShell } from './selected-shell-source.js';
 const escape = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // Deliberately narrow executable recipe: fill authored text slots in a selected,
 // hash-bound HTML template. No provider, inferred copy, new visual system or
@@ -16,7 +17,8 @@ export function continuationPlanErrors(packet) {
     paths.add(step.path);
     if (typeof step.path === 'string') portablePaths.add(step.path.toLowerCase());
     if (step.design_contract_sha256 !== digest(c.brand?.design_contract || {})) errors.push('continuation_design_stale');
-    if (!packet.artifacts.some(a => a.path === step.template_source_path && a.sha256 === step.template_sha256 && a.role === 'source_material')) errors.push('continuation_template_unbound');
+    const derived = step.template_provenance === 'selected-shell-derivation.v1';
+    if (!packet.artifacts.some(a => a.path === step.template_source_path && a.sha256 === step.template_sha256 && (a.role === 'source_material' || derived && a.role === 'selected_preview' && a.path === step.selected_source_path))) errors.push('continuation_template_unbound');
     if (shell) {
       if (step.selected_source_path !== packet.selected_artifacts[0].source_artifact_path || !Array.isArray(step.component_ids) || !step.component_ids.length || new Set(step.component_ids).size !== step.component_ids.length || step.component_ids.some(id => !/^[A-Za-z][A-Za-z0-9_-]*$/.test(id))) errors.push('shell_source_binding_invalid');
       for (const kind of ['content', 'permission']) if (!packet.artifacts.some(a => a.path === step[`${kind}_source_path`] && a.sha256 === step[`${kind}_sha256`] && a.role === 'source_material')) errors.push(`shell_${kind}_record_unbound`);
@@ -39,6 +41,8 @@ export async function executeContinuationPlan(packet, files, fetchSource) {
     if (packet.continuation.recipe.id === 'legacy-shared-shell-v1') {
       const sourceFile = packet.continuation.files.find(f => f.source_path === step.selected_source_path);
       const selected = files.find(f => f.path === sourceFile.path);
+      const derivedShell = step.template_provenance === 'selected-shell-derivation.v1' ? deriveSelectedShell(selected.bytes) : null;
+      if (derivedShell && derivedShell.template_sha256 !== step.template_sha256) throw stagingError('selected_shell_derivation_mismatch');
       const recordsByKind = {};
       for (const kind of ['content', 'permission']) {
         const artifact = packet.artifacts.find(a => a.path === step[`${kind}_source_path`]);
@@ -49,7 +53,7 @@ export async function executeContinuationPlan(packet, files, fetchSource) {
         contentBytes: recordsByKind.content, permissionBytes: recordsByKind.permission, step,
         sharedStyleBytes: styleFile ? files.find(f => f.path === styleFile.path)?.bytes : null });
       files.push({ path: step.path, bytes: assembled.bytes });
-      records.push({ ...assembled.lineage, content_source_path: step.content_source_path, permission_source_path: step.permission_source_path, template_source_path: step.template_source_path });
+      records.push({ ...assembled.lineage, derived_shell: derivedShell, content_source_path: step.content_source_path, permission_source_path: step.permission_source_path, template_source_path: step.template_source_path });
       continue;
     }
     const template = bytes.toString('utf8');
