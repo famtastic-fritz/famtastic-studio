@@ -1,6 +1,12 @@
 node_modules/
 .DS_Store
 *.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*-wal
+*-shm
 .studio-next-data/
 dist/
 coverage/

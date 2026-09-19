@@ -1,5 +1,32 @@
 # Site Studio Next change log
 
+## 2026-09-19 - Fail-closed durable execution Phase 1
+
+Selected staging intake now commits one AgentTaskLog row, one Phase 1 job and
+one dispatch intent in a single SQLite transaction before returning 202. Exact
+duplicates return the original receipt; conflicting reuse returns 409. Journal
+and event files are idempotent post-commit projections with an explicit retry
+helper, so a filesystem failure cannot create a false rollback or erase the
+authoritative acceptance.
+
+Added bounded worker leases, fencing, retry backoff, dead letters, deterministic
+artifact identities, a pilot-only manual gate, per-attempt and per-model-call
+records, zero-cost mock provider enforcement, a default-on global pause and
+default-off dispatch and worker controls. Phase 1 accepts only a privately branded deterministic mock and
+a direct-child disposable SQLite file under the execution root. It rejects real
+providers, effects, symlinks, hard links, foreign SQLite application IDs and
+unsafe file modes. This does not start a worker, schedule, cloud service,
+callback, message, deployment or customer build.
+
+The synthetic 20-job proof covers duplicate intake, an outbox repair, a runtime
+restart after two abandoned leases, transient retries, permanent failure and
+retry exhaustion. It asserts 18 pilot-gate jobs, 2 dead letters, 27 attempts, 25
+zero-cost mock calls, 18 matching database and disk artifacts, no active lease,
+no orphan and no external effect. Preservation of the actual 448 parked jobs,
+seven schedules and three performance rows remains for independent verification
+against a SQLite online-backup copy, never the live database. See
+[the Phase 1 evidence](evidence/DURABLE-EXECUTION-PHASE1-2026-09-19.md).
+
 ## 2026-09-14 - Independent source foundation and portable libraries
 
 Compatibility follow-on: the one public-file manifest path accepts both existing

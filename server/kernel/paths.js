@@ -31,6 +31,58 @@ export function createPaths(config = loadPathsConfig()) {
     const value = configured[id];
     return typeof value === 'string' && path.isAbsolute(value) ? path.resolve(value) : null;
   }
+  function executionDatabase() {
+    const configured = process.env.FAMTASTIC_AGENT_DB_PATH;
+    if (!configured) {
+      throw Object.assign(new Error('FAMTASTIC_AGENT_DB_PATH is required for durable admission'), {
+        statusCode: 503,
+        code: 'execution_db_required',
+      });
+    }
+    const expanded = String(configured).replace(/^~/, process.env.HOME || '~');
+    if (!path.isAbsolute(expanded)) {
+      throw Object.assign(new Error('FAMTASTIC_AGENT_DB_PATH must be absolute'), {
+        statusCode: 503,
+        code: 'execution_db_path_invalid',
+      });
+    }
+    const resolved = path.resolve(expanded);
+    const executionRoot = path.resolve(root('execution'));
+    if (path.dirname(resolved) !== executionRoot) {
+      throw Object.assign(new Error('Phase 1 database must be a direct child of the configured execution root'), {
+        statusCode: 503,
+        code: 'execution_db_outside_safe_root',
+      });
+    }
+    if (!/\.phase1-disposable\.(?:db|sqlite)$/.test(path.basename(resolved))) {
+      throw Object.assign(new Error('Phase 1 refuses any database not explicitly named as disposable'), {
+        statusCode: 503,
+        code: 'authoritative_db_denied',
+      });
+    }
+    if (fs.existsSync(executionRoot) && fs.lstatSync(executionRoot).isSymbolicLink()) {
+      throw Object.assign(new Error('The configured execution root cannot be a symbolic link'), {
+        statusCode: 503,
+        code: 'execution_root_symlink_denied',
+      });
+    }
+    if (fs.existsSync(resolved)) {
+      const stat = fs.lstatSync(resolved);
+      if (stat.isSymbolicLink()) {
+        throw Object.assign(new Error('The configured execution database cannot be a symbolic link'), {
+          statusCode: 503,
+          code: 'execution_db_symlink_denied',
+        });
+      }
+      if (!stat.isFile() || stat.nlink !== 1) {
+        throw Object.assign(new Error('The configured execution database must be a single-link regular file'), {
+          statusCode: 503,
+          code: 'execution_db_identity_denied',
+        });
+      }
+    }
+    return resolved;
+  }
   // The operator's REAL sites, prefixed `portfolio_` so they can never collide
   // with a studio root of the same short name (config.roots.sites is studio
   // BUILD OUTPUT; config.portfolio_roots.sites is the operator's actual repo).
@@ -198,5 +250,5 @@ export function createPaths(config = loadPathsConfig()) {
     return { rootName, dir, source: 'portfolio', entry };
   }
 
-  return { dataRoot, roots, root, ensure, within, resolveSite, libraryRoot, config, configFile };
+  return { dataRoot, roots, root, ensure, within, resolveSite, libraryRoot, executionDatabase, config, configFile };
 }
