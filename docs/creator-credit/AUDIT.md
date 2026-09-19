@@ -1,6 +1,6 @@
 # Site Studio Next creator-credit audit, 2026-09-18
 
-Base: freshly fetched origin/main 52096d2243dda76cda3740b9f4c40623994d8f23. Isolated branch codex/creator-credit-next. Component source pin 5b8e186c5df10cf08d37ab7165a25c44152a5b49; Media pin 65cbac2d4c7ffae4ce900410ff0e07b774b73251. Vendored foundation 1.1.1 is byte-identical for all ten implementation/asset files listed in vendor/site-foundation/PROVENANCE.md. Identity schema remains 1.0.0.
+Base: freshly fetched origin/main 52096d2243dda76cda3740b9f4c40623994d8f23. Isolated branch codex/creator-credit-next. Component source pin 5371b242a314cb4c689d39bf0e975bf8373b2b0d; Media pin de7d78d1fad6100c5297d0c4676b94efcf09ff01. Vendored foundation 1.1.1 is byte-identical for all ten implementation/asset files listed in vendor/site-foundation/PROVENANCE.md. Identity schema remains 1.0.0.
 
 ## Implemented scope
 
@@ -65,3 +65,5 @@ Parent authorized main integration after first MBSH deployed 0653d920d20fe82aa42
 Primary Next checkout was clean at fbca6d1ab42bc9dde48e368773c9b58e7d3461ab on codex/repository-standards and is eligible for a documented fast-forward after integration. Source adoption does not prove a running service has reloaded; runtime restart/queue adoption remains separately unverified. Component primary is clean but divergent on codex/phone-first-site-desk-contract at d802c05d20ab98b18960265f9eb0c281d668640e: preserve and reconcile separately. Ecosystem primary is dirty and must remain untouched. Media primary can safely fast-forward.
 
 Local storage: removed only the 43,304 KiB (about 42.3 MiB) node_modules install created in this worktree this run, then reused the already-existing canonical dependencies via a disposable symlink for final tests. The Vite temporary cache had self-cleaned. No assets or worktrees removed. Do not attribute unrelated filesystem free-space changes to this cleanup.
+
+Final regression addendum: creator-credit and full fulfillment-readiness suites passed 2 files / 10 tests, including conflicting PNG refusal, missing referenced logo refusal, preservation of originals and the old selected-packet derivative. Universal policy now requires cache-independent critical geometry and cache-busting any dependent shared CSS. Disposable dependency symlink removed after testing.

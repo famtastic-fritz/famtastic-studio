@@ -1,7 +1,7 @@
 # Foundation 1.1.1 capture
 
 Source repository: https://github.com/famtastic-fritz/component-studio
-Source commit: 5b8e186c5df10cf08d37ab7165a25c44152a5b49 (remote main verified 2026-09-18)
+Source commit: 5371b242a314cb4c689d39bf0e975bf8373b2b0d (remote main verified 2026-09-18)
 Source path: packages/site-foundation
 
 index.js, scaffold.js, git.js, package.json, site-repository.schema.json, test.mjs,

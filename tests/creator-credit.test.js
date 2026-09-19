@@ -36,6 +36,18 @@ describe('creator credit across authorship and immutable transfer', () => {
   it('refuses an unknown runtime rather than crediting only its preview', () => {
     expect(() => creditComposition({ pages: [], assets: [], output_stack: 'unknown-cms' })).toThrow(/runtime_adapter_required/);
   });
+  it('does not overwrite conflicting PNG bytes or pretend a missing referenced asset exists', () => {
+    const uncredited = createArtifactBundle([
+      { path: 'index.html', contents: '<html><body><h1>Old selected page</h1></body></html>' },
+      { path: creatorLogoAsset().path, contents: 'existing conflicting customer bytes' },
+    ]);
+    const original = JSON.stringify(uncredited);
+    expect(() => composeSite({ spec: { ...spec, artifact_bundle: uncredited }, composer: 'artifact' })).toThrow(/asset_conflict/);
+    expect(JSON.stringify(uncredited)).toBe(original);
+    const compliant = composeSite({ spec });
+    const missing = createArtifactBundle(compliant.pages.map(p => ({ path: p.path, contents: p.html })));
+    expect(() => composeSite({ spec: { ...spec, artifact_bundle: missing }, composer: 'artifact' })).toThrow(/exact approved PNG must be bundled/);
+  });
   it('credits CMS template sources and each React app without changing customer state', () => {
     for (const recipe of ['drupal-standard-v1', 'wordpress-standard-v1', 'drupal-decoupled-tri-tier-v1', 'wordpress-decoupled-tri-tier-v1']) {
       const result = composeSite({ spec: { ...spec, recipe } });
