@@ -5,6 +5,7 @@ import { fail, normalizeRemote, readManifest } from './git.js';
 
 export const REPO_SCAFFOLD_SCHEMA_VERSION = 1;
 export const CONTRACT_VERSION = '1.0.0';
+export const FOUNDATION_VERSION = '1.1.1';
 export const REQUIRED_FILES = ['README.md', 'AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'design.md', 'CHANGELOG.md', 'SITE-LEARNINGS.md', 'CONVERSATIONS.md', '.gitignore', '.env.example', '.famtastic/site-manifest.json', 'docs/research/README.md', 'docs/research/sources.json', 'docs/DEPLOYMENT.md', 'docs/PORTABILITY.md', 'docs/legal/README.md', 'docs/assets/provenance.json'];
 const digest = value => crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
@@ -19,7 +20,7 @@ export function createRepoScaffold({ site_id, business_name, business_owner = { 
     schema_version: 1, contract_version: CONTRACT_VERSION, format: 'source_repository', site_id, business_name, business_owner, builder, target,
     repository: { mode: repository.mode || 'create_or_existing', url: repository.url || null, branch: repository.branch || 'main', state: 'local_only' },
     design_contract_sha256: digest(design_contract), generated_by: 'site-foundation',
-    installed_recipes: [{ id: 'site-foundation', version: CONTRACT_VERSION }], canonical_url,
+    installed_recipes: [{ id: 'site-foundation', version: FOUNDATION_VERSION }], canonical_url,
     publication: { state: 'staging', legal_review: 'required', seo_review: 'required', release_receipt: null },
   };
   const docs = {
@@ -28,7 +29,7 @@ export function createRepoScaffold({ site_id, business_name, business_owner = { 
     'CLAUDE.md': '# Claude startup\n\nRead AGENTS.md, design.md, SITE-LEARNINGS.md and CONVERSATIONS.md. Customer source and business records belong to this independent repository. Follow the repository identity preflight before mutation.\n',
     'GEMINI.md': '# Gemini and Antigravity startup\n\nRead AGENTS.md, design.md, SITE-LEARNINGS.md and CONVERSATIONS.md. Do not place customer source in agency/platform repositories or overwrite authored records during regeneration.\n',
     'design.md': `# ${business_name}: design contract\n\nThis versioned contract records the actual selected design inputs. It is not automatic owner approval. Preserve authored design choices during rebuilds; record a versioned change when direction changes.\n\n\`\`\`json\n${JSON.stringify(design_contract, null, 2)}\n\`\`\`\n\n## Responsive and accessibility acceptance\n\nVerify 390, 768 and 1280 pixel layouts, keyboard navigation, readable contrast, reduced motion and form error states. Preserve asset rights and provenance.\n`,
-    'CHANGELOG.md': '# Changelog\n\n## Unreleased\n\n- Bootstrapped independent customer source repository with site-foundation 1.0.0. No deployment is implied.\n',
+    'CHANGELOG.md': '# Changelog\n\n## Unreleased\n\n- Bootstrapped independent customer source repository with site-foundation 1.1.1 and mandatory creator credit. No deployment is implied.\n',
     'SITE-LEARNINGS.md': '# Site learnings\n\nRecord site-specific observations, decisions, failed approaches and verification evidence here. Generalized reusable lessons belong in the owning library; link their pinned versions rather than duplicating their source authority.\n',
     'CONVERSATIONS.md': '# Conversation decisions\n\nThis repository stores curated, redacted decisions, not raw private conversations. For each entry record date, decision, source task reference, affected commit and verified private archive link when available. Never claim a Drive upload from a local sync-folder write alone.\n',
     '.gitignore': 'node_modules/\nvendor/\n.env\n.env.*\n!.env.example\ndist/\ncoverage/\n.DS_Store\n*.log\n*.sql\n*.sqlite\n',
@@ -44,8 +45,12 @@ export function createRepoScaffold({ site_id, business_name, business_owner = { 
     'sitemap.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>\n',
     '.famtastic/verify-repository.mjs': "import { requireRepositoryContract, preflightRepository } from './site-foundation/index.js';\nimport { fileURLToPath } from 'node:url';\nconst root = fileURLToPath(new URL('../', import.meta.url));\nconst manifest = requireRepositoryContract(root);\npreflightRepository({ repository_path: root, site_id: manifest.site_id, remote_url: manifest.repository.url, require_clean: false });\nconsole.log(JSON.stringify({valid:true,site_id:manifest.site_id,contract_version:manifest.contract_version}));\n",
   };
+  const creditPolicy = fs.readFileSync(new URL('CREATOR-CREDIT.md', import.meta.url), 'utf8');
+  docs['docs/CREATOR-CREDIT.md'] = creditPolicy;
+  for (const name of ['AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'design.md']) docs[name] += '\n## Mandatory creator credit\n\nRead docs/CREATOR-CREDIT.md. Preserve existing footer text and append the exact approved linked PNG once. No tier exemptions; only an explicit recorded owner override. Credit does not change business identity or authorize a release.\n';
   // Vendored bytes make the generated repository independently verifiable.
-  for (const name of ['index.js', 'git.js', 'scaffold.js', 'package.json', 'site-repository.schema.json']) docs[`.famtastic/site-foundation/${name}`] = fs.readFileSync(new URL(name, import.meta.url), 'utf8');
+  for (const name of ['index.js', 'git.js', 'scaffold.js', 'package.json', 'site-repository.schema.json', 'creator-credit.js', 'credit-html.js', 'CREATOR-CREDIT.md']) docs[`.famtastic/site-foundation/${name}`] = fs.readFileSync(new URL(name, import.meta.url), 'utf8');
+  docs['.famtastic/site-foundation/famtastic-designs-logo-v1.png'] = fs.readFileSync(new URL('famtastic-designs-logo-v1.png', import.meta.url));
   return { schema_version: 1, manifest, files: Object.entries(docs).map(([filePath, contents]) => ({ path: filePath, contents })) };
 }
 

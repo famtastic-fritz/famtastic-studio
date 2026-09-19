@@ -1,3 +1,4 @@
+import { creditedHtml, writeFixtureLogo } from './helpers/credited-fixture.js';
 // Deploy publish-failure cases. Split from kernel-deploy.test.js for the size rule.
 // FAMtasticInc deploy adapter (ADR-0003, amendment A7): publishable-set
 // filtering, copy-then-verify-then-publish deploys, rollback with a real
@@ -57,8 +58,9 @@ function makeSiteFiles(paths, siteId, spec, files = { 'index.html': '<title>Home
   for (const [rel, contents] of Object.entries(files)) {
     const abs = path.join(dir, rel);
     fs.mkdirSync(path.dirname(abs), { recursive: true });
-    fs.writeFileSync(abs, contents);
+    fs.writeFileSync(abs, rel.endsWith('.html') && !rel.startsWith('docs/') ? creditedHtml(contents, rel) : contents);
   }
+  if (Object.keys(files).some(file => file.endsWith('.html'))) writeFixtureLogo(dir);
   return dir;
 }
 

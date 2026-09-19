@@ -133,6 +133,8 @@ export function validateComposedPage(html, payload) {
   return problems;
 }
 
+import { creditComposition } from './creator-credit.js';
+
 function extractHtml(raw) {
   const fenced = /```(?:html)?\s*([\s\S]*?)```/i.exec(raw);
   const text = fenced ? fenced[1] : raw;
@@ -145,7 +147,12 @@ function extractHtml(raw) {
  * Pages are independent, and serial composition would repeat the copy stage's
  * mistake of doing concurrent-safe work one at a time.
  */
-export async function composeWithClaude({ spec, spawnImpl, timeoutMs = CLAUDE_COMPOSER_TIMEOUT_MS, concurrency = 3 } = {}) {
+export async function composeWithClaude(options = {}) {
+  const result = await composeUncreditedWithClaude(options);
+  return result.pages.length ? creditComposition(result) : result;
+}
+
+async function composeUncreditedWithClaude({ spec, spawnImpl, timeoutMs = CLAUDE_COMPOSER_TIMEOUT_MS, concurrency = 3 } = {}) {
   if (!spec || !Array.isArray(spec.pages) || !spec.pages.length) {
     throw fail(400, 'spec_required', 'composeWithClaude requires a spec with pages');
   }

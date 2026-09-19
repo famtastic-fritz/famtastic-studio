@@ -1,3 +1,4 @@
+import { appendCreatorCredit, creatorLogoAsset } from '../vendor/site-foundation/index.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -75,7 +76,8 @@ function paymentSnapshot(overrides = {}) {
 
 function makePacket(overrides = {}) {
   const artifact_bundle = createArtifactBundle([
-    { path: 'index.html', contents: '<!doctype html><html lang="en"><head><title>Synthetic</title></head><body><h1>Synthetic Studio</h1><p>Exact proof bytes.</p></body></html>' },
+    { path: creatorLogoAsset().path, bytes: creatorLogoAsset().contents },
+    { path: 'index.html', contents: appendCreatorCredit('<!doctype html><html lang="en"><head><title>Synthetic</title></head><body><h1>Synthetic Studio</h1><p>Exact proof bytes.</p></body></html>') },
     { path: 'styles.css', contents: 'body { background: #0a0a0a; color: #eaeaea; }' },
     { path: 'js/main.js', contents: 'document.documentElement.dataset.proof = "exact";' },
   ]);
@@ -225,7 +227,7 @@ describe('selected-build adapter: synthetic handoff and build proof', () => {
     expect(packet.boundary.deploy_authorized).toBe(false);
     expect(first.status).toBe('accepted_for_test');
     const built = fs.readFileSync(path.join(paths.within('sites', 'synthetic-studio'), 'index.html'), 'utf8');
-    expect(built).toBe('<!doctype html><html lang="en"><head><title>Synthetic</title></head><body><h1>Synthetic Studio</h1><p>Exact proof bytes.</p></body></html>');
+    expect(built).toBe(appendCreatorCredit('<!doctype html><html lang="en"><head><title>Synthetic</title></head><body><h1>Synthetic Studio</h1><p>Exact proof bytes.</p></body></html>'));
     expect(fs.readFileSync(path.join(paths.within('sites', 'synthetic-studio'), 'styles.css'), 'utf8')).toContain('#0a0a0a');
     expect(fs.readFileSync(path.join(paths.within('sites', 'synthetic-studio'), 'js/main.js'), 'utf8')).toContain('dataset.proof');
   });

@@ -160,3 +160,9 @@ pinned version and individual readiness; the full studio platforms remain
 planned. On narrow library views keep navigation horizontally scrollable and
 content readable rather than clipping the main column. Verify 390, 768 and 1280
 pixel layouts, keyboard access and the actual main content bounds.
+## Creator credit mandate (2026-09-18)
+
+Follow [the owner-approved creator-credit policy](docs/creator-credit/POLICY.md) for every authored site, proof, prototype, lead demo and applicable output. Preserve existing footer text; append one final centered accessible link using the exact PNG. No tier exemption or alternate-brand inference; only explicit recorded owner override. Preserve financial, authentication and customer state, historical artifacts and approval hashes. PNG/video pixels are not clickable: use visible credit plus the destination in accompanying metadata/caption or supported clickable PDF/web wrapper. Do not cover QR/legal text. Source implementation is not fleet deployment proof.
+## Owner-authorized credit derivative, 2026-09-18
+
+The original selected proof bundle and approval hashes remain immutable. The universal owner mandate authorizes an append-only credit derivative with new artifact hashes and a transformation receipt, without another approval or page regeneration. Already compliant rows retain their exact bytes regardless of markup/marker. This presentation change never sets customer acceptance, payment or publication authority. Browser parity assesses this documented credit-only delta rather than demanding the derivative falsely match the original hash.

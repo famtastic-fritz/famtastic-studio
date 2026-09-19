@@ -33,3 +33,6 @@ from selection, QA, silence or a deployment receipt. Escalate exceptions, not
 every routine build. Review hosting is separate from final production launch.
 Check the existing cPanel/vault recipe before declaring SFTP's missing settings
 to be missing hosting access. Documentation is not an enabled queue consumer.
+## Creator credit mandate (2026-09-18)
+
+Follow [the owner-approved creator-credit policy](docs/creator-credit/POLICY.md) for every authored site, proof, prototype, lead demo and applicable output. Preserve existing footer text; append one final centered accessible link using the exact PNG. No tier exemption or alternate-brand inference; only explicit recorded owner override. Preserve financial, authentication and customer state, historical artifacts and approval hashes. PNG/video pixels are not clickable: use visible credit plus the destination in accompanying metadata/caption or supported clickable PDF/web wrapper. Do not cover QR/legal text. Source implementation is not fleet deployment proof.

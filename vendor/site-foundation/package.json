@@ -1,1 +1,1 @@
-{"name":"@famtastic/site-foundation","version":"1.0.0","private":true,"type":"module","exports":"./index.js","engines":{"node":">=22"}}
+{"name":"@famtastic/site-foundation","version":"1.1.1","private":true,"type":"module","exports":"./index.js","engines":{"node":">=22"}}

@@ -45,7 +45,9 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { root, publicFiles } from './public-boundary.mjs';
+import { requireCreatorCreditFiles } from './site-foundation/index.js';
 const files = publicFiles(); // Validate every source before modifying an earlier artifact.
+requireCreatorCreditFiles(files.map(file => ({ path: file, contents: fs.readFileSync(path.join(root, file)) })), { public_base_path: JSON.parse(fs.readFileSync('.famtastic/public-files.json', 'utf8')).public_base_path || '/' });
 const destination = path.join(root, 'dist');
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
 if (git(['ls-files', '--', 'dist'])) throw new Error('Tracked dist source must never be replaced');

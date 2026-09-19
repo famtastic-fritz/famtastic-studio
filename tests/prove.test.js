@@ -1,3 +1,4 @@
+import { creditedHtml, writeFixtureLogo } from './helpers/credited-fixture.js';
 // LINT-EXCEPTION: PROVE verification suite (endgame item 26) deliberately covers many
 // independent PROVE list items in one file per the task's ownership constraint
 // (tests/prove.test.js only); splitting it would violate that constraint.
@@ -371,12 +372,13 @@ describe('PROVE 5: apply-to-working-copy is structurally separate from deploy/pu
     const mutation = createMutation({ paths, journal, events });
     const deploy = createDeploy({ paths, journal, events });
     makeSite('acme', { customer: { id: 'c1' } });
-    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), '<h1>hi</h1>');
+    writeFixtureLogo(paths.within('sites', 'acme'));
+    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), creditedHtml('<h1>hi</h1>'));
 
     const famtasticincRoot = paths.root('famtasticinc');
     expect(fs.existsSync(famtasticincRoot)).toBe(false); // nothing deployed yet
 
-    mutation.apply({ site_id: 'acme', initiator: 't', intent: 'edit', changes: [{ path: 'about.html', contents: '<h1>about</h1>' }] });
+    mutation.apply({ site_id: 'acme', initiator: 't', intent: 'edit', changes: [{ path: 'about.html', contents: creditedHtml('<h1>about</h1>', 'about.html') }] });
     expect(fs.existsSync(famtasticincRoot) && fs.readdirSync(famtasticincRoot).length > 0).toBeFalsy();
 
     const before = fs.readFileSync(paths.within('sites', 'acme', 'index.html')).toString();
@@ -511,7 +513,8 @@ describe('PROVE 11: wrong-denominator audit against disk', () => {
 
   it('FIXED: the deployments page reads the same collection key the API returns, so a real deploy no longer renders as a false empty page', async () => {
     makeSite('acme', { customer: { id: 'c1' } });
-    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), '<h1>hi</h1>');
+    writeFixtureLogo(paths.within('sites', 'acme'));
+    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), creditedHtml('<h1>hi</h1>'));
     const deploy = createDeploy({ paths, journal, events });
     deploy.deploy({ site_id: 'acme', initiator: 't' });
 
@@ -580,7 +583,8 @@ describe('PROVE 8: deploy confirm/dispatch, rollback exactness, evidence', () =>
      'in this tree: no jsdom/happy-dom dependency, no vitest DOM environment configured). What IS verified: GET ' +
      '/api/sites/deployments never dispatches (read-only), confirming the read side of that split is at least honest.', async () => {
     makeSite('acme', { customer: { id: 'c1' } });
-    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), '<h1>hi</h1>');
+    writeFixtureLogo(paths.within('sites', 'acme'));
+    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), creditedHtml('<h1>hi</h1>'));
     const before = fs.existsSync(paths.root('famtasticinc'));
     await request('GET', '/api/sites/deployments', { headers: siteHeaders('acme') });
     const after = fs.existsSync(paths.root('famtasticinc')) && fs.readdirSync(paths.root('famtasticinc')).length > 0;
@@ -590,7 +594,8 @@ describe('PROVE 8: deploy confirm/dispatch, rollback exactness, evidence', () =>
 
   it('rollback restores the exact prior manifest (every file, sha256-verified) via the real HTTP surface, and the receipt carries attached evidence', async () => {
     makeSite('acme', { customer: { id: 'c1' } });
-    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), '<h1>v1</h1>');
+    writeFixtureLogo(paths.within('sites', 'acme'));
+    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), creditedHtml('<h1>v1</h1>'));
     fs.writeFileSync(paths.within('sites', 'acme', 'style.css'), 'body{color:red}');
 
     const dep1 = await (await request('POST', '/api/sites/deploy', { headers: siteHeaders('acme') })).json();
@@ -599,7 +604,8 @@ describe('PROVE 8: deploy confirm/dispatch, rollback exactness, evidence', () =>
     expect(dep1.timestamp).toBeTruthy();
     expect(dep1.source_revision).toBeDefined(); // deploy evidence attached: hash, timestamp, revision
 
-    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), '<h1>v2</h1>');
+    writeFixtureLogo(paths.within('sites', 'acme'));
+    fs.writeFileSync(paths.within('sites', 'acme', 'index.html'), creditedHtml('<h1>v2</h1>'));
     fs.writeFileSync(paths.within('sites', 'acme', 'style.css'), 'body{color:blue}');
     const dep2 = await (await request('POST', '/api/sites/deploy', { headers: siteHeaders('acme') })).json();
 
@@ -611,7 +617,7 @@ describe('PROVE 8: deploy confirm/dispatch, rollback exactness, evidence', () =>
     // not the response body's own claim.
     const restoredIndex = fs.readFileSync(path.join(rollback.restored_target, 'index.html')).toString();
     const restoredCss = fs.readFileSync(path.join(rollback.restored_target, 'style.css')).toString();
-    expect(restoredIndex).toBe('<h1>v1</h1>');
+    expect(restoredIndex).toBe(creditedHtml('<h1>v1</h1>'));
     expect(restoredCss).toBe('body{color:red}');
   });
 });

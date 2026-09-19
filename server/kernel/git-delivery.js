@@ -43,7 +43,7 @@ function relativePath(value) {
 
 function writeFiles(root, files) {
   for (const file of files || []) {
-    if (!file || !text(file.path) || typeof file.contents !== 'string') throw fail('artifact_invalid', 'each artifact file needs a path and string contents');
+    if (!file || !text(file.path) || (typeof file.contents !== 'string' && !Buffer.isBuffer(file.contents))) throw fail('artifact_invalid', 'each artifact file needs a path and text or binary contents');
     const relative = relativePath(file.path);
     const target = path.join(root, relative);
     fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -53,7 +53,7 @@ function writeFiles(root, files) {
 
 function validateFiles(root, files) {
   for (const file of files) {
-    if (!file || typeof file.contents !== 'string') throw fail('artifact_invalid', 'each artifact file needs string contents');
+    if (!file || (typeof file.contents !== 'string' && !Buffer.isBuffer(file.contents))) throw fail('artifact_invalid', 'each artifact file needs text or binary contents');
     relativePath(file.path);
     let target = root;
     for (const piece of file.path.split(/[\\/]/)) {

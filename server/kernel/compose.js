@@ -15,6 +15,7 @@
 import { tokensToCss, DEFAULT_TOKENS } from './tokens.js';
 import { materializeArtifactBundle } from './artifact-bundle.js';
 import { repositoryTools } from './compose-repository-tools.js';
+import { creditComposition } from './creator-credit.js';
 import {
   composeDrupalStandard,
   composeDrupalDecoupled,
@@ -322,7 +323,11 @@ p { margin-top: 0; margin-bottom: 1rem; }
  * -- the seam is explicit and refuses silently, it never falls back to
  * pretending a model ran.
  */
-export function composeSite({ spec, composer = DEFAULT_COMPOSER } = {}) {
+export function composeSite(options = {}) {
+  return creditComposition(composeUncreditedSite(options), { immutable: options.composer === 'artifact', public_base_path: options.spec?.artifact_bundle?.public_base_path || options.spec?.public_base_path || '/' });
+}
+
+function composeUncreditedSite({ spec, composer = DEFAULT_COMPOSER } = {}) {
   if (!COMPOSERS.includes(composer)) {
     throw fail(501, 'composer_not_implemented', `composer '${composer}' is not implemented; available: ${COMPOSERS.join(', ')}`);
   }

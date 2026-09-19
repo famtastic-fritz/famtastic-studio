@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createArtifactBundle } from '../server/kernel/artifact-bundle.js';
+import { appendCreatorCredit, creatorLogoAsset } from '../vendor/site-foundation/index.js';
 import { createPaths } from '../server/kernel/paths.js';
 import { createJournal } from '../server/kernel/journal.js';
 import { createEvents } from '../server/kernel/events.js';
@@ -24,7 +25,7 @@ const contract = {
   asset_policy: { preserve: true, rights_safe_only: true },
   evolution: { preserve_tokens: true, preserve_typography: true, additions_must_use_recipe: true, parity_required: true },
 };
-const artifact = createArtifactBundle([{ path: 'index.html', contents: '<!doctype html><html lang="en"><head><title>Fixture</title></head><body><h1>Fixture</h1></body></html>' }]);
+const artifact = createArtifactBundle([{ path: 'index.html', contents: appendCreatorCredit('<!doctype html><html lang="en"><head><title>Fixture</title></head><body><h1>Fixture</h1></body></html>') }, { path: creatorLogoAsset().path, bytes: creatorLogoAsset().contents }]);
 const common = {
   site_id: 'synthetic-paid-site',
   source: { website_request_public_id: 'req-1', proof_campaign_id: 'proof-1', campaign_id: 'campaign-1', customer_id: 'cust-1', current_proof_hash: 'proof-hash', origin: 'test' },
@@ -71,7 +72,9 @@ describe('post-payment fulfillment readiness', () => {
       const mutation = createMutation({ paths, journal, events });
       const spec = createSpec({ paths, mutation });
       const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation, researchOptions: stubResearchOptions, copyOptions: makeCopyStub() });
-      const readiness = prepareFulfillmentReadiness(common);
+      const legacy = createArtifactBundle([{ path: 'index.html', contents: '<!doctype html><html><head><title>Legacy selected fixture</title></head><body><h1>Legacy selection</h1></body></html>' }]);
+      const original = JSON.stringify(legacy);
+      const readiness = prepareFulfillmentReadiness({ ...common, artifact_bundle: legacy });
       const built = await runLocalBuildFromReadiness({ readiness, pipeline, initiator: 'synthetic-paid-handoff-test' });
       expect(built.status).toBe('local_build_verified');
       expect(built.local_build.verified).toBe(true);
@@ -79,6 +82,11 @@ describe('post-payment fulfillment readiness', () => {
       expect(built.quality_gates.status).toBe('not_proven');
       expect(built.quality_gates.missing).toContain('artifact_parity');
       expect(fs.existsSync(paths.within('sites', 'synthetic-paid-site', 'index.html'))).toBe(true);
+      expect(JSON.stringify(legacy)).toBe(original);
+      const transform = JSON.parse(fs.readFileSync(paths.within('sites', 'synthetic-paid-site', '.famtastic/creator-credit-transform.json'), 'utf8'));
+      expect(transform.original_approval_unchanged).toBe(true);
+      expect(transform.customer_acceptance_changed).toBe(false);
+      expect(transform.changed_pages).toHaveLength(1);
     } finally {
       if (previous === undefined) delete process.env.STUDIO_DATA_ROOT;
       else process.env.STUDIO_DATA_ROOT = previous;

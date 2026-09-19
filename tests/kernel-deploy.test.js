@@ -1,3 +1,4 @@
+import { creditedHtml, writeFixtureLogo } from './helpers/credited-fixture.js';
 // FAMtasticInc deploy adapter (ADR-0003, amendment A7): publishable-set
 // filtering, copy-then-verify-then-publish deploys, rollback with a real
 // manifest-hash oracle plus an active-pointer oracle, go-live recording
@@ -56,8 +57,9 @@ function makeSiteFiles(paths, siteId, spec, files = { 'index.html': '<title>Home
   for (const [rel, contents] of Object.entries(files)) {
     const abs = path.join(dir, rel);
     fs.mkdirSync(path.dirname(abs), { recursive: true });
-    fs.writeFileSync(abs, contents);
+    fs.writeFileSync(abs, rel.endsWith('.html') && !rel.startsWith('docs/') ? creditedHtml(contents, rel) : contents);
   }
+  if (Object.keys(files).some(file => file.endsWith('.html'))) writeFixtureLogo(dir);
   return dir;
 }
 
@@ -72,7 +74,7 @@ describe('deploy publishable set', () => {
     const receipt = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
     const shipped = receipt.manifest.map((m) => m.path).sort();
 
-    expect(shipped).toEqual(['index.html']);
+    expect(shipped).toEqual(['assets/brand/famtastic-designs-logo-v1.png', 'index.html']);
     expect(fs.existsSync(path.join(receipt.target, 'spec.json'))).toBe(false);
     expect(fs.existsSync(path.join(receipt.target, 'conversation.jsonl'))).toBe(false);
     expect(fs.existsSync(path.join(receipt.target, '.studio'))).toBe(false);
@@ -206,7 +208,7 @@ describe('deploy.deploy', () => {
     makeSiteFiles(paths, 'site-a', { customer: { id: 'cust-1' } });
     const first = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
 
-    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), '<title>Home</title><body>v2</body>');
+    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), creditedHtml('<title>Home</title><body>v2</body>'));
     const second = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
 
     expect(second.prior_target).toBe(first.target);
@@ -228,7 +230,7 @@ describe('deploy.rollback', () => {
     makeSiteFiles(paths, 'site-a', { customer: { id: 'cust-1' } });
     const first = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
 
-    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), '<title>Home</title><body>v2 broken</body>');
+    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), creditedHtml('<title>Home</title><body>v2 broken</body>'));
     const second = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
 
     const result = deploy.rollback({ site_id: 'site-a', receipt_id: second.receipt_id, initiator: 'operator' });
@@ -250,7 +252,7 @@ describe('deploy.rollback', () => {
     const { paths, deploy } = setup();
     makeSiteFiles(paths, 'site-a', { customer: { id: 'cust-1' } });
     const first = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
-    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), '<title>Home</title><body>v2</body>');
+    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), creditedHtml('<title>Home</title><body>v2</body>'));
     const second = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
 
     deploy.goLive({ site_id: 'site-a', receipt_id: second.receipt_id, dns_evidence: 'operator confirmed A record', initiator: 'operator' });
@@ -270,7 +272,7 @@ describe('deploy.rollback', () => {
     const { paths, deploy } = setup();
     makeSiteFiles(paths, 'site-a', { customer: { id: 'cust-1' } });
     const first = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
-    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), '<title>Home</title><body>v2</body>');
+    fs.writeFileSync(paths.within('sites', 'site-a', 'index.html'), creditedHtml('<title>Home</title><body>v2</body>'));
     const second = deploy.deploy({ site_id: 'site-a', initiator: 'operator' });
 
     deploy.rollback({ site_id: 'site-a', receipt_id: second.receipt_id, initiator: 'operator' });
@@ -453,7 +455,7 @@ describe('confirmation without dispatch (PROVE item 8)', () => {
 
     expect(plan.would_deploy).toBe(true);
     expect(plan.dispatched, 'a plan must never dispatch').toBe(false);
-    expect(plan.file_count).toBe(2);
+    expect(plan.file_count).toBe(3); // HTML, CSS and exact creator PNG.
     expect(plan.manifest_hash).toMatch(/^[0-9a-f]{64}$/);
     expect(rootAfter, 'planning must leave the deploy root untouched').toBe(rootBefore);
     expect(deploy.list(siteId).receipts, 'a plan must not create a receipt').toHaveLength(0);

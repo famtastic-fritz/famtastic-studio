@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "entries": [
-    { "id": "component-studio", "kind": "component_library", "repository_url": "https://github.com/famtastic-fritz/component-studio", "revision": "7745a9feb281e8ac32d2198cdb42a87f46d727e4", "catalog_path": "catalog-v1.json", "readiness": { "library_available": true, "platform_complete": false } },
-    { "id": "media-studio", "kind": "media_library", "repository_url": "https://github.com/famtastic-fritz/media-studio", "revision": "8d6371f2a7614898eb4b78dc601b142103150d00", "catalog_path": "catalog-v1.json", "readiness": { "library_available": true, "platform_complete": false } }
+    { "id": "component-studio", "kind": "component_library", "repository_url": "https://github.com/famtastic-fritz/component-studio", "revision": "5b8e186c5df10cf08d37ab7165a25c44152a5b49", "catalog_path": "catalog-v1.json", "readiness": { "library_available": true, "platform_complete": false } },
+    { "id": "media-studio", "kind": "media_library", "repository_url": "https://github.com/famtastic-fritz/media-studio", "revision": "65cbac2d4c7ffae4ce900410ff0e07b774b73251", "catalog_path": "catalog-v1.json", "readiness": { "library_available": true, "platform_complete": false } }
   ]
 }

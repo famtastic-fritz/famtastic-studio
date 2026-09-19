@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { requireCreatorCreditFiles } from '../../vendor/site-foundation/index.js';
 
 export function fail(statusCode, code, message, extra = {}) {
   return Object.assign(new Error(message), { statusCode, code, ...extra });
@@ -43,8 +44,10 @@ export function publishableFiles(dir) {
   const configPath = path.join(dir, '.famtastic/public-files.json');
   const sourceManifest = path.join(dir, '.famtastic/site-manifest.json');
   let files;
+  let public_base_path = '/';
   if (fs.existsSync(configPath)) {
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    public_base_path = config.public_base_path || '/';
     const listed = Array.isArray(config) ? config : config?.schema_version === 1 ? config.files : null;
     if (!Array.isArray(listed)) throw fail(409, 'public_manifest_invalid', 'An explicit public-file array or version 1 manifest is required');
     files = [...new Set(listed)];
@@ -61,6 +64,7 @@ export function publishableFiles(dir) {
     }
     if (!fs.statSync(current).isFile()) throw fail(409, 'public_file_unsafe', 'A public path is not a file');
   }
+  if (files.length) requireCreatorCreditFiles(files.map(file => ({ path: file, contents: fs.readFileSync(path.join(dir, file)) })), { public_base_path });
   return files;
 }
 

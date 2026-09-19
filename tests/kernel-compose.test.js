@@ -35,7 +35,7 @@ describe('composeSite', () => {
     expect(result.pages).toHaveLength(2);
     expect(result.pages.map((p) => p.path)).toEqual(['index.html', 'about.html']);
     const assetPaths = result.assets.map((a) => a.path);
-    expect(assetPaths).toEqual(['styles.css', 'js/main.js', 'robots.txt', 'package.json', 'package-lock.json', '.famtastic/public-files.json', '.famtastic/public-boundary.mjs', '.famtastic/build.mjs', '.famtastic/preview.mjs', 'tests/site-contract.test.mjs', 'docs/STATIC-BUILD.md', '.github/workflows/verify.yml', 'README.md', '404.html']);
+    expect(assetPaths).toEqual(['styles.css', 'js/main.js', 'robots.txt', 'package.json', 'package-lock.json', '.famtastic/public-files.json', '.famtastic/public-boundary.mjs', '.famtastic/build.mjs', '.famtastic/preview.mjs', 'tests/site-contract.test.mjs', 'docs/STATIC-BUILD.md', '.github/workflows/verify.yml', 'README.md', '404.html', 'assets/brand/famtastic-designs-logo-v1.png']);
     const stylesAsset = result.assets.find((a) => a.path === 'styles.css');
     expect(stylesAsset.contents).toContain(':root');
   });
@@ -122,10 +122,10 @@ describe('compose: filled media slots render, unfilled ones render nothing', () 
     expect(alt).not.toBe('hero');
   });
 
-  it('renders NO image markup at all when every slot is unfilled', () => {
+  it('renders no customer image markup when every slot is unfilled', () => {
     const out = composeSite({ spec: baseSpec([{ id: 'media-1', role: 'hero', state: 'unfilled', asset_ref: null, fill_error: 'HTTP 429' }]) });
     const home = out.pages.find((p) => p.path === 'index.html');
-    expect(home.html).not.toMatch(/<img/);
+    expect(home.html).not.toMatch(/<img class="(?:hero|section)-image"/);
     // and the supporting copy still renders, so the page is whole without it
     expect(home.html).toMatch(/Skin care that explains itself/);
   });
@@ -144,7 +144,7 @@ describe('compose: filled media slots render, unfilled ones render nothing', () 
     const spec = baseSpec(undefined);
     delete spec.media_slots;
     const out = composeSite({ spec });
-    expect(out.pages[0].html).not.toMatch(/<img/);
+    expect(out.pages[0].html).not.toMatch(/<img class="(?:hero|section)-image"/);
   });
 });
 
@@ -186,7 +186,7 @@ describe('generated imagery is consumed, not stockpiled', () => {
       media_slots: [{ id: 'm0', state: 'unfilled', fill_error: 'generator returned 429' }],
       pages: [{ id: 'home', path: 'index.html', title: 'X', heading: 'X', sections: [{ id: 'a', type: 'text', heading: 'A', body: 'copy' }] }] };
     const html = (composeSite({ spec }).pages || []).map((p) => p.contents ?? p.html ?? '').join('');
-    expect(html).not.toContain('<img');
+    expect(html).not.toMatch(/<img class="(?:hero|section)-image"/);
   });
 
   it('renders nothing for a commissioned slot — it is waiting on a human, not missing', async () => {
@@ -195,7 +195,7 @@ describe('generated imagery is consumed, not stockpiled', () => {
       media_slots: [{ id: 'mascot', state: 'commissioned', note: 'held for commissioned work' }],
       pages: [{ id: 'home', path: 'index.html', title: 'X', heading: 'X', sections: [{ id: 'a', type: 'text', heading: 'A', body: 'copy' }] }] };
     const html = (composeSite({ spec }).pages || []).map((p) => p.contents ?? p.html ?? '').join('');
-    expect(html).not.toContain('<img');
+    expect(html).not.toMatch(/<img class="(?:hero|section)-image"/);
   });
 });
 
