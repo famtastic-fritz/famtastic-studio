@@ -10,6 +10,9 @@ derivative: verify its original/derived hashes and private receipt instead.
 Read `docs/evidence/MAC-CREATIVE-CAPABILITIES-2026-09-21.md` before packaging
 the Mac worker. Advertised CLI media tools are not an unattended capability
 receipt; preserve the ingress-to-selected-route mapping and inert imports.
+When an entrypoint gains a shared import, update both role-specific Docker COPY
+and context allowlists plus source-boundaries, then test the actual copied closure
+with `tests/phase2-container-closure.test.js`. Host imports alone are not proof.
 
 Read CONVENTIONS.md and `.claude/skills/site-studio-conventions/SKILL.md` before
 editing. Read `.claude/skills/dna-capture/SKILL.md` for pipeline work. Read

@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Close the Phase 2 container CLI helper dependency
+
+Add only `server/kernel/cli-entry.js` to both image COPY instructions, filtered
+contexts and source boundaries. Offline child-process regressions reproduce the
+missing dependency, check computed imports, and preserve inert imports and
+fail-closed startup. No runtime behavior or cloud apply gate changes. See
+`docs/evidence/PHASE2-CONTAINER-CLOSURE-2026-09-21.md` for executed evidence.
+
 ## 2026-09-21 - Exercise the actual bounded dispatch CLI
 
 Two cross-repository tests run the existing Designs CLI through signed loopback

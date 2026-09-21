@@ -8,6 +8,7 @@ images:
       - server/cloud/control-main.js
       - server/cloud/control-server.js
       - server/cloud/phase2-http.js
+      - server/kernel/cli-entry.js
       - server/kernel/durable-execution/phase2/**
     exclude:
       - customer-repositories/**
@@ -26,6 +27,7 @@ images:
       - server/cloud/worker-main.js
       - server/cloud/worker-server.js
       - server/cloud/phase2-http.js
+      - server/kernel/cli-entry.js
       - server/kernel/durable-execution/phase2/**
     exclude:
       - customer-repositories/**
