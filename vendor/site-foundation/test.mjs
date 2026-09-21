@@ -31,6 +31,20 @@ test('wrong root and nested Git rejection leave all target bytes unchanged', () 
   assert.throws(() => preflightRepository({ repository_path: nested, site_id: 'customer-a' }), /outside agency/);
   fs.rmSync(base, { recursive: true });
 });
+test('ignored checkout collections allow independent sites but reject tracked targets', () => {
+  const base = temp(); const parent = path.join(base, 'ecosystem'); repository(parent, 'platform');
+  fs.writeFileSync(path.join(parent, '.gitignore'), '/sites/\n');
+  git(parent, ['add', '.gitignore']);
+  git(parent, ['-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'Ignore customer checkouts']);
+  const site = path.join(parent, 'sites/site-customer-a');
+  assert.equal(preflightRepository({ repository_path: site, site_id: 'customer-a', allow_uninitialized: true }).initialized, false);
+  repository(site);
+  assert.equal(preflightRepository({ repository_path: site, site_id: 'customer-a' }).initialized, true);
+  assert.equal(git(parent, ['status', '--porcelain']), '');
+  git(parent, ['add', '-f', 'sites/site-customer-a']);
+  assert.throws(() => preflightRepository({ repository_path: site, site_id: 'customer-a' }), /outside agency/);
+  fs.rmSync(base, { recursive: true });
+});
 test('foreign remote, dirty files and duplicate site identity fail before mutations', () => {
   const base = temp(); const root = path.join(base, 'site'); repository(root);
   git(root, ['remote', 'add', 'origin', 'https://github.com/owner/site-a.git']);
