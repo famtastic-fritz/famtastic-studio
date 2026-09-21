@@ -1,5 +1,13 @@
 # Site Studio learning record
 
+## 2026-09-21 - Verify the packaged import closure, not the host checkout
+
+A shared CLI helper can pass host tests while being absent from both filtered
+images. Copy only the Docker-declared, context-allowed source into a disposable
+root and execute its real Node imports. Removing the helper must fail; computed
+imports need execution, not just literal-import scanning. This source check does
+not prove a clean dependency installation, Linux image build or cloud activation.
+
 ## 2026-09-21 - Test executable entrypoints, not only imported functions
 
 Node canonicalizes module URLs across macOS `/tmp` and other symlinks; comparing

@@ -7,6 +7,7 @@
 !server/cloud/control-server.js
 !server/cloud/phase2-http.js
 !server/kernel/
+!server/kernel/cli-entry.js
 !server/kernel/durable-execution/
 !server/kernel/durable-execution/phase2/
 !server/kernel/durable-execution/phase2/**

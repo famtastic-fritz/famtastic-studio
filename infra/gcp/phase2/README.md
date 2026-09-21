@@ -44,7 +44,10 @@ The baseline is intentionally unable to execute work:
 Do not build either image from the repository root as an unfiltered context.
 The role-specific Dockerfile ignore files admit only package metadata, the
 matching HTTP entrypoint and server, the shared HTTP boundary, and the isolated
-Phase 2 execution modules.
+Phase 2 execution modules, plus the exact `server/kernel/cli-entry.js` helper.
+Keep COPY instructions, context filters and `source-boundaries.yaml` in sync.
+`tests/phase2-container-closure.test.js` executes the copied module closure in
+offline Node children. It is not an image-build or deployment receipt.
 
 The control image may admit jobs and create Cloud Tasks. It must not execute a
 job. The worker image may call the fixed Vertex Gemini adapter only to create a
