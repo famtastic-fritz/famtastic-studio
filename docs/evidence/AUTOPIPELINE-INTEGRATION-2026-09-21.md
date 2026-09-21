@@ -4,6 +4,13 @@ Status: in progress, local source only. No production cutover.
 
 ## Latest complete-source checkpoint
 
+Cloud discovery correction: live authenticated Console inspection verified the
+existing FAMtastic Site Studio project, `gen-lang-client-0744578052`. Its Cloud Run
+service/job lists are empty and its single VM is stopped. Project discovery is
+no longer a blocker; local CLI authorization remains absent. No cloud setting or
+resource changed. See `EXISTING-CLOUD-PROJECT-2026-09-21.md`; older project/sign-in
+statements below describe the earlier CLI-only checkpoint.
+
 Container closure follow-up: `1ff5923` is integrated as `45a1d68` with no merge
 conflicts. Both filtered images now include only the exact shared entry helper;
 their Docker COPY, context and source boundaries agree. Parent verification in
