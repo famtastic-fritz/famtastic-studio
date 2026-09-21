@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Parent verification of integrated execution fencing
+
+Reviewed and integrated the isolated pre-submission/admission repair. Guarded
+parent reruns pass 362 Phase 2 tests plus the composed proof and lints; 42 Phase 1
+tests plus its proof and YAML checks also pass. Current-runtime and legacy data
+inventories are unchanged. Selected cross-language credit integration is still
+under verification; no production flags, service restart or cloud activation.
+
 ## 2026-09-21 - Additive selected-consumer integration, local verification pending
 
 - Reconcile current main and the selected-staging continuation branch without

@@ -2,6 +2,47 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Integrated security verification, September 21 follow-up
+
+Independent review and source repair for M1/A1/A2/A3 were integrated as
+763e056 and 485be76. Parent review read the complete repair and its dedicated
+regressions before integration. Two documentation-only conflicts retained both
+the selected-consumer and security evidence. The canonical checkout was untouched.
+
+The parent rerun passes 362 Phase 2 tests in 17 files, the composed execution
+proof, both source lints and whitespace checks. The composed proof retains 20
+synthetic jobs, 23 fake provider calls, 18 artifacts, two visible dead letters,
+and one provider call for checkpoint recovery. No real provider call occurred.
+The Phase 1 rerun passes 42 tests in six files, its execution proof and offline
+YAML infrastructure validation. These are source verification, not activation.
+
+Additional selected-consumer verification passes 33 tests in five files,
+including source finalization, protected hosting, repeat/recovery and exact
+credit provenance. Three cross-repository cases pass actual PHP producer and
+receipt logic, protected uploaded-asset preservation/withdrawal, and manifest
+byte ordering. These totals are separate runs, not a claim of a new full-suite
+total. First-source association and multi-revision PHP/Node integration are
+still being completed and must pass before release.
+
+Evidence directories under /tmp/famtastic-phase2-review.NVAfPl:
+
+- phase2-fencing-integrated.QYVl1A
+- phase1-integrated.fsnXqn
+- selected-boundaries.kipunn
+- integration-1.xB6nQM/protected-assets-and-agency.log
+
+The new local verification wrapper denies external network access and all
+test reads/writes to both the legacy Studio data and the actual configured
+runtime data root, plus credential directories. Owner checkout and LaunchAgent
+writes are denied. Both protected data inventories remain unchanged. Earlier
+legacy-only snapshots are not relabeled as current-runtime database proof.
+
+The remaining transaction-to-provider race is documented, not claimed solved
+atomically. Real Firestore contention, cloud timing/drain behavior, safe cloud
+resource creation and an authorized canary remain activation gates. Automatic
+fresh creative intake, the complete no-owner-gate customer journey, and shared
+Mac/cloud customer execution are not yet active or proven end to end.
+
 ## Autonomous integration checkpoint, September 21
 
 The owner's explicit four-milestone goal supersedes the earlier conflict stop.
