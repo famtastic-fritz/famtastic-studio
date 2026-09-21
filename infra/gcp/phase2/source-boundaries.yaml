@@ -1,0 +1,45 @@
+schema_version: 1
+images:
+  control:
+    context: repository-root-filtered-by-control.Dockerfile.dockerignore
+    include:
+      - package.json
+      - package-lock.json
+      - server/cloud/control-main.js
+      - server/cloud/control-server.js
+      - server/cloud/phase2-http.js
+      - server/kernel/durable-execution/phase2/**
+    exclude:
+      - customer-repositories/**
+      - .studio-next-data/**
+      - .git/**
+      - docs/**
+      - tests/**
+      - credentials/**
+    dockerfile: infra/gcp/phase2/containers/control.Dockerfile
+    entrypoint: server/cloud/control-main.js
+  worker:
+    context: repository-root-filtered-by-worker.Dockerfile.dockerignore
+    include:
+      - package.json
+      - package-lock.json
+      - server/cloud/worker-main.js
+      - server/cloud/worker-server.js
+      - server/cloud/phase2-http.js
+      - server/kernel/durable-execution/phase2/**
+    exclude:
+      - customer-repositories/**
+      - .studio-next-data/**
+      - .git/**
+      - docs/**
+      - tests/**
+      - credentials/**
+    dockerfile: infra/gcp/phase2/containers/worker.Dockerfile
+    entrypoint: server/cloud/worker-main.js
+rules:
+  - Use the repository root only with the role-specific Dockerfile ignore file.
+  - Never bake customer source, Studio data, environment files, or credentials into an image.
+  - Build control and worker separately and record each source SHA and image digest.
+  - Reject a mutable image tag at deploy time.
+  - Runtime images must fail closed unless the phase2-pilot configuration is exact.
+  - Persistent controls default paused with dispatch, worker, and provider disabled.

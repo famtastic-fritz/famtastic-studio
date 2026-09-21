@@ -1,5 +1,50 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Inert durable execution Phase 2 candidate
+
+Added an isolated Google Cloud shadow runtime around the Phase 1 contracts:
+private control and worker HTTP services, staged Firestore admission, named Cloud
+Tasks dispatch, immutable GCS source and observation artifacts, fenced leases,
+provider-success checkpoints, bounded recovery, explicit dead letters, cost
+ledgers, exact OIDC route identities and a deny-by-default customer-effect
+firewall. The fixed provider is Vertex Gemini 3.1 Flash-Lite through
+`@google/genai` Vertex API `v1`, with `MINIMAL` thinking, a combined 4096 output
+and thinking-token bound, and billed thinking-token accounting.
+
+Unclaimed task deliveries now carry a bounded, transactional worker-claim
+acknowledgement and advance through fenced dispatch generations; stale tasks
+cannot execute and exhaustion is visible. A failed FULL lookup after Cloud Tasks
+reports `ALREADY_EXISTS` parks the job with unknown execution risk. Lost
+responses from a committed model-call reservation recover the attempt-bound call
+and can settle it at zero only with proven pre-provider absence.
+
+The infrastructure package is deliberately inert and apply is hard-disabled
+before cloud calls until Cloud Run creation is atomically create-only. The
+reviewed target gives new revisions zero traffic, pauses the queue, omits
+Scheduler, keeps all four application controls safe, and leaves the intake
+identity unattached to a cloud workload.
+A pause-only command and stop sequence persist the safe controls and continue
+IAM containment even when one containment action fails. There is no enable
+command in this package.
+
+Bootstrap, pause and apply refuse an ambient Firestore emulator. Two activation
+blockers remain explicit in the infrastructure scaffold: Cloud Run lacks an
+atomic create-only path, and queue creation followed by a separate pause leaves
+an unproven initial-running interval. Stop cannot cancel a Vertex request already
+in flight, so a live drill must reconcile its outcome and cost.
+
+The hermetic composed proof drives 20 synthetic jobs through the production
+control and worker HTTP composition. It ends with 18 observations awaiting the
+pilot review gate and two visible dead letters, including admission recovery,
+provider-checkpoint recovery and generation-10 dispatch exhaustion. It made no
+real provider, Google Cloud, network or customer-effect call. Firestore emulator
+concurrency, a real GCP provider canary, ingress connectivity, deployment and
+activation remain unproven. See
+[the Phase 2 evidence](evidence/DURABLE-EXECUTION-PHASE2-2026-09-21.md).
+The production dependency audit is clean; the full audit retains two moderate
+development-only `@vitest/mocker` findings whose reported fix requires a major
+Vitest upgrade.
+
 ## 2026-09-19 - Fail-closed durable execution Phase 1
 
 Selected staging intake now commits one AgentTaskLog row, one Phase 1 job and
@@ -91,7 +136,7 @@ code were promoted by this documentation change.
 
 Validation: 11 focused discovery/inventory tests passed; whitespace checks pass.
 
-## 2026-09-13 — Read-only candidate recipe discovery
+## 2026-09-13 - Read-only candidate recipe discovery
 
 Added `GET /api/component-recipes` to discover specifications from sibling
 Component Studio while preserving readiness flags and explicitly reporting an
