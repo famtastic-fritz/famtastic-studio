@@ -1,5 +1,15 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Repair completed-source adoption fixture only
+
+The legacy roundtrip now starts with an unassociated normal artifact build of
+fully branded Home and the exact PNG, supplies explicit file rights and retrieves
+each URL's actual bytes. The focused offline test passes first adoption, one-repo
+reuse, receipt/retry, conflicting duplicates, cross-account and missing/changed
+asset rejection, plus the retained numeric/Unicode JSON wire cases. No production
+Node guard, PHP asset cap or finalized-source validator changes. See
+`docs/evidence/COMPLETE-SOURCE-CREDIT-FIXTURE-2026-09-21.md`.
+
 ## 2026-09-21 - Versioned narrow source-association credit capability
 
 Add v2 signed grants binding the retained original Home to the exact pinned

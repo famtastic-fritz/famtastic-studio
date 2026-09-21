@@ -1,5 +1,16 @@
 # Site Studio learning record
 
+## 2026-09-21 - A completed-source fixture must supply complete authority
+
+The old fixture selected uncredited Home against an already branded export and
+omitted PNG authority. It also seeded another project's durable mapping first.
+Start with an unassociated normal pipeline result, use the artifact bundle's
+binary `bytes` field for the PNG, bind the full current scope including project
+type, and supply authoritative files plus explicit rights. The separate proof
+callback's 2 MB limit is not this complete-source contract. Fix the fixture, not
+the production boundary. The one-file offline roundtrip passes; no full suite
+or production activation is claimed.
+
 ## 2026-09-21 - Share transformation authority, not a worker's claim of equivalence
 
 A required footer is not permission to waive selected-source hashes. A fresh
