@@ -2,6 +2,41 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Combined selected-source verification
+
+Studio bb59045 and Designs 46de8e847 implement the v2 narrow signed credit
+projection. The original selected bytes and customer acceptance remain unchanged;
+the shared policy authorizes only the independently recomputed footer and exact
+PNG. Old grants remain exact-original/assetless. PHP re-reads its confined original
+proof; Studio checks its retained original, actual repository bytes and private
+receipt. The mapping retains the frozen policy through future source revisions.
+
+The integrated normal-record run passes seven PHP/Studio continuation cases and
+18 policy/tamper/parity cases (25 tests, two files). The first-association run
+passes all 11 cases, including partial/completed source, changed authored copy,
+expired/paid/reselected/foreign authority, acknowledgement mismatch, altered
+bytes, callback loss, upload interruption and persisted transport backoff. The
+first run reached the final content assertion and failed five legacy raw-HTML
+expectations; the corrected assertions compare the exact approved append, exact
+PNG, unchanged selected hash and retained signed policy. No preservation guard
+was removed to make the assertions pass.
+
+Independent PHP verification passes 89 dependency-free assertions, the existing
+three-case portal-selection seam, and four PHPUnit cases / 13 assertions using
+an existing matching dependency tree read-only. No installation was needed.
+
+Evidence: normal-records-credit-integrated.RPcDJC,
+source-association-integrated.oMDDJP (retained first failure),
+source-association-credit-recheck.DVAUsW, php-credit-policy.GdQPsR, and
+credit-parity-length.jm5KLb under the verifier root. Protected current and legacy
+data inventories remain unchanged. These use synthetic PHP persistence and
+disposable Studio records/hosting, not a production client, real SMTP, deployed
+trigger, complete fresh creative run or laptop-independent proof.
+
+The older explicitly supplied source-authority export path still requires its
+own fully branded source and per-file authority. Its compatibility and the final
+combined suite remain pending; do not call the integrated release complete.
+
 ## Integrated security verification, September 21 follow-up
 
 Independent review and source repair for M1/A1/A2/A3 were integrated as
