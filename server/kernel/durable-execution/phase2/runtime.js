@@ -39,6 +39,7 @@ import {
   assertVertexGeminiProvider,
 } from './vertex-gemini-provider.js';
 import { createPhase2WorkEnvelope } from './work-envelope.js';
+import { assertProviderSubmissionAuthorization } from './provider-submission.js';
 
 export { PHASE2_PROVIDER_CALL_RESERVATION_MICROS } from './runtime-support.js';
 
@@ -305,6 +306,12 @@ export function createPhase2WorkerService({
         assertPhase2OperationAllowed(runtime, latest.controls, 'worker');
         assertPhase2OperationAllowed(runtime, latest.controls, 'provider');
         await executionStore.assertRunnable({ worker: true, provider: true });
+        const authorization = await executionStore.authorizeProviderSubmission({
+          lease, modelCallId: call.model_call_id,
+        });
+        // No awaited work between this local check and modelProvider.execute.
+        // This narrows but cannot remove the transaction-to-HTTP race.
+        assertProviderSubmissionAuthorization(lease, call.model_call_id, authorization, runtimeClockValue(clock));
       } catch (error) {
         const failed = await executionStore.failJob({
           lease,

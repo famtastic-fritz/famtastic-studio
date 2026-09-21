@@ -24,53 +24,15 @@ import {
   writeDeadLetter,
 } from './firestore-worker-support.js';
 import { createClaimOperation } from './firestore-claim.js';
-import { assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
+import {
+  assertAttemptOwnership, assertOutboxOwnership, assertStoredCall as assertModelCallOwnership,
+} from './firestore-bindings.js';
+import { createProviderSubmissionOperation } from './firestore-provider-submission.js';
 import {
   prepareProviderCheckpoint,
   providerCheckpointFromCall,
   sameProviderCheckpoint,
 } from './firestore-provider-checkpoint.js';
-
-function assertAttemptOwnership(job, attempt, lease) {
-  assertStoredAttempt(job, attempt, lease.attempt_id);
-  if (attempt.attempt_id !== lease.attempt_id
-    || attempt.job_id !== job.job_id
-    || attempt.task_id !== job.task_id
-    || attempt.pilot_run_id !== job.pilot_run_id
-    || attempt.packet_id !== job.packet_id
-    || attempt.project_id !== job.project_id
-    || attempt.intent_id !== job.intent_id
-    || attempt.intent_id !== lease.intent_id
-    || attempt.dispatch_generation !== lease.dispatch_generation
-    || attempt.attempt_number !== lease.attempt_number
-    || attempt.worker_id !== lease.worker_id
-    || attempt.lease_token !== lease.lease_token
-    || attempt.fencing_token !== lease.fencing_token
-    || attempt.lease_expires_at_ms !== lease.lease_expires_at_ms
-    || attempt.lease_expires_at_ms !== job.lease_expires_at_ms) {
-    throw storeFailure(409, 'attempt_identity_conflict', 'Execution attempt is not bound to the active job and lease');
-  }
-}
-
-function assertModelCallOwnership(job, attempt, call, modelCallId) {
-  assertStoredCall(job, attempt, call, modelCallId);
-  if (attempt.model_call_id !== modelCallId
-    || call.model_call_id !== modelCallId
-    || call.job_id !== job.job_id
-    || call.attempt_id !== attempt.attempt_id) {
-    throw storeFailure(409, 'model_call_identity_conflict', 'Model call is not bound to the active job and attempt');
-  }
-}
-
-function assertOutboxOwnership(job, outbox, lease) {
-  if (outbox.job_id !== job.job_id
-    || outbox.pilot_run_id !== job.pilot_run_id
-    || outbox.intent_id !== job.intent_id
-    || lease.intent_id !== job.intent_id
-    || outbox.dispatch_generation !== lease.dispatch_generation) {
-    throw storeFailure(409, 'dispatch_identity_conflict', 'Dispatch intent is not bound to the active job and lease');
-  }
-}
 
 export function createWorkerOperations(context) {
   const { db, refs, at, iso } = context;
@@ -213,9 +175,10 @@ export function createWorkerOperations(context) {
     return db.runTransaction(async (tx) => {
       const now = at();
       const artifactRef = refs.artifact(artifactId);
-      const [jobSnapshot, attemptSnapshot, callSnapshot, budgetSnapshot, artifactSnapshot, controlSnapshot] = await Promise.all([
+      const [jobSnapshot, attemptSnapshot, callSnapshot, budgetSnapshot, artifactSnapshot, controlSnapshot, outboxSnapshot] = await Promise.all([
         tx.get(refs.job(lease.job_id)), tx.get(refs.attempt(lease.attempt_id)), tx.get(refs.call(modelCallId)),
         tx.get(refs.budget(lease.pilot_run_id)), tx.get(artifactRef), tx.get(refs.control()),
+        tx.get(refs.outbox(lease.intent_id)),
       ]);
       const job = assertPhase2(snapshotData(jobSnapshot), 'Execution job');
       const attempt = assertPhase2(snapshotData(attemptSnapshot), 'Execution attempt');
@@ -230,6 +193,7 @@ export function createWorkerOperations(context) {
       assertActiveLease(job, lease, now);
       assertAttemptOwnership(job, attempt, lease);
       assertModelCallOwnership(job, attempt, call, modelCallId);
+      assertOutboxOwnership(job, snapshotData(outboxSnapshot), lease);
       if (attempt.state !== 'provider_succeeded' || call.state !== 'provider_succeeded'
       ) {
         throw storeFailure(409, 'provider_checkpoint_missing', 'Completion requires the active provider-success checkpoint');
@@ -469,6 +433,7 @@ export function createWorkerOperations(context) {
     assertRunnable,
     claimJob,
     reserveModelCall,
+    authorizeProviderSubmission: createProviderSubmissionOperation(context),
     checkpointProviderSuccess,
     completeJob,
     failJob,

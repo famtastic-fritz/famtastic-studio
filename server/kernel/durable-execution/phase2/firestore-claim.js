@@ -10,7 +10,7 @@ import {
 } from './firestore-values.js';
 import { providerCheckpointFromCall } from './firestore-provider-checkpoint.js';
 import { authoritativeEnvelope, settlement, writeDeadLetter } from './firestore-worker-support.js';
-import { assertDispatchBinding, assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
+import { assertAttemptDispatchGeneration, assertDispatchBinding, assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
 
 function deliverArrivingTask(tx, { refs, outboxRef, outbox, taskName, intentId, generation, now }) {
   if (!['submitting', 'delivered'].includes(outbox.state)) {
@@ -93,6 +93,7 @@ export function createClaimOperation(context) {
       if (resumeAttemptId) {
         priorAttempt = snapshotData(await tx.get(refs.attempt(resumeAttemptId)));
         assertStoredAttempt(job, priorAttempt, resumeAttemptId);
+        assertAttemptDispatchGeneration(job, priorAttempt, outbox);
         if (priorAttempt?.model_call_id) {
           [priorCall, budget] = (await Promise.all([
             tx.get(refs.call(priorAttempt.model_call_id)),

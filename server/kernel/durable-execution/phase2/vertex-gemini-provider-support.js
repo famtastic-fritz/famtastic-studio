@@ -5,6 +5,7 @@ import {
 } from './pricebook.js';
 
 const PROVIDER_FRAMING_TOKEN_ALLOWANCE = 4096;
+export const VERTEX_GEMINI_REQUEST_TIMEOUT_MS = 120_000;
 
 function failure(code, message, violation = null) {
   return Object.assign(new Error(message), { statusCode: 502, code, violation });

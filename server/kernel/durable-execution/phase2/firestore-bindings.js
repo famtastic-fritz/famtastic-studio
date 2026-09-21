@@ -41,3 +41,38 @@ export function assertStoredCall(job, attempt, call, callId) {
     throw storeFailure(409, 'model_call_identity_conflict', 'Stored model call is not bound to the requested job and attempt');
   }
 }
+
+export function assertAttemptOwnership(job, attempt, lease) {
+  assertStoredAttempt(job, attempt, lease.attempt_id);
+  if (attempt.intent_id !== lease.intent_id
+    || attempt.dispatch_generation !== lease.dispatch_generation
+    || attempt.attempt_number !== lease.attempt_number
+    || attempt.worker_id !== lease.worker_id
+    || attempt.lease_token !== lease.lease_token
+    || attempt.fencing_token !== lease.fencing_token
+    || attempt.lease_expires_at_ms !== lease.lease_expires_at_ms
+    || attempt.lease_expires_at_ms !== job.lease_expires_at_ms) {
+    throw storeFailure(409, 'attempt_identity_conflict', 'Execution attempt is not bound to the active job and lease');
+  }
+}
+
+export function assertOutboxOwnership(job, outbox, lease) {
+  assertPhase2(outbox, 'Dispatch intent');
+  if (outbox.job_id !== lease.job_id || job.job_id !== lease.job_id
+    || outbox.pilot_run_id !== lease.pilot_run_id || job.pilot_run_id !== lease.pilot_run_id
+    || outbox.intent_id !== lease.intent_id || job.intent_id !== lease.intent_id
+    || outbox.dispatch_generation !== lease.dispatch_generation) {
+    throw storeFailure(409, 'dispatch_identity_conflict', 'Dispatch intent is not bound to the active job and lease');
+  }
+  assertDispatchBinding({ job, outbox, jobId: lease.job_id, intentId: lease.intent_id, pilotRunId: lease.pilot_run_id });
+}
+
+export function assertAttemptDispatchGeneration(job, attempt, outbox) {
+  // A checkpoint can survive multiple unclaimed redrives without another call.
+  const scheduledResume = ['queued', 'retry_wait'].includes(job.state)
+    && job.resume_attempt_id === attempt.attempt_id && attempt.state === 'resume_scheduled';
+  if (scheduledResume ? attempt.dispatch_generation >= outbox.dispatch_generation
+    : attempt.dispatch_generation !== outbox.dispatch_generation) {
+    throw storeFailure(409, 'dispatch_identity_conflict', 'Attempt generation does not match its active dispatch or checkpoint predecessor');
+  }
+}

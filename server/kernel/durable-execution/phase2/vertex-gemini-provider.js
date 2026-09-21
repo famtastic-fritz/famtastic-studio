@@ -6,6 +6,7 @@ import {
 import {
   createVertexGeminiCallBound,
   readVertexGeminiUsage,
+  VERTEX_GEMINI_REQUEST_TIMEOUT_MS,
 } from './vertex-gemini-provider-support.js';
 
 export const VERTEX_GEMINI_OBSERVATION_SCHEMA = 'famtastic.execution.vertex-observation.v1';
@@ -18,7 +19,6 @@ export const VERTEX_GEMINI_API_IDENTITY = Object.freeze({
 });
 
 const PROVIDER_BRAND = Symbol('famtastic.phase2.vertex-gemini-provider');
-const REQUEST_TIMEOUT_MS = 120_000;
 const MAX_INPUT_BYTES = 256 * 1024;
 const MAX_OUTPUT_BYTES = 256 * 1024;
 const MAX_OUTPUT_TOKENS = 4096;
@@ -411,7 +411,7 @@ export function createVertexGeminiProvider(options = {}) {
       }
       const startedAt = Number(clock());
       if (!Number.isFinite(startedAt)) throw failure(500, 'vertex_clock_invalid', 'Provider clock returned an invalid value');
-      const timeoutSignal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+      const timeoutSignal = AbortSignal.timeout(VERTEX_GEMINI_REQUEST_TIMEOUT_MS);
       const signal = executionOptions.signal
         ? AbortSignal.any([executionOptions.signal, timeoutSignal])
         : timeoutSignal;

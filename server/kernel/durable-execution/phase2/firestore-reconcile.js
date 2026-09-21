@@ -16,7 +16,7 @@ import {
   finalizeDispatchManual,
   loadDispatchTerminalContext,
 } from './firestore-dispatch-support.js';
-import { assertDispatchBinding, assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
+import { assertAttemptDispatchGeneration, assertDispatchBinding, assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
 
 const STALE_ADMISSION_MS = 15 * 60 * 1000;
 
@@ -263,9 +263,7 @@ export function createReconcileOperations(context) {
         const outbox = assertPhase2(snapshotData(outboxSnapshotNow), 'Dispatch intent');
         assertDispatchBinding({ job, outbox, jobId: candidate.job_id, intentId: candidate.intent_id, pilotRunId });
         assertStoredAttempt(job, attempt, candidate.active_attempt_id);
-        if (attempt.dispatch_generation !== outbox.dispatch_generation) {
-          throw storeFailure(409, 'dispatch_identity_conflict', 'Expired attempt generation does not match dispatch');
-        }
+        assertAttemptDispatchGeneration(job, attempt, outbox);
         let call = null;
         let budget = null;
         if (attempt.model_call_id) {

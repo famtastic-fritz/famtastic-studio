@@ -62,7 +62,7 @@ export function assertRuntimeStore(store) {
     'listReservedAdmissions', 'expireWorkAdmission', 'failWorkAdmission',
     'reconcile', 'listDispatchCandidates', 'reserveDispatch',
     'markDispatchDelivered', 'releaseDispatch', 'claimJob',
-    'assertRunnable', 'reserveModelCall', 'checkpointProviderSuccess',
+    'assertRunnable', 'reserveModelCall', 'authorizeProviderSubmission', 'checkpointProviderSuccess',
     'completeJob', 'failJob', 'markUncertain',
   ]) requireRuntimeMethod(store, method, 'Phase 2 execution store');
   return store;
