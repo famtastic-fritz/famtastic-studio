@@ -4,6 +4,7 @@
 // bindIdentity itself), parses the body, calls the kernel, and maps errors.
 import crypto from 'node:crypto';
 import { createDna } from '../../kernel/dna.js';
+import { createExecutionStore, projectAcceptance } from '../../kernel/durable-execution/index.js';
 import { createMutation } from '../../kernel/mutation.js';
 import { createSpec } from '../../kernel/spec.js';
 import { createPipeline, STAGES, MODEL_ROUTING } from '../../kernel/pipeline.js';
@@ -15,14 +16,32 @@ function errorResponse(error) {
   return { status, body };
 }
 
-function readJsonEnvelope(req) {
+const MAX_REQUEST_BYTES = 1024 * 1024;
+const MAX_ARTIFACTS = 500;
+const MAX_DECLARED_ARTIFACT_BYTES = 10 * 1024 * 1024 * 1024;
+const PACKET_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+
+function readJsonEnvelope(req, { maxBytes = Number.POSITIVE_INFINITY } = {}) {
   return new Promise((resolve, reject) => {
-    let data = '';
-    req.on('data', (chunk) => { data += chunk; });
+    const chunks = [];
+    let bytes = 0;
+    let rejected = false;
+    req.on('data', (chunk) => {
+      if (rejected) return;
+      bytes += Buffer.byteLength(chunk);
+      if (bytes > maxBytes) {
+        rejected = true;
+        reject(Object.assign(new Error('request body exceeds 1 MiB'), { statusCode: 413, code: 'request_too_large' }));
+        return;
+      }
+      chunks.push(Buffer.from(chunk));
+    });
     req.on('end', () => {
-      if (!data) return resolve({ raw: '', body: {} });
+      if (rejected) return;
+      if (!bytes) return resolve({ raw: Buffer.alloc(0), body: {} });
       try {
-        resolve({ raw: data, body: JSON.parse(data) });
+        const raw = Buffer.concat(chunks, bytes);
+        resolve({ raw, body: JSON.parse(raw.toString('utf8')) });
       } catch {
         reject(Object.assign(new Error('request body is not valid JSON'), { statusCode: 400, code: 'invalid_body' }));
       }
@@ -39,30 +58,42 @@ function stagingPacketErrors(packet) {
   const errors = [];
   if (!packet || packet.schema !== 'famtastic.site-studio.build-packet.v1') errors.push('packet.schema');
   for (const field of ['packet_id', 'idempotency_key', 'request_id', 'project_id', 'build_class']) {
-    if (typeof packet?.[field] !== 'string' || !packet[field].trim()) errors.push(`packet.${field}`);
+    if (typeof packet?.[field] !== 'string' || !PACKET_ID_RE.test(packet[field])) errors.push(`packet.${field}`);
   }
   if (packet?.build_class !== 'prepayment_selected_direction_staging') errors.push('packet.build_class');
-  if (!Array.isArray(packet?.selected_direction_ids) || packet.selected_direction_ids.length !== 1) errors.push('packet.selected_direction_ids');
+  if (!Array.isArray(packet?.selected_direction_ids)
+    || packet.selected_direction_ids.length !== 1
+    || !PACKET_ID_RE.test(packet.selected_direction_ids[0] || '')) errors.push('packet.selected_direction_ids');
   const artifacts = Array.isArray(packet?.artifacts) ? packet.artifacts : [];
-  if (!artifacts.length) errors.push('packet.artifacts');
+  if (!artifacts.length || artifacts.length > MAX_ARTIFACTS) errors.push('packet.artifacts');
   const paths = new Set();
+  let declaredBytes = 0;
   for (const artifact of artifacts) {
+    const artifactPath = artifact?.path;
+    const safePath = typeof artifactPath === 'string'
+      && artifactPath.length > 0
+      && artifactPath.length <= 500
+      && !artifactPath.startsWith('/')
+      && !/^[A-Za-z]:/.test(artifactPath)
+      && !artifactPath.includes('\\')
+      && !artifactPath.includes('\0')
+      && artifactPath.split('/').every((part) => part && part !== '.' && part !== '..');
     const valid = artifact
       && ['source_material', 'selected_preview', 'render_evidence'].includes(artifact.role)
-      && typeof artifact.path === 'string'
-      && artifact.path.length > 0
-      && !artifact.path.startsWith('/')
-      && !artifact.path.includes('..')
+      && safePath
       && /^[a-f0-9]{64}$/.test(artifact.sha256 || '')
       && Number.isInteger(artifact.bytes)
       && artifact.bytes >= 0
-      && !paths.has(artifact.path);
+      && artifact.bytes <= MAX_DECLARED_ARTIFACT_BYTES
+      && !paths.has(artifactPath);
     if (!valid) errors.push('packet.artifacts');
-    if (artifact?.path) paths.add(artifact.path);
+    if (artifactPath) paths.add(artifactPath);
+    if (Number.isInteger(artifact?.bytes) && artifact.bytes >= 0) declaredBytes += artifact.bytes;
   }
+  if (declaredBytes > MAX_DECLARED_ARTIFACT_BYTES) errors.push('packet.artifacts');
   const canonicalManifest = artifacts
-    .map((artifact) => ({ bytes: artifact.bytes, path: artifact.path, role: artifact.role, sha256: artifact.sha256 }))
-    .sort((left, right) => left.path.localeCompare(right.path));
+    .map((artifact) => ({ bytes: artifact?.bytes, path: artifact?.path, role: artifact?.role, sha256: artifact?.sha256 }))
+    .sort((left, right) => String(left.path || '').localeCompare(String(right.path || '')));
   const manifestDigest = crypto.createHash('sha256').update(JSON.stringify(canonicalManifest)).digest('hex');
   if (!/^[a-f0-9]{64}$/.test(packet?.artifact_manifest_sha256 || '') || packet?.artifact_manifest_sha256 !== manifestDigest) {
     errors.push('packet.artifact_manifest_sha256');
@@ -72,10 +103,10 @@ function stagingPacketErrors(packet) {
     errors.push('packet.selected_artifacts');
   } else {
     const bound = selected[0];
-    const match = artifacts.filter((artifact) => artifact.role === 'selected_preview'
-      && artifact.path === bound?.source_artifact_path
-      && artifact.sha256 === bound?.source_artifact_sha256
-      && artifact.bytes === bound?.source_artifact_bytes);
+    const match = artifacts.filter((artifact) => artifact?.role === 'selected_preview'
+      && artifact?.path === bound?.source_artifact_path
+      && artifact?.sha256 === bound?.source_artifact_sha256
+      && artifact?.bytes === bound?.source_artifact_bytes);
     if (bound?.direction_id !== packet.selected_direction_ids?.[0] || match.length !== 1) errors.push('packet.selected_artifacts');
   }
   if (packet?.boundary?.deploy_authorized === true) errors.push('packet.boundary.deploy_authorized');
@@ -91,8 +122,9 @@ export default {
     const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation });
 
     app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
+      let executionStore;
       try {
-        const envelope = await readJsonEnvelope(req);
+        const envelope = await readJsonEnvelope(req, { maxBytes: MAX_REQUEST_BYTES });
         const secret = process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET || '';
         const provided = req.headers?.['x-famtastic-signature'] || '';
         const expected = secret ? `sha256=${crypto.createHmac('sha256', secret).update(envelope.raw).digest('hex')}` : '';
@@ -102,24 +134,46 @@ export default {
         const packet = envelope.body?.packet;
         const errors = stagingPacketErrors(packet);
         if (errors.length) return { status: 422, body: { accepted: false, error: 'staging_packet_rejected', errors } };
+        const executionMode = process.env.FAMTASTIC_EXECUTION_MODE || 'disabled';
+        const executionScope = process.env.FAMTASTIC_EXECUTION_SCOPE || 'disabled';
+        if (executionMode !== 'mock' || executionScope !== 'phase1-disposable') {
+          const code = executionMode !== 'disabled' && executionMode !== 'mock'
+            ? 'real_provider_denied'
+            : 'durable_execution_disabled';
+          throw Object.assign(new Error('Durable staging admission requires explicit mock, disposable Phase 1 configuration'), {
+            statusCode: 503,
+            code,
+          });
+        }
         const siteId = `project-${packet.project_id}`;
-        const event = events.emit({
-          type: 'site_studio.staging_accepted',
-          site_id: siteId,
-          idempotency_key: packet.idempotency_key,
-          payload: { packet_id: packet.packet_id, request_id: packet.request_id, project_id: packet.project_id, status: 'accepted_waiting_callback' },
-        });
-        journal.append({
-          site_id: siteId,
-          initiator: 'famtastic-drupal',
-          intent: 'accept_selected_staging_packet',
-          changes: [{ packet_id: packet.packet_id, status: 'accepted_waiting_callback' }],
-          result: { event_id: event.event_id, status: 'accepted_waiting_callback' },
-          evidence: { idempotency_key: packet.idempotency_key },
-        });
-        return { status: 202, body: { accepted: true, status: 'accepted_waiting_callback', receipt: { receipt_id: event.event_id, packet_id: packet.packet_id, idempotency_key: packet.idempotency_key } } };
+        const executionRoot = paths.ensure('execution');
+        executionStore = createExecutionStore({ dbPath: paths.executionDatabase(), safeRoot: executionRoot });
+        const accepted = executionStore.acceptStagingPacket({ packet, siteId });
+        const projections = projectAcceptance({ store: executionStore, journal, events, record: accepted });
+        return {
+          status: 202,
+          body: {
+            accepted: true,
+            status: 'accepted_waiting_callback',
+            receipt: {
+              receipt_id: accepted.receipt_id,
+              packet_id: packet.packet_id,
+              idempotency_key: packet.idempotency_key,
+            },
+            execution: {
+              task_id: accepted.task_id,
+              state: accepted.state,
+              dispatch_state: accepted.dispatch_state,
+              journal_projection: projections.journal,
+              event_projection: projections.event,
+              duplicate: accepted.duplicate,
+            },
+          },
+        };
       } catch (error) {
         return { status: error.statusCode || 500, body: { accepted: false, error: error.code || 'staging_accept_failed', message: error.message } };
+      } finally {
+        executionStore?.close();
       }
     }, { scope: 'global' });
 

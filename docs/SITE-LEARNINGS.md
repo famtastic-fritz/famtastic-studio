@@ -1,5 +1,29 @@
 # Site Studio learning record
 
+## 2026-09-19 - A 202 receipt must follow durable intent, not precede work
+
+Observation: the signed staging endpoint recorded acceptance but did not start
+or durably dispatch a build. Enabled schedule records and a permanent server do
+not prove that queued work executes, retries or recovers after interruption.
+
+Guidance: commit the task, job, idempotency binding and dispatch intent in one
+transaction before acknowledging it. Treat JSONL journals and events as
+retryable projections when SQLite is the authority. Keep one AgentTaskLog row
+per task and separate attempts and model calls so retries do not rewrite task
+identity or hide cost. A global pause must be rechecked immediately before work,
+leases need fencing and expiry, artifact identity must be stable across retries,
+and exhausted work must become visible dead letter state.
+
+Synthetic fixtures can prove state-machine behavior but cannot prove preservation
+of a real database. Take an online backup, migrate only the disposable copy and
+compare legacy rows before and after. A Phase 1 manual observation gate does not
+change the selected-build contract: routine green customer builds must not wait
+for Fritz approval. No mission-control subdomain is required to establish this
+backend contract; a later dashboard should be a read-only view over these states.
+
+Evidence: `npm run prove:execution`, the durable execution test files and
+`docs/evidence/DURABLE-EXECUTION-PHASE1-2026-09-19.md`.
+
 ## 2026-09-17 - Missing SFTP inputs do not mean missing hosting access
 
 Observation: the default adapter required SFTP settings while the ecosystem

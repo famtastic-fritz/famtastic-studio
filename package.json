@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "smoke": "node scripts/playwright-smoke.mjs",
     "smoke:selected-build": "vitest run tests/selected-build-adapter.test.js tests/selected-build-packet.test.js",
+    "prove:execution": "node scripts/prove-durable-execution.mjs",
     "parity:artifact": "node scripts/prove-proof-artifact-parity.mjs",
     "gates": "npm run lint && npm test && npm run smoke && npm run gate:g4-0 && npm run gate:g4-1",
     "gate:g4-0": "node scripts/gate-g4-0-contract.mjs",

@@ -15,6 +15,7 @@
     "journal": ".studio/journal",
     "conversations": ".studio/conversations",
     "events": ".studio/events",
+    "execution": ".studio/execution",
     "famtasticinc": ".studio/famtasticinc",
     "deploys": ".studio/deploys",
     "learning": ".studio/learning"
