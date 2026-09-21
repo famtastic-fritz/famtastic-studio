@@ -15,17 +15,26 @@
     "smoke": "node scripts/playwright-smoke.mjs",
     "smoke:selected-build": "vitest run tests/selected-build-adapter.test.js tests/selected-build-packet.test.js",
     "prove:execution": "node scripts/prove-durable-execution.mjs",
+    "prove:execution:phase2": "node scripts/prove-durable-execution-phase2.mjs",
     "parity:artifact": "node scripts/prove-proof-artifact-parity.mjs",
     "gates": "npm run lint && npm test && npm run smoke && npm run gate:g4-0 && npm run gate:g4-1",
     "gate:g4-0": "node scripts/gate-g4-0-contract.mjs",
     "gate:g4-1": "node scripts/gate-g4-1-shadow-boundary.mjs"
   },
   "dependencies": {
-    "ws": "8.18.0"
+    "@google-cloud/firestore": "9.2.0",
+    "@google-cloud/storage": "8.2.0",
+    "@google-cloud/tasks": "7.1.1",
+    "@google/genai": "2.23.0",
+    "google-auth-library": "11.1.0",
+    "ws": "8.21.3"
+  },
+  "overrides": {
+    "uuid": "11.1.1"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "playwright": "1.62.1",
-    "vitest": "3.2.4"
+    "vitest": "3.2.7"
   }
 }

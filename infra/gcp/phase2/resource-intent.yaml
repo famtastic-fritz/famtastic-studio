@@ -1,0 +1,149 @@
+schema_version: 1
+environment: phase2-cloud-shadow
+customer_effects: forbidden
+apply:
+  state: review-scaffolding-disabled
+  blocker: create-only-cloud-run-mechanism-unimplemented
+  gate: PHASE2_CREATE_ONLY_RUN_GATE
+  accepted_gate_values: []
+  failure_point: before-any-cloud-call-or-mutation
+services:
+  control:
+    precondition: absent
+    creation_semantics: create-only-required
+    url: deterministic-service-project-number-region
+    ingress: internal
+    authentication: iam
+    unauthenticated: false
+    service_account: distinct-control-runtime
+    min_instances: 0
+    max_instances: 1
+    concurrency: 1
+    initial_traffic_percent: 0
+  worker:
+    precondition: absent
+    creation_semantics: create-only-required
+    url: deterministic-service-project-number-region
+    ingress: internal
+    authentication: iam
+    unauthenticated: false
+    service_account: distinct-worker-runtime
+    min_instances: 0
+    max_instances: 1
+    concurrency: 1
+    initial_traffic_percent: 0
+  audience_trailing_slash_allowed: false
+queue:
+  precondition: absent
+  initial_state: PAUSED
+  max_dispatches_per_second: 0.1
+  max_concurrent_dispatches: 1
+  max_attempts: 3
+scheduler:
+  precondition: absent
+  initial_state: ABSENT
+  activation_requires_explicit_gate: true
+  withheld_request_contract:
+    method: POST
+    path: /internal/reconcile
+    content_type: application/json
+    body: '{}'
+    oidc_audience: exact-control-origin-no-trailing-slash
+firestore:
+  create: false
+  named_database_required: true
+  inert_bootstrap:
+    controls: paused-and-all-disabled
+    budget_ledger: zero
+    existing_mismatch: refuse
+storage:
+  source_bucket:
+    precondition: globally-absent
+    purpose: immutable-input
+    uniform_bucket_level_access: true
+    public_access_prevention: enforced
+  artifact_bucket:
+    precondition: globally-absent
+    purpose: immutable-observation-output
+    uniform_bucket_level_access: true
+    public_access_prevention: enforced
+  buckets_must_be_distinct: true
+controls:
+  global_pause: true
+  dispatch_enabled: false
+  worker_enabled: false
+  provider_enabled: false
+  effect_firewall: deny-customer-effects
+  accepted_job_hard_cap: 20
+  stop_persistent_pause:
+    gate: PAUSE_PHASE2_SHADOW
+    operation: pause-only-transaction
+    project_database_and_pilot_binding: exact
+    failure_behavior: classify-and-continue-infrastructure-containment
+    activation_path: none
+pilot:
+  run_id: required
+  max_job_cost_micros_upper_bound: 250000
+  max_total_cost_micros_upper_bound: 5000000
+secrets:
+  baseline: none
+  intake_hmac: create_only_if_intake_contract_requires_hmac
+images:
+  tags_allowed: false
+  digest_required: sha256
+  registry: configured-project-regional-artifact-registry-only
+  online_preflight:
+    repository: exact-project-region-name-and-docker-format
+    images: exact-registry-project-repository-package-and-digest
+    repeated_before_first_apply_mutation: true
+provider:
+  adapter: vertex-gemini
+  sdk: "@google/genai"
+  vertexai: true
+  api_version: v1
+  model: gemini-3.1-flash-lite
+  pricebook_version: vertex-gemini-2026-09-21
+  location: global
+  thinking_level: MINIMAL
+  include_thoughts: false
+  thinking_tokens_billed_as_output: true
+  gcp_canary_proven: false
+  activation_requires_gcp_canary: true
+  initial_state: disabled
+  output: shadow-observation-only
+  customer_builds: forbidden
+iam:
+  service_account_precondition: all-five-absent
+  control_runtime:
+    queue:
+      - roles/cloudtasks.enqueuer
+      - roles/cloudtasks.viewer
+    source_bucket:
+      - roles/storage.objectCreator
+      - roles/storage.objectViewer
+    project:
+      - roles/datastore.user
+  worker_runtime:
+    source_bucket:
+      - roles/storage.objectViewer
+    artifact_bucket:
+      - roles/storage.objectCreator
+      - roles/storage.objectViewer
+    project:
+      - roles/datastore.user
+      - roles/aiplatform.user
+  intake_caller:
+    baseline_attachment: none
+    activation_requires_named_cloud_ingress: true
+    control_service:
+      - roles/run.invoker
+  scheduler_caller:
+    control_service:
+      - roles/run.invoker
+  task_caller:
+    worker_service:
+      - roles/run.invoker
+  control_runtime_task_identity:
+    task_caller_service_account:
+      - roles/iam.serviceAccountUser
+  runtime_storage_delete_authority: false
