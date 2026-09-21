@@ -2,6 +2,47 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Latest complete-source checkpoint
+
+Studio `2da81faf84f52d293758b7e0bb4715a46742dffd` with Designs
+`2785725f7950ccdf1830c9eb95083029939725bd` passes **1,571 tests / 134 files**,
+zero failures/skips, both source lints, both synthetic execution proof commands
+and whitespace checks. Suite duration: 249.12 seconds; whole guarded command:
+250.572 seconds. Receipt: `complete-integrated-repair-final.oVambR` under
+`/tmp/famtastic-phase2-review.NVAfPl`. All cross-repository harnesses, actual
+bounded CLI and portal frontend fixtures were enabled. Protected current and
+legacy data inventories are unchanged. Real provider calls remain denied.
+
+The immediately preceding `complete-integrated-source.OCaFU5` run retained
+1,551 passes / 20 failures plus 12 cascading uncaught errors. The real new managed
+import guard was missing from the legacy fixture's explicit PHP class loader.
+Designs `88136ba5c` loads the actual dependency and refuses seeded admission-event
+data in that simple fixture, rather than stubbing away the production guard.
+Its focused 20-case rerun passed before the full green run above.
+
+Parent PHP verification against the same Designs source passes **243 tests /
+1,427 assertions**, plus **nine Node worker tests** in
+`managed-login-integrated-final.PToRbb`. Two existing PHPUnit doc-comment
+deprecations remain. This includes real controller login with synthetic
+credentials/session finalization: changed proof input cannot block valid login,
+login cannot retry proof work, and explicit resend retains strict authority.
+Independent read-only review of `eadc9a7` found no further confirmed defect.
+Neither these tests nor the portal browser fixture establishes installed live
+Drupal authentication, concurrent MySQL behavior or real mail delivery.
+
+Default-off fresh admission, shared claims and selected-static continuation are
+implemented source; actual creative execution, fenced completion/import and
+the new unattended customer journey remain unfinished. Cloud container closure
+has a separate review-discovered helper omission being repaired; it postdates
+this suite and must receive its own receipt. No cloud activation is claimed.
+
+Read-only recheck: canonical Studio remains clean on main `bf1ef9c`, local health
+returns `ok=true`, port 3400, Node v24.19.0. Both remote main SHAs are unchanged.
+GCP CLI still has no active account or selected project. Free disk recovered to
+about 2.6 GiB but remains variable; no owner files were deleted in this follow-up.
+
+The remaining sections are dated checkpoints, not newer release claims.
+
 ## Actual executable follow-up
 
 The existing Designs bounded worker now passes two cross-repository tests as
@@ -20,7 +61,7 @@ Verified Studio source 5ab65a2a023c2259df2c3102c55e155b1d520dc9 against Designs
 3db3e01ed with all cross-repository fixtures enabled: 1,544 tests in 132 files
 passed, zero failed and zero skipped. Both lints, both execution proof commands
 and whitespace checks pass. The source suite took 254.45 seconds; the entire
-guarded command took 255.889 seconds. This is the current combined source total,
+guarded command took 255.889 seconds. This was the combined source total then,
 not the older pre-integration 1,185-test count or a sum of overlapping runs.
 
 The real portal editor browser fixture was enabled against the current Designs
