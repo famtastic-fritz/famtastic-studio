@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { pathToFileURL } from 'node:url';
+import { isDirectExecution } from '../server/kernel/cli-entry.js';
 import { runPhase2ShadowProof } from '../tests/helpers/durable-execution-phase2-proof.js';
 import {
   assertPhase2HttpCheckpointProofReport,
@@ -14,7 +14,7 @@ export async function proveDurableExecutionPhase2() {
   return { ...shadow, in_process_http_checkpoint: httpCheckpoint };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (isDirectExecution(import.meta.url)) {
   try {
     console.log(JSON.stringify(await proveDurableExecutionPhase2(), null, 2));
   } catch (error) {

@@ -2,7 +2,7 @@ import { Firestore } from '@google-cloud/firestore';
 import { Storage } from '@google-cloud/storage';
 import { GoogleGenAI } from '@google/genai';
 import { OAuth2Client } from 'google-auth-library';
-import { pathToFileURL } from 'node:url';
+import { isDirectExecution } from '../kernel/cli-entry.js';
 import { listenPhase2Server } from './phase2-http.js';
 import { createWorkerServer } from './worker-server.js';
 import { loadPhase2Config } from '../kernel/durable-execution/phase2/config.js';
@@ -205,11 +205,7 @@ export async function startWorkerMain(options = {}) {
   return application;
 }
 
-function isDirectExecution() {
-  return Boolean(process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url);
-}
-
-if (isDirectExecution()) {
+if (isDirectExecution(import.meta.url)) {
   startWorkerMain().catch((error) => {
     process.stderr.write(`${JSON.stringify({
       level: 'error',
