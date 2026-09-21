@@ -74,6 +74,20 @@ real selected consumer integration and laptop-independent proof remain open.
 
 ## Remaining gates (updated)
 
+Read-only integration check: `git merge-tree --write-tree HEAD 9d0f6a2`
+exits 1 with conflicts in server/modules/pipeline/index.js, docs/CHANGELOG.md
+and docs/SITE-LEARNINGS.md. No index, checkout or branch merge was performed.
+The real selected-staging consumer and Phase 1 mock admission both changed the
+same endpoint. This is a release integration stop, not permission to discard
+either side. Resolve through an explicit contract preserving the mock firewall
+and real consumer identity before activation, then rerun both regression suites.
+
+Runtime paths were separately read from /api/admin/paths: the running service
+uses Development/famtastic-wt-phase-0/.studio-next-data. The preserved legacy
+studio.db snapshot must not be represented as a snapshot of that filesystem
+data root. The runtime execution root does not exist; no production durable
+execution database was opened or migrated in this pass.
+
 - Full source/security review and Firestore ownership/timestamp hardening.
 - Real consumer/producer contract and scheduler/worker inventory.
 - End-to-end isolated customer proof and recovery evidence.
