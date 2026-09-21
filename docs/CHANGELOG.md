@@ -1,5 +1,14 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Versioned narrow source-association credit capability
+
+Add v2 signed grants binding the retained original Home to the exact pinned
+canonical footer projection and PNG. V1 remains exact-original and assetless.
+First association uses original bytes for independent QA and retains the frozen
+projection through later mappings; non-Home pages require authored evidence.
+PHP/Node policy parity, identity, tampering and original length guards pass 28
+local tests. Full cross-repository association/revision verification is pending.
+
 ## 2026-09-21 - Parent verification of integrated execution fencing
 
 Reviewed and integrated the isolated pre-submission/admission repair. Guarded

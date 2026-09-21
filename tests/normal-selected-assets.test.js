@@ -7,6 +7,7 @@ import { digest } from '../server/kernel/staging-store.js';
 import { decodeSourceExport } from '../server/kernel/source-export-wire.js';
 import { createDeploy } from '../server/kernel/deploy.js';
 import { createFamtasticIncAdapter } from '../server/kernel/famtasticinc-adapter.js';
+import { appendCreatorCredit, creatorLogoAsset, CREATOR_LOGO_PATH } from '../vendor/site-foundation/index.js';
 const harness = process.env.NORMAL_SELECTED_RECORDS_HARNESS;
 let f;
 afterEach(() => { f?.cleanup(); f = null; });
@@ -59,7 +60,9 @@ it.skipIf(!harness)('actual owned upload permits exact protected reference reuse
   const done = await worker.run(id);
   expect(done.state, JSON.stringify({ failure: done.failure, build: done.build?.error, qa: done.qa })).toBe('complete');
   expect(f.remote.get('assets/logo.png')).toEqual(bytes);
-  expect(f.remote.get('index.html').toString()).toBe(html);
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(html));
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(done.packet).toEqual(p);
   expect(f.remote.get('about.html').toString()).toContain('Actual customer copy with an unchanged shared logo.');
   expect(done.selected.transformations.map(t => t.path)).toEqual(['about.html']);
   expect(f.counters.generation).toBe(0); expect(f.counters.builds).toBe(1);
@@ -89,5 +92,6 @@ it.skipIf(!harness)('actual owned upload permits exact protected reference reuse
   expect(aliasDone.state, JSON.stringify(aliasDone.failure)).toBe('complete');
   expect(f.remote.get('assets/logo.png')).toEqual(bytes);
   expect(f.remote.get('assets/footer-logo.png')).toEqual(bytes);
-  expect(f.remote.get('index.html').toString()).toBe(aliasCallback.variants[0].html);
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(aliasCallback.variants[0].html));
+  expect(aliasDone.packet).toEqual(alias.packet);
 }, 20000);

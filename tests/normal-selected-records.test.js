@@ -10,6 +10,7 @@ import { createApp } from '../server/kernel/app.js';
 import module from '../server/modules/pipeline/index.js';
 import { createEvents } from '../server/kernel/events.js';
 import { selectedArtifactAuthorization } from '../server/kernel/selected-artifact-authorization.js';
+import { appendCreatorCredit, creatorLogoAsset, CREATOR_LOGO_PATH } from '../vendor/site-foundation/index.js';
 const harness = process.env.NORMAL_SELECTED_RECORDS_HARNESS;
 let f;
 afterEach(() => { f?.cleanup(); f = null; delete process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET; });
@@ -51,7 +52,9 @@ it.skipIf(!harness).each(['intro', 'hero'])('actual callback and request writers
   await new Promise(resolve => setImmediate(resolve)); await pending;
   const done = f.store.read(f.store.accept(p).id);
   expect(done.failure, JSON.stringify({ build: done.build?.error, failure: done.failure, qa: done.qa?.problems })).toBeUndefined(); expect(done.state).toBe('complete');
-  expect(f.remote.get('index.html').toString()).toBe(html);
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(html));
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(done.packet).toEqual(p);
   expect(f.remote.get('about.html').toString()).toContain(request.page_content[0].body);
   expect(f.remote.get('about.html').toString()).toContain(footer);
   expect(f.counters.generation).toBe(0); expect(f.counters.builds).toBe(1);
@@ -109,6 +112,7 @@ it.skipIf(!harness).each(['callbackFails', 'uploadFails'])('reconciles a verifie
   expect(first.state).toBe('complete');
   const aboutBytes = Buffer.from(f.remote.get('about.html'));
   const secondInput = call({ receipt: first.callback_body, followup_request: team });
+  expect(secondInput.final_packet.schema, JSON.stringify(secondInput.final_packet.dispatch_issue)).toBe('famtastic.site-studio.build-packet.v1');
   f.controls[failure] = true;
   const secondId = f.store.accept(secondInput.final_packet).id;
   const second = await workerFor(secondInput.final_artifact_bytes).run(secondId);
@@ -157,7 +161,9 @@ it.skipIf(!harness)('packages a non-intro Home source without assembling or gene
   const worker = createStagingWorker({ ...f.options(), fetchArtifact: async ({ url }) => Buffer.from(produced.artifact_bytes[new URL(url).pathname.split('/').at(-1)], 'base64') });
   const done = await worker.run(f.store.accept(produced.packet).id);
   expect(done.state, JSON.stringify(done.failure)).toBe('complete');
-  expect(f.remote.get('index.html').toString()).toBe(html);
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(html));
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(done.packet).toEqual(produced.packet);
   expect(f.counters.generation).toBe(0);
   expect(done.build.transformations || []).toEqual([]);
 });

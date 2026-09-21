@@ -94,6 +94,7 @@ export function createStagingStore({ paths, journal }) {
         originating_system: prior?.originating_system || job.packet.continuation.initiating_system, handoff_initiator: job.packet.continuation.initiating_system };
       mapping.source_history = [...(prior?.source_history || [])];
       if (prior?.association_id) { mapping.association_id = prior.association_id; mapping.association_scope_sha256 = prior.association_scope_sha256; }
+      if (prior?.creator_credit_projection) mapping.creator_credit_projection = prior.creator_credit_projection;
       if (prior && prior.source_export_sha256 !== wire.sha256) mapping.source_history.push({ run_id: prior.run_id, source_export_sha256: prior.source_export_sha256 });
       db.prepare('INSERT OR REPLACE INTO source_mappings VALUES (?,?)').run(mapping.project_id, JSON.stringify(mapping));
       return mapping;

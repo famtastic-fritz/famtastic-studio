@@ -1,5 +1,15 @@
 # Site Studio learning record
 
+## 2026-09-21 - Share transformation authority, not a worker's claim of equivalence
+
+A required footer is not permission to waive selected-source hashes. A fresh
+versioned grant binds the agency's original proof to a pinned, byte-exact
+projection. Both languages independently compute it, preserve the original
+selection and reject unknown policy or extra assets. The existing agency
+presentation decorator is not the canonical source transform. Keep legacy
+grants unchanged and require independent authored evidence for every added page.
+Original lengths, not just digests, must match the retained bundle bytes.
+
 ## 2026-09-21 - Integrating real selected work with isolated execution pilots
 
 - Preserve the Phase 1 mock firewall; a real opt-in consumer uses its own

@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { afterEach, expect, it } from 'vitest';
 import { fixture } from './staging-worker-fixture.mjs';
 import { stagingPacketErrors } from '../server/kernel/staging-contract.js';
+import { appendCreatorCredit, creatorLogoAsset, CREATOR_LOGO_PATH } from '../vendor/site-foundation/index.js';
 // Explicit cross-repository source pin supplied by the test command. No
 // customer database, installed Drupal runtime or network is used.
 const harness = process.env.SELECTED_STAGING_AGENCY_HARNESS;
@@ -19,5 +20,8 @@ it.skipIf(!harness)('actual agency producer serialization crosses builder and ac
   const result = await f.worker().run(f.store.accept(envelope.packet).id);
   expect(result.failure).toBeUndefined(); expect(result.state).toBe('complete');
   expect(agency).toEqual({ accepted: true, notifications: 1, checkout: false });
-  expect(f.counters.generation).toBe(0); expect(f.remote.get('index.html')).toEqual(bytes);
+  expect(f.counters.generation).toBe(0);
+  expect(f.remote.get('index.html')).toEqual(Buffer.from(appendCreatorCredit(bytes.toString())));
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(result.packet).toEqual(envelope.packet);
 });

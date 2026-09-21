@@ -13,6 +13,9 @@ export const CREDIT_RECEIPT_PATH = '.famtastic/creator-credit-transform.json';
 // No research, model, site write, new design or new customer acceptance occurs.
 export function deriveSelectedReviewArtifact(original) {
   const materialized = materializeArtifactBundle(original);
+  if (original.files.some(file => !Number.isSafeInteger(file.bytes) || file.bytes !== Buffer.from(file.content_base64, 'base64').length)) {
+    throw stagingError('creator_credit_original_length_mismatch');
+  }
   const expected = creditComposition({
     pages: materialized.filter(f => 'html' in f),
     assets: materialized.filter(f => 'contents' in f),

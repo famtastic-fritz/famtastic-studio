@@ -3,17 +3,21 @@ import crypto from 'node:crypto';
 import { digest, stagingError } from './staging-store.js';
 import { decodeSourceExport } from './source-export-wire.js';
 import { exportFinalizedSource } from './source-finalization.js';
+import { assertAssociatedCredit, assertCreditPolicyHeader } from './selected-credit-policy.js';
+import { CREATOR_LOGO_PATH } from '../../vendor/site-foundation/index.js';
 
 export function verifySourceAssociation(grant, secret, now = Math.floor(Date.now() / 1000)) {
   const raw = grant?.payload_json;
-  const expected = secret && typeof raw === 'string' ? crypto.createHmac('sha256', secret).update(`famtastic.source-association.v1\n${raw}`).digest('hex') : '';
+  let p; try { p = typeof raw === 'string' ? JSON.parse(raw) : null; } catch { throw stagingError('source_association_payload_invalid'); }
+  if (!p || typeof p !== 'object' || !p.intent || !['famtastic.source-association.v1', 'famtastic.source-association.v2'].includes(p.schema)) throw stagingError('source_association_payload_invalid');
+  const expected = secret ? crypto.createHmac('sha256', secret).update(`${p.schema}\n${raw}`).digest('hex') : '';
   if (!expected || typeof grant.signature !== 'string' || Buffer.byteLength(grant.signature) !== expected.length || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(grant.signature))) throw stagingError('source_association_signature_invalid');
-  let p; try { p = JSON.parse(raw); } catch { throw stagingError('source_association_payload_invalid'); }
-  if (!p || typeof p !== 'object' || !p.intent) throw stagingError('source_association_payload_invalid');
-  if (p.schema !== 'famtastic.source-association.v1' || p.operation !== 'associate_verified_source' || p.audience !== 'site-studio-next'
-    || !/^[a-f0-9]{32}$/.test(p.association_id) || p.issued_at > now || p.expires_at < now || p.expires_at - p.issued_at > 3600) throw stagingError('source_association_invalid_or_expired');
+  if (p.operation !== 'associate_verified_source' || p.audience !== 'site-studio-next'
+    || !/^[a-f0-9]{32}$/.test(p.association_id) || p.issued_at > now || p.expires_at < now || p.expires_at - p.issued_at > 3600
+    || (p.schema === 'famtastic.source-association.v2' && (!Number.isSafeInteger(p.issued_at) || !Number.isSafeInteger(p.expires_at) || p.issued_at < 1 || p.expires_at <= p.issued_at))) throw stagingError('source_association_invalid_or_expired');
   for (const key of ['project_id', 'customer_id', 'request_id']) if (!p[key] || p[key] !== p.intent?.[key]) throw stagingError('source_association_identity_changed');
   if (p.scope_sha256 !== p.intent.scope.snapshot_sha256 || digest(p.intent.scope.snapshot_json) !== p.scope_sha256) throw stagingError('source_association_scope_changed');
+  if (p.schema === 'famtastic.source-association.v2') assertCreditPolicyHeader(p.creator_credit_projection, p.intent.source?.artifacts?.[0]);
   return p;
 }
 
@@ -61,19 +65,21 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
     if (result.site_id !== site_id || result.run_id !== run_id) throw stagingError('source_association_source_identity_changed');
     // Recheck the actual Git tree and original verification before browser QA.
     const initial = decodeSourceExport(exportFinalizedSource({ paths, result, brief: {} }));
-    if (initial.files.some(f => !f.path.endsWith('.html')) || initial.use_restrictions) throw stagingError('source_association_asset_authority_required');
+    const v2 = grant.schema === 'famtastic.source-association.v2';
+    const originalBundle = v2 ? assertAssociatedCredit(initial, grant) : null;
+    if (initial.files.some(f => !f.path.endsWith('.html') && !(v2 && f.path === CREATOR_LOGO_PATH)) || initial.use_restrictions) throw stagingError('source_association_asset_authority_required');
     const home = initial.files.find(f => f.path === 'index.html'), selected = grant.intent.source.artifacts[0];
-    if (!home || home.sha256 !== selected.sha256 || home.bytes !== selected.bytes) throw stagingError('source_association_selected_source_changed');
+    if (!v2 && (!home || home.sha256 !== selected.sha256 || home.bytes !== selected.bytes)) throw stagingError('source_association_selected_source_changed');
     const names = grant.intent.scope.snapshot.page_list.split(/[,\n]/).map(n => n.trim()).filter(Boolean);
     if (names.length !== grant.intent.scope.snapshot.page_count || names.some(n => !/^[A-Za-z][A-Za-z0-9 -]*$/.test(n))) throw stagingError('source_association_scope_unsupported');
     const required_pages = names.map(n => n.toLowerCase() === 'home' ? 'index.html' : n.toLowerCase().replace(/ +/g, '-') + '.html');
-    if (initial.files.some(f => !required_pages.includes(f.path))) throw stagingError('source_association_extra_page');
+    if (initial.files.some(f => !required_pages.includes(f.path) && !(v2 && f.path === CREATOR_LOGO_PATH))) throw stagingError('source_association_extra_page');
     for (const key of ['required_features', 'integrations', 'booking_details', 'ecommerce_details', 'custom_needs']) if (grant.intent.scope.snapshot[key]?.trim()) throw stagingError('source_association_scope_unsupported');
     if (grant.intent.requested_changes.length) throw stagingError('source_association_pending_revisions');
     const files = initial.files.map(f => ({ ...f, content_base64: fs.readFileSync(paths.within('sites', site_id, f.path)).toString('base64') }));
     const review = await qa({ job: { id: `association-${grant.association_id}`, build: result,
-      packet: { project_id: grant.project_id, continuation: { required_pages: initial.files.map(f => f.path), files: initial.files.map(f => ({ path: f.path, rights: { status: 'approved', evidence_ref: `association:${grant.association_id}:authored-source` } })) } },
-      selected: { artifact_bundle: { schema_version: 1, files } } } });
+      packet: { project_id: grant.project_id, continuation: { required_pages: initial.files.filter(f => f.path.endsWith('.html')).map(f => f.path), files: initial.files.map(f => ({ path: f.path, rights: { status: 'approved', evidence_ref: `association:${grant.association_id}:authored-source` } })) } },
+      selected: { artifact_bundle: originalBundle || { schema_version: 1, files } } } });
     if (!review.passed) throw stagingError('source_association_qa_failed');
     const content_records = {}, content_evidence = {};
     for (const record of grant.intent.authored_content?.pages || []) {
@@ -81,13 +87,16 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
       const file = files.find(f => f.path === path); if (!file) continue;
       const evidence = review.evidence.filter(e => e.path === path);
       if (!evidence.length || evidence.some(e => ['title', 'description', 'heading', 'body'].some(key => e.authored_fields[key] !== record.text[key]))) throw stagingError('source_association_completed_content_changed');
+      if (v2 && content_records[path]) throw stagingError('source_association_content_page_changed');
       content_records[path] = record.record_id; content_evidence[path] = file.content_base64;
     }
+    if (v2 && files.some(f => f.path.endsWith('.html') && f.path !== 'index.html' && !content_records[f.path])) throw stagingError('source_association_content_evidence_required');
     const wire = exportFinalizedSource({ paths, result, brief: { completion_scope: { site_id, evidence_ref: `association:${grant.association_id}`, required_pages, features: ['static_navigation'], pending_revisions: [], request_scope_sha256: grant.scope_sha256 } }, reviewQa: review });
     const record = decodeSourceExport(wire);
     if (record.issues.some(issue => issue !== 'required_pages_incomplete')) throw stagingError('source_association_scope_unsupported');
     const mapping = { project_id: grant.project_id, customer_id: grant.customer_id, request_id: grant.request_id, site_id, run_id,
       association_id: grant.association_id, association_scope_sha256: grant.scope_sha256, repository_path: result.repository.repository_path, source_export_sha256: wire.sha256, source_export: wire,
+      ...(v2 ? { creator_credit_projection: grant.creator_credit_projection } : {}),
       evidence_ref: `source-association:${grant.association_id}`, originating_system: 'studio', handoff_initiator: 'studio', content_records, completed_steps: {}, source_history: [] };
     store.recordAssociation(mapping, { schema: 'famtastic.site-studio.source-finalized.v1', project_id: grant.project_id, customer_id: grant.customer_id, request_id: grant.request_id,
       association, source_export: wire, source_completion: mapping, content_evidence });

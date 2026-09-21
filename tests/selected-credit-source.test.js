@@ -47,11 +47,12 @@ it('maps only verified original or exact derived bytes across a repeated selecti
   expect(sourcePathsMatch([], record, projection)).toBe(false);
   expect(sourcePathsMatch(['index.html', 'extra.html'], record, projection)).toBe(false);
 });
-it.each(['receipt', 'derived', 'original', 'extra'])('rejects %s tampering in finalized credit provenance', field => {
+it.each(['receipt', 'derived', 'original', 'original-length', 'extra'])('rejects %s tampering in finalized credit provenance', field => {
   const record = source();
   if (field === 'receipt') record.provenance.creator_credit_transform.customer_acceptance_changed = true;
   if (field === 'derived') record.files[0].sha256 = '0'.repeat(64);
   if (field === 'original') record.spec_snapshot.artifact_bundle.files[0].sha256 = '0'.repeat(64);
+  if (field === 'original-length') record.spec_snapshot.artifact_bundle.files[0].bytes++;
   if (field === 'extra') record.files.push({ path: 'backdoor.js', sha256: '0'.repeat(64), bytes: 1 });
   expect(() => creditSourceProjection(record)).toThrow();
 });
