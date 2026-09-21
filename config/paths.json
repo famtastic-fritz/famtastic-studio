@@ -2,7 +2,7 @@
   "schema_version": 1,
   "data_root_env": "STUDIO_DATA_ROOT",
   "data_root_default": "../.studio-next-data",
-  "source_root_default": "~/Development/FAMtastic-Repos",
+  "source_root_default": "~/Development/FAMtastic/sites",
   "roots": {
     "sites": "sites",
     "apps": "apps",
@@ -28,5 +28,5 @@
     "sites": "~/Development/FAMtastic/sites",
     "apps": "~/Development/FAMtastic/Apps"
   },
-  "portfolio_note": "The operator's real portfolio. READ-ONLY: Studio inventories and inspects these, and never writes to them from the portfolio surface. Distinct from roots.sites, which is the studio-managed build output."
+  "portfolio_note": "The operator portfolio surface is READ-ONLY. It may inventory the same physical sites collection used by the build workflow; shared location does not grant portfolio mutation authority. Builds still require repository identity, preflight and mutation gates."
 }

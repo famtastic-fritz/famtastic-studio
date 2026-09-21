@@ -86,6 +86,19 @@ describe('all creation paths require the source repository contract', () => {
     expect(fs.readFileSync(path.join(dir, 'backend/handler.php'), 'utf8')).toContain('preserve the application');
     expect(fs.readFileSync(path.join(dir, 'robots.txt'), 'utf8')).toContain('Disallow: /');
   });
+  it('builds an independent site in the ignored ecosystem sites collection', async () => {
+    git(root, ['init', '-b', 'main']);
+    fs.writeFileSync(path.join(root, '.gitignore'), '/sites/\n/.studio/\n');
+    git(root, ['add', '.gitignore']);
+    git(root, ['-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'Ecosystem fixture']);
+    const { paths, pipeline } = context();
+    const result = await pipeline.run({ site_id: 'site-customer-fixture', brief });
+    expect(result.outcome).toBe('success');
+    const dir = paths.within('sites', 'site-customer-fixture');
+    expect(fs.realpathSync(git(dir, ['rev-parse', '--show-toplevel']))).toBe(fs.realpathSync(dir));
+    expect(git(root, ['ls-files', '--', 'sites'])).toBe('');
+    expect(requireRepositoryContract(dir).site_id).toBe('site-customer-fixture');
+  });
   it('conversational and direct paths reject an agency child before target writes', async () => {
     const config = loadPathsConfig(); const { paths, pipeline, ...options } = context(config);
     fs.mkdirSync(paths.root('sites'), { recursive: true }); git(paths.root('sites'), ['init', '-b', 'main']);

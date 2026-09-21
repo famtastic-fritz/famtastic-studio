@@ -51,10 +51,18 @@ export function preflightRepository({ repository_path, site_id, remote_url = nul
   let ancestor = fs.existsSync(root) ? root : path.dirname(root);
   while (!fs.existsSync(ancestor)) ancestor = path.dirname(ancestor);
   const top = maybeGit(ancestor, ['rev-parse', '--show-toplevel']);
-  const initialized = top !== null;
-  if (initialized && fs.realpathSync(top) !== root) throw fail('wrong_repository', 'Target is inside another Git repository, not an independent site root');
+  const initialized = top !== null && fs.realpathSync(top) === root;
+  // Independent repositories may live in an ignored checkout collection.
+  // Never admit tracked paths (including gitlinks) or ordinary platform children.
   const enclosing = maybeGit(path.dirname(root), ['rev-parse', '--show-toplevel']);
-  if (enclosing) throw fail('nested_repository', 'Site repositories must live outside agency/platform Git roots');
+  if (enclosing) {
+    const relative = path.relative(enclosing, root);
+    const ignored = maybeGit(enclosing, ['check-ignore', '--no-index', '--', relative]);
+    const tracked = git(enclosing, ['ls-files', '--', relative]);
+    if (!ignored || tracked) throw fail(initialized ? 'nested_repository' : 'wrong_repository', initialized
+      ? 'Site repositories must live outside agency/platform Git roots or in an ignored independent checkout collection'
+      : 'Target is inside another Git repository, not an ignored independent site root');
+  }
   if (!initialized) {
     if (!allow_uninitialized) throw fail('repository_missing', 'A separate site Git repository is required');
     if (fs.existsSync(root) && fs.readdirSync(root).length) throw fail('unowned_directory', 'Refusing a nonempty directory without an independent Git identity');

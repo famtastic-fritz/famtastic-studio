@@ -20,7 +20,7 @@ export function createPaths(config = loadPathsConfig()) {
   const roots = Object.fromEntries(
     Object.entries(config.roots).map(([name, rel]) => [name, path.resolve(dataRoot, rel)]),
   );
-  // Customer source checkouts live outside agency/platform Git roots. An explicit
+  // Customer source checkouts have independent Git ownership in the ignored sites collection. An explicit
   // data-root override retains isolated test/sandbox storage unless separately set.
   const sourceRoot = process.env.STUDIO_REPOSITORIES_ROOT || (!process.env[config.data_root_env] && config.source_root_default);
   if (sourceRoot) roots.sites = path.resolve(String(sourceRoot).replace(/^~/, process.env.HOME || '~'));
