@@ -4,6 +4,16 @@ Status: in progress, local source only. No production cutover.
 
 ## Latest complete-source checkpoint
 
+Container closure follow-up: `1ff5923` is integrated as `45a1d68` with no merge
+conflicts. Both filtered images now include only the exact shared entry helper;
+their Docker COPY, context and source boundaries agree. Parent verification in
+`phase2-container-closure-integrated.SkmVix` passes 64 tests in five files, both
+lints, offline infrastructure validation and whitespace in 9.022 seconds.
+Protected data inventories remain unchanged. This adds 17 tests after the full
+1,571-case checkpoint below; do not sum overlapping focused totals or call it a
+new combined run. See `PHASE2-CONTAINER-CLOSURE-2026-09-21.md` for red/green
+children and limitations. No Linux image build or provisioning occurred.
+
 Studio `2da81faf84f52d293758b7e0bb4715a46742dffd` with Designs
 `2785725f7950ccdf1830c9eb95083029939725bd` passes **1,571 tests / 134 files**,
 zero failures/skips, both source lints, both synthetic execution proof commands
@@ -33,8 +43,8 @@ Drupal authentication, concurrent MySQL behavior or real mail delivery.
 Default-off fresh admission, shared claims and selected-static continuation are
 implemented source; actual creative execution, fenced completion/import and
 the new unattended customer journey remain unfinished. Cloud container closure
-has a separate review-discovered helper omission being repaired; it postdates
-this suite and must receive its own receipt. No cloud activation is claimed.
+received the separate repair/receipt above, after this suite. No cloud activation
+is claimed.
 
 Read-only recheck: canonical Studio remains clean on main `bf1ef9c`, local health
 returns `ok=true`, port 3400, Node v24.19.0. Both remote main SHAs are unchanged.
