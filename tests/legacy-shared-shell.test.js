@@ -8,6 +8,7 @@ import { createStagingWorker } from '../server/kernel/staging-worker.js';
 import { createSelectedSourceResolver } from '../server/kernel/selected-source-binding.js';
 import { digest } from '../server/kernel/staging-store.js';
 import fs from 'node:fs';
+import { appendCreatorCredit, CREATOR_LOGO_PATH, creatorLogoAsset } from '../vendor/site-foundation/index.js';
 let f;
 afterEach(() => { f?.cleanup(); f = null; });
 it.each([false, true])('assembles only the absent authored page with actual browser QA and callback (external CSS: %s)', async externalCss => {
@@ -16,7 +17,9 @@ it.each([false, true])('assembles only the absent authored page with actual brow
   const worker = createStagingWorker(options), job = f.store.accept(s.p);
   const done = await worker.run(job.id);
   expect(done.failure).toBeUndefined(); expect(done.state, JSON.stringify({ history: done.history, qa: done.qa?.problems })).toBe('complete');
-  expect(f.remote.get('index.html').toString()).toBe(s.selected);
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(s.selected));
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(done.packet.selected_artifacts[0].source_artifact_sha256).toBe(digest(s.selected));
   const about = f.remote.get('about.html').toString();
   expect(about.slice(about.indexOf('<footer'), about.indexOf('</footer>') + 9)).toBe(footer);
   expect(about).toContain('Customer authored &lt;story&gt; &amp; care.');
@@ -89,7 +92,9 @@ it('continues a mapped existing source in its one repository while preserving co
   const done = await worker.run(f.store.accept(next.p).id);
   expect(done.failure).toBeUndefined(); expect(done.state).toBe('complete');
   expect(done.build.repository.repository_path).toBe(initial.build.repository.repository_path);
-  expect(f.remote.get('index.html').toString()).toBe(first.selected); expect(f.remote.get('about.html')).toEqual(aboutBytes);
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(first.selected)); expect(f.remote.get('about.html')).toEqual(aboutBytes);
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(done.packet.selected_artifacts[0].source_artifact_sha256).toBe(digest(first.selected));
   expect(f.remote.get('team.html').toString()).toContain('<title>Our team</title>');
   expect(fs.readFileSync(f.paths.within('sites', done.build.site_id, 'README.md'))).toEqual(readme);
   expect(f.counters.builds).toBe(2); expect(f.counters.generation).toBe(0);

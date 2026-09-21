@@ -3,6 +3,7 @@ import { afterEach, expect, it } from 'vitest';
 import { fixture, packet, html } from './staging-worker-fixture.mjs';
 import { createStagingWorker } from '../server/kernel/staging-worker.js';
 import { digest } from '../server/kernel/staging-store.js';
+import { appendCreatorCredit, CREATOR_LOGO_PATH, creatorLogoAsset } from '../vendor/site-foundation/index.js';
 let f;
 afterEach(() => f?.cleanup());
 function withRecipe() {
@@ -20,10 +21,13 @@ it('continues only missing authored page via selected template, retains original
   // Fixture's host handles public-file names; both pages pass real browser QA.
   const worker = createStagingWorker(opts), j = f.store.accept(p), done = await worker.run(j.id);
   expect(done.failure).toBeUndefined(); expect(done.state).toBe('complete');
-  expect(f.remote.get('index.html').toString()).toBe(html);
-  expect(f.remote.get('about.html').toString()).toContain('Authored customer history.');
+  expect(f.remote.get('index.html').toString()).toBe(appendCreatorCredit(html));
+  const authoredAbout = template.replaceAll('{{TITLE}}', 'About').replaceAll('{{BODY}}', 'Authored customer history.');
+  expect(f.remote.get('about.html').toString()).toBe(appendCreatorCredit(authoredAbout, { page: 'about.html' }));
+  expect(f.remote.get(CREATOR_LOGO_PATH)).toEqual(creatorLogoAsset().contents);
+  expect(done.packet.selected_artifacts[0].source_artifact_sha256).toBe(digest(html));
   expect(done.selected.transformations).toHaveLength(1);
-  expect(done.selected.transformations[0]).toMatchObject({ stage: 'fill_selected_template', input_sha256: digest(template), output_sha256: digest(f.remote.get('about.html')) });
+  expect(done.selected.transformations[0]).toMatchObject({ stage: 'fill_selected_template', input_sha256: digest(template), output_sha256: digest(authoredAbout) });
   expect(f.counters.generation).toBe(0);
   f.restart(); await f.worker().run(j.id); expect(f.counters.builds).toBe(1);
 });

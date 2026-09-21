@@ -101,7 +101,11 @@ it.each(['embedded', 'external'])('actual enabled %s boot injects association ca
   const requested = await post(child, '/api/pipeline/source/association', { project_id: '42', customer_id: 'customer-1', request_id: 'request-1' });
   expect(requested).toEqual({ status: 200, body: { ok: true, association: { fixture: 'synthetic-grant' } } });
   const invalid = await post(child, '/api/pipeline/source/associate', {});
-  expect(invalid.status).toBe(422); expect(invalid.body.error).toBe('source_association_signature_invalid');
+  expect(invalid.status).toBe(422); expect(invalid.body.error).toBe('source_association_payload_invalid');
+  const badSignature = await post(child, '/api/pipeline/source/associate', { association: {
+    payload_json: JSON.stringify({ schema: 'famtastic.source-association.v2', intent: {} }), signature: '0'.repeat(64),
+  } });
+  expect(badSignature).toEqual({ status: 422, body: { error: 'source_association_signature_invalid', message: 'source_association_signature_invalid' } });
   expect((await post(child, '/api/pipeline/selected-staging/accept', { packet: packet() })).status).toBe(401);
   expect((await post(child, '/api/integrations/famtastic/proof-jobs', {})).status).toBe(404);
   const socket = new WebSocket(child.url.replace('http:', 'ws:') + '/events?site_id=project-42'); sockets.push(socket);
