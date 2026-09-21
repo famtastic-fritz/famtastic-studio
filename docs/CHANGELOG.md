@@ -1,5 +1,14 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Mac offline validation repair (local only)
+
+Use safe YAML parsing compatible with the workstation's Ruby 2.6, reject
+aliases/object construction, and fail closed when no parser is available.
+Full suite: 1,155 tests passed across 101 files. Offline infrastructure
+validation and example plan passed; Phase 1 and Phase 2 synthetic proofs passed.
+No deployment, cloud activation or customer execution occurred. See
+`docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md` for scope and remaining work.
+
 ## 2026-09-21 - Inert durable execution Phase 2 candidate
 
 Added an isolated Google Cloud shadow runtime around the Phase 1 contracts:
