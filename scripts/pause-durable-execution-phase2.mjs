@@ -1,5 +1,5 @@
 import { Firestore } from '@google-cloud/firestore';
-import { pathToFileURL } from 'node:url';
+import { isDirectExecution } from '../server/kernel/cli-entry.js';
 import { loadPhase2Config } from '../server/kernel/durable-execution/phase2/config.js';
 import { phase2Failure } from '../server/kernel/durable-execution/phase2/errors.js';
 import {
@@ -88,11 +88,7 @@ export async function pauseDurableExecutionPhase2({
   });
 }
 
-function isDirectExecution() {
-  return Boolean(process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url);
-}
-
-if (isDirectExecution()) {
+if (isDirectExecution(import.meta.url)) {
   pauseDurableExecutionPhase2().then(
     (receipt) => process.stdout.write(`${JSON.stringify(receipt)}\n`),
     (error) => {

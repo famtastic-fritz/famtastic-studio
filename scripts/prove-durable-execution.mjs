@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-import { pathToFileURL } from 'node:url';
+import { isDirectExecution } from '../server/kernel/cli-entry.js';
 import { runDurableExecutionProof } from '../tests/helpers/durable-execution-proof.js';
 
 export function proveDurableExecution() {
   return runDurableExecutionProof();
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (isDirectExecution(import.meta.url)) {
   try {
     console.log(JSON.stringify(proveDurableExecution(), null, 2));
   } catch (error) {
