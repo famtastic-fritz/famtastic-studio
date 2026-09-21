@@ -1,5 +1,17 @@
 # Site Studio learning record
 
+## 2026-09-21 - Validate the actual Mac parser, not a presumed Ruby version
+
+Observation: the Phase 2 validator selected system Ruby by executable presence
+and then called an unavailable YAML.safe_load_file method. Two guard tests
+failed before reaching their intended safety boundary.
+
+Guidance: check safe-parser capability, parse file contents through safe_load,
+reject aliases and object construction, and fail closed if no parser exists.
+Do not silently skip validation or replace the workstation runtime globally.
+Keep original failure receipts alongside repaired results. Cloud execution is
+additive; this fix does not install automatic Mac customer triggers.
+
 ## 2026-09-21 - Source proof is not cloud activation proof
 
 Observation: a cloud-shaped runtime can pass deterministic HTTP, storage,

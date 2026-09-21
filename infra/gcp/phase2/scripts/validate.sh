@@ -132,21 +132,11 @@ rg -q -- '--oidc-token-audience="\$PHASE2_CONTROL_AUDIENCE"' \
   fi
 )
 
-if command -v ruby >/dev/null 2>&1; then
-  ruby -e 'require "yaml"; ARGV.each { |file| YAML.safe_load_file(file, aliases: false) }' \
-    "$phase2_dir/resource-intent.yaml" \
-    "$phase2_dir/source-boundaries.yaml" \
-    "$phase2_dir/manifests/control.service.yaml" \
-    "$phase2_dir/manifests/worker.service.yaml"
-elif command -v python3 >/dev/null 2>&1 && python3 -c 'import yaml' 2>/dev/null; then
-  python3 -c 'import sys, yaml; [yaml.safe_load(open(path, encoding="utf-8")) for path in sys.argv[1:]]' \
-    "$phase2_dir/resource-intent.yaml" \
-    "$phase2_dir/source-boundaries.yaml" \
-    "$phase2_dir/manifests/control.service.yaml" \
-    "$phase2_dir/manifests/worker.service.yaml"
-else
-  printf 'no YAML parser is available; YAML parsing was skipped\n' >&2
-fi
+bash "$phase2_dir/scripts/validate-yaml.sh" \
+  "$phase2_dir/resource-intent.yaml" \
+  "$phase2_dir/source-boundaries.yaml" \
+  "$phase2_dir/manifests/control.service.yaml" \
+  "$phase2_dir/manifests/worker.service.yaml"
 
 mapfile -t required_runtime_env < <(
   node --input-type=module -e \
