@@ -4,6 +4,32 @@ Status: in progress, local source only. No production cutover.
 
 ## Latest complete-source checkpoint
 
+Studio `17a645b48cb7f84aacbf6bdf58c185abcc7c3db0` paired with Designs
+`44caa869e1b48d16c1c56b295083f8eda13612a5` now passes **1,588 tests / 135 files**,
+zero failed/skipped, both lints, both synthetic execution proofs and whitespace.
+Suite duration: 253.88 seconds; guarded command: 255.320 seconds. Receipt:
+`complete-artifact-container-regression.0Ng9Fg` under
+`/tmp/famtastic-phase2-review.NVAfPl`. All paired CLI, PHP producer, rights, credit,
+portal and staging harnesses were enabled. This includes the 17 container-context
+tests; do not add the older focused counts. Both protected Studio data inventories
+remain unchanged; no real provider or external customer effect occurred.
+
+The paired Designs module passes **591 PHP tests / 3,094 assertions**, with the
+same 68 existing PHPUnit deprecations and no failures/skips, receipt
+`designs-full-unit-artifacts.l3lWwV` (2.014 seconds guarded, 50 MiB PHP peak).
+Local PHP 8.5.9/isolated bootstrap is not hosted CI PHP 8.3 or installed MySQL.
+Private artifact preparation is integrated: unchanged legacy validation,
+exclusive private files, exact manifests, Git-free frozen callback parity and
+independently exercised DNA guards. Frozen executable test data lives outside
+the document root. Preparation remains unregistered/non-deliverable; file fsync
+does not prove power-loss-durable directory publication or authorize completion.
+
+The transaction-owned shared mutex/CAS repair is a separate in-progress source
+slice, not included in these receipts. Actual creative execution, paid-operation
+recovery, fenced import, fresh unattended delivery and real cloud execution
+remain open. No production cutover, customer send, cloud action or service restart.
+The source receipts below are retained history, superseded by this full run.
+
 Cloud discovery correction: live authenticated Console inspection verified the
 existing FAMtastic Site Studio project, `gen-lang-client-0744578052`. Its Cloud Run
 service/job lists are empty and its single VM is stopped. Project discovery is
