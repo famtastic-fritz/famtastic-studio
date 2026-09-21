@@ -3,6 +3,8 @@
 // binds identity (via the router's frozen `identity`, never calling
 // bindIdentity itself), parses the body, calls the kernel, and maps errors.
 import crypto from 'node:crypto';
+import { stagingPacketErrors as selectedPacketErrors } from '../../kernel/staging-contract.js';
+import { PLANNING_SCHEMA, planningPacketErrors } from '../../kernel/selected-planning-contract.js';
 import { createDna } from '../../kernel/dna.js';
 import { createExecutionStore, projectAcceptance } from '../../kernel/durable-execution/index.js';
 import { createMutation } from '../../kernel/mutation.js';
@@ -21,7 +23,7 @@ const MAX_ARTIFACTS = 500;
 const MAX_DECLARED_ARTIFACT_BYTES = 10 * 1024 * 1024 * 1024;
 const PACKET_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 
-function readJsonEnvelope(req, { maxBytes = Number.POSITIVE_INFINITY } = {}) {
+function readJsonEnvelope(req, { maxBytes = MAX_REQUEST_BYTES } = {}) {
   return new Promise((resolve, reject) => {
     const chunks = [];
     let bytes = 0;
@@ -115,11 +117,19 @@ function stagingPacketErrors(packet) {
 
 export default {
   name: 'pipeline',
-  register({ app, paths, journal, events }) {
+  register({ app, paths, journal, events, stagingRuntime = null }) {
     const dna = createDna({ paths });
     const mutation = createMutation({ paths, journal, events });
     const spec = createSpec({ paths, mutation });
     const pipeline = createPipeline({ paths, journal, events, dna, spec, mutation });
+    for (const [route, action] of [['/api/pipeline/source/association', 'request'], ['/api/pipeline/source/associate', 'finalize']]) {
+      app.route('POST', route, async ({ req }) => {
+        try {
+          if (!stagingRuntime?.sourceAssociation) return { status: 503, body: { error: 'source_association_unconfigured' } };
+          return { status: 200, body: await stagingRuntime.sourceAssociation[action](await readJsonBody(req)) };
+        } catch (error) { return errorResponse(error); }
+      }, { scope: 'global' });
+    }
 
     app.route('POST', '/api/pipeline/staging/accept', async ({ req }) => {
       let executionStore;
@@ -177,9 +187,43 @@ export default {
       }
     }, { scope: 'global' });
 
+    // Real selected continuation is a separate, opt-in capability. It never
+    // falls through to the disposable mock queue or creates an orphan queue.
+    app.route('POST', '/api/pipeline/selected-staging/accept', async ({ req }) => {
+      try {
+        const envelope = await readJsonEnvelope(req);
+        const secret = process.env.FAMTASTIC_STUDIO_DISPATCH_SECRET || '';
+        const provided = req.headers?.['x-famtastic-signature'] || '';
+        const expected = secret ? `sha256=${crypto.createHmac('sha256', secret).update(envelope.raw).digest('hex')}` : '';
+        if (!secret || typeof provided !== 'string' || Buffer.byteLength(expected) !== Buffer.byteLength(provided)
+          || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(provided))) {
+          return { status: 401, body: { error: 'dispatch_signature_invalid' } };
+        }
+        if (!stagingRuntime?.store) return { status: 503, body: { accepted: false, error: 'selected_staging_unconfigured' } };
+        if ((process.env.FAMTASTIC_EXECUTION_MODE || 'disabled') !== 'disabled'
+          || (process.env.FAMTASTIC_EXECUTION_SCOPE || 'disabled') !== 'disabled') {
+          return { status: 503, body: { accepted: false, error: 'selected_staging_execution_mode_conflict' } };
+        }
+        const packet = envelope.body?.packet;
+        const errors = packet?.schema === PLANNING_SCHEMA ? planningPacketErrors(packet) : selectedPacketErrors(packet);
+        if (errors.length) return { status: 422, body: { accepted: false, error: 'staging_packet_rejected', errors } };
+        const job = stagingRuntime.store.accept(packet);
+        events.emit({ type: 'site_studio.staging_accepted', site_id: `project-${packet.project_id}`, idempotency_key: packet.idempotency_key,
+          payload: { packet_id: packet.packet_id, job_id: job.id, status: job.state } });
+        setImmediate(() => { stagingRuntime.wake().catch(() => {}); });
+        return { status: 202, body: { accepted: true, status: 'accepted_waiting_callback',
+          receipt: { receipt_id: job.id, packet_id: packet.packet_id, idempotency_key: packet.idempotency_key } } };
+      } catch (error) {
+        return { status: error.statusCode || 500, body: { accepted: false, error: error.code || 'staging_accept_failed' } };
+      }
+    }, { scope: 'global' });
+
     app.route('POST', '/api/pipeline/run', async ({ req, identity }) => {
       try {
         const body = await readJsonBody(req);
+        if (body.association) {
+          throw Object.assign(new Error('Create the source once, then associate its existing site_id and run_id through /api/pipeline/source/associate.'), { statusCode: 409, code: 'source_association_separate_handoff_required' });
+        }
         const targetSiteId = identity?.site_id || body.site_id || (body.brief?.business_name ? `site-${body.brief.business_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}` : null);
         if (!targetSiteId) {
           throw Object.assign(new Error('pipeline.run requires a site_id or a brief with business_name'), { statusCode: 400, code: 'identity_required' });

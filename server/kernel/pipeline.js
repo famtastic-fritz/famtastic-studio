@@ -31,6 +31,8 @@ import { runBatch as runBatchImpl } from './pipeline-batch.js';
 import { makeExecutors } from './pipeline-executors.js';
 import { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY } from './pipeline-constants.js';
 import { createRepositoryLifecycle } from './repository-lifecycle.js';
+import { exportFinalizedSource } from './source-finalization.js';
+import { retainSourceRestrictions } from './source-use-restrictions.js';
 
 // Re-exported so existing importers of pipeline.js keep working.
 export { DEFAULT_BATCH_CONCURRENCY, MAX_BATCH_CONCURRENCY };
@@ -313,7 +315,9 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
     if (!brief || typeof brief !== 'object') throw fail(400, 'brief_required', 'pipeline.run requires a brief object');
 
     const { source_commit, tree_hash } = resolveTreeIdentity();
-    const recipe_snapshot = resolveRecipeSnapshot({ recipe, recipe_ref });
+    const recipe_snapshot = brief.handoff ? { schema_version: 1, kind: 'selected-artifact-transfer', handoff: brief.handoff,
+      stages: STAGES.map(stage => ({ stage, model: 'none', agent: stage === 'research' ? 'selected-artifact-import' : 'deterministic' }))
+    } : resolveRecipeSnapshot({ recipe, recipe_ref });
 
     const ctx = { site_id, brief, adapter, raw_import, composer, initiator, repository_session };
 
@@ -440,6 +444,12 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
 
   async function guarded(options, retry = false) {
     if (!options?.site_id) throw fail(400, 'identity_required', 'pipeline requires site_id');
+    if (!retry) for (const transformation of options.brief?.handoff?.transformations || []) {
+      const target = paths.within('sites', options.site_id, transformation.path);
+      if (fs.existsSync(target) || fs.existsSync(path.dirname(target)) && fs.readdirSync(path.dirname(target)).some(name => name.toLowerCase() === path.basename(target).toLowerCase())) {
+        throw fail(409, 'continuation_target_already_exists', 'Continuation may only create absent pages');
+      }
+    }
     if (retry) {
       if (!STAGES.includes(options.stage)) throw fail(400, 'unknown_stage', `unknown stage '${options.stage}'`);
       const record = dna.read(options.run_id);
@@ -450,18 +460,25 @@ export function createPipeline({ paths, journal, events, dna, spec, mutation, re
     const session = repositories.begin({ ...options, retry });
     let result;
     try {
+      if (retainSourceRestrictions(paths, options.site_id, options.brief?.source_use_restrictions)) session.generated = [...(session.generated || []), '.famtastic/source-use.json'];
       result = await (retry ? retryUnchecked : runUnchecked)({ ...options, repository_session: session });
+      if (retainSourceRestrictions(paths, options.site_id, options.brief?.source_use_restrictions)) session.generated = [...(session.generated || []), '.famtastic/source-use.json'];
     } catch (error) {
       repositories.finish(session, { outcome: 'failed' });
       throw error;
     }
-    try { return repositories.finish(session, result); }
+    try {
+      const finalized = repositories.finish(session, result);
+      if (finalized.outcome !== 'success') return finalized;
+      return { ...finalized, source_export: exportFinalizedSource({ paths, result: finalized, brief: options.brief || {} }) };
+    }
     catch (error) { if (result?.run_id) return finalizeFailed(result.run_id, 'record', error); throw error; }
   }
   const run = options => guarded(options);
   const retryStage = options => guarded(options, true);
   return {
     run,
+    finalizeSource: (result, brief, reviewQa) => exportFinalizedSource({ paths, result, brief, reviewQa }),
     runBatch: (opts) => runBatchImpl({ ...opts, run }),
     retryStage,
     STAGES,

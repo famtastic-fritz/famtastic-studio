@@ -2,6 +2,61 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Autonomous integration checkpoint, September 21
+
+The owner's explicit four-milestone goal supersedes the earlier conflict stop.
+All integration remains isolated from the canonical running checkout. Current
+main bf1ef9c was merged as 9468ecf, preserving the independent customer
+collection policy under Development/FAMtastic/sites. The selected consumer
+9d0f6a2 is being integrated; this is not a production release.
+
+The internal `/api/pipeline/staging/accept` route retains its Phase 1
+mock/disposable firewall. The real selected runtime has a separate
+`/api/pipeline/selected-staging/accept` route, requires an injected enabled
+runtime and refuses conflicting Phase 1 execution modes. The narrow private
+ingress retains the existing external signed path and forwards its exact bytes
+only to the real selected route. No orphan fallback queue, extra public Studio
+surface or automatic provider activation is introduced.
+
+Integration reproduced an additional incompatibility: main's mandatory creator
+credit derivative changed HTML and added the exact PNG, while the older selected
+QA and hosting consumers compared against the original bundle. Reconciliation
+also rejected later selections against the legitimately derived source. The
+repair recomputes the one owner-authorized deterministic transform, verifies
+its private receipt and exact public inventory, and preserves original selected
+hashes. It does not use arbitrary built output as its own QA baseline. Receipt
+files remain private; the original selection and client acceptance do not change.
+The changed output, including the PNG, must pass browser and hosting checks.
+
+Local evidence directory: integration-1.xB6nQM under the existing verifier root.
+The first retained selected run failed one of 41 tests (39 passed, one explicit
+cross-repository skip) at source reconciliation. The focused corrected case and
+eight new credit-provenance/tamper tests subsequently passed. This is not a
+full-suite pass; cross-repository and final merged verification remain required.
+
+The subsequent credit-and-selected-recheck.log run passes 28 tests in three
+files: all 12 selected-worker cases, nine credit/source/rights cases and seven
+route-boundary cases. Exact-original protected HTML is rejected before any
+pipeline write; unchanged protected imagery retains its original bytes.
+Reused multi-page builds use verified finalized-source provenance for their
+derivative baseline. First Studio-origin association still fails closed at
+its legacy assetless/original-Home gates; both producer and consumer need a
+matching signed, narrowly scoped creator-credit policy before that path passes.
+
+Independent review of fixed e163df7 found four reproducible Phase 2 issues:
+stale pre-submission lease after reconciliation; completion without full outbox
+binding; expired-claim attempt generation mismatch; and incomplete finalized
+duplicate admission ownership. These are assigned to a separate repair worktree
+on codex/phase2-presubmission-fencing. They remain release blockers until fixed,
+independently checked and regression-tested. No cloud activation is permitted.
+
+Read-only Mac inventory found no signed-in gcloud account or selected project.
+The disk also fell below 200 MiB free during this pass and remains below safe
+build headroom. Fritz has been asked for at least 5 GiB headroom and the intended
+existing Cloud project/sign-in. No user files, evidence or credentials were
+deleted, and no cloud resource was created. These are external prerequisites,
+not reasons to replace the Mac workflow or call the four milestones complete.
+
 ## Milestone 1: offline validation compatibility
 
 Base candidate: 184f61d323a0fcadc1712e9a312c664117209bd1.

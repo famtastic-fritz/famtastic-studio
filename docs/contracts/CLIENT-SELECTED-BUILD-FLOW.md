@@ -60,3 +60,28 @@ injected transport plus SFTP-shaped credential preflight. Do not label that
 runner operational from the manual cPanel receipt. Integrating the cPanel
 transport, revision-safe receipt lifecycle and real selection-to-build dispatch
 requires executable negative/idempotency tests and a hosted end-to-end receipt.
+
+## Local continuation implementation, 2026-09-17
+
+See `docs/plans/SELECTED-CONTINUATION-2026-09-17.md` for the initiation matrix.
+Selected transfer is an explicit operation, not fresh research. The additive
+`continuation` contract carries account/request/project identity, monotonic
+selection revision, correlation/origin, requested next action, full design
+contract, complete static scope, rights-bound artifact retrieval mapping and
+immutable review target. Existing v1 packets are durably retained but cannot
+execute without this evidence. Missing scope is an exception, never permission
+to guess. The accompanying agency branch adds producer and receipt support.
+
+SQLite retention and project claims replace event-only acceptance. The runtime
+consumer is separately installed through explicit capability injection; merely
+setting the existing dispatch URL still does not activate a consumer. Local
+source now supports provenance import, deterministic selected-byte packaging,
+static browser QA, mock cPanel provider serialization, and signed success/failure
+callbacks. Generated documents and source repositories remain independent.
+
+An interruption during an uncertain repository mutation fails closed to a
+reconciliation exception rather than duplicating work. Completed packaging,
+QA and hosting checkpoints survive restart; callback retries preserve exact
+bytes. Unsupported application scope or natural-language revision work without
+an executable revision recipe cannot signal ready. The existence of this local
+implementation does not establish hosted transport or Drupal runtime proof.

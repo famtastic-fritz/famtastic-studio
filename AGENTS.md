@@ -1,5 +1,13 @@
 # Site Studio Next agent instructions
 
+For additive execution integration, read
+`docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md` and
+`docs/capabilities/SELECTED-STAGING-CONSUMER.md`. Preserve the existing Mac
+creative workflow and the Phase 1 mock firewall. Real selected admission is a
+separate opt-in capability; source integration is not production activation.
+Never weaken source/rights checks to accommodate a required creator-credit
+derivative: verify its original/derived hashes and private receipt instead.
+
 Read CONVENTIONS.md and `.claude/skills/site-studio-conventions/SKILL.md` before
 editing. Read `.claude/skills/dna-capture/SKILL.md` for pipeline work. Read
 design.md, SITE-LEARNINGS.md and CONVERSATIONS.md before changing direction.
