@@ -1,5 +1,14 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Fence recovery records and refresh retried transaction clocks
+
+Bind dispatch records, expired attempts and checkpointed calls to exact job,
+pilot, packet, intent and fencing identities before mutation or reuse. Refresh
+timestamps within transaction callbacks. Thirty added regression cases and the
+full 1,185-test suite pass; both synthetic execution proofs and offline validation
+pass. This is local source evidence, not live Firestore or customer automation.
+See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
 ## 2026-09-21 - Mac offline validation repair (local only)
 
 Use safe YAML parsing compatible with the workstation's Ruby 2.6, reject

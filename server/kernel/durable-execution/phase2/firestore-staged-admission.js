@@ -81,8 +81,8 @@ export function createStagedAdmissionOperations(context) {
     const keyId = idempotencyDocumentId(siteId, idempotencyKey);
     const receiptId = nextId('receipt');
     const intentId = deterministicDocumentId('intent', identity.job_id);
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const [keySnapshot, controlSnapshot, budgetSnapshot] = await Promise.all([
         tx.get(refs.idempotency(keyId)), tx.get(refs.control()), tx.get(refs.budget(pilotRunId)),
       ]);
@@ -193,8 +193,8 @@ export function createStagedAdmissionOperations(context) {
     const identityDigest = envelopeDigest(identity);
     const digest = envelopeDigest(acceptedEnvelope);
     const keyId = idempotencyDocumentId(siteId, idempotencyKey);
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const [keySnapshot, jobSnapshot, controlSnapshot, outboxSnapshot] = await Promise.all([
         tx.get(refs.idempotency(keyId)), tx.get(refs.job(identity.job_id)),
         tx.get(refs.control()), tx.get(refs.outbox(deterministicDocumentId('intent', identity.job_id))),
@@ -291,8 +291,8 @@ export function createStagedAdmissionOperations(context) {
       throw storeFailure(409, 'admission_source_not_confirmed_missing', 'Admission cannot expire without a confirmed missing source');
     }
     requiredString(reason, 'reason', { max: 500 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const jobRef = refs.job(jobId);
       const [jobSnapshot, controlSnapshot] = await Promise.all([
         tx.get(jobRef), tx.get(refs.control()),
@@ -357,8 +357,8 @@ export function createStagedAdmissionOperations(context) {
       throw storeFailure(409, 'admission_source_not_confirmed_invalid', 'Admission failure requires a confirmed invalid deterministic source');
     }
     requiredString(reason, 'reason', { max: 500 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const jobRef = refs.job(jobId);
       const [jobSnapshot, controlSnapshot] = await Promise.all([
         tx.get(jobRef), tx.get(refs.control()),

@@ -45,7 +45,34 @@ implemented. The Phase 2 cloud runtime is a separate shadow pilot, not a Mac
 worker connection. Mission Control is a later view over proven operational
 state, not a prerequisite and not another execution authority.
 
-## Remaining gates
+## Milestone 2: recovery identity and transaction retry hardening
+
+Local source verification only. Dispatch reserve/deliver/release now bind the
+job, intent, outbox identity and bounded integer generation. Expired-attempt
+recovery validates task, packet, project, pilot, intent, fencing token and
+deterministic model-call identity before accounting or reuse. A late reconciler
+cannot recover a different active attempt. Lease/admission/dispatch timestamps
+are sampled inside transaction callbacks so retries do not commit stale clocks.
+
+Added 30 regression cases, including discarded transaction callbacks and foreign
+attempt/call records. These simulate retries; they do not prove live Firestore
+contention. The sandboxed repair-3 run passes 1,185 tests in 102 files, lint,
+both synthetic execution proofs, safe YAML validation and the offline plan.
+The legacy studio.db/WAL/SHM snapshots are identical. No production activation,
+provider call, customer callback, message or cloud mutation occurred.
+
+The canonical Designs disposable customer journey also passes after repairing
+its omitted frontend narration dependency. That fixture captures 34 messages
+and still exercises an owner-review gate; it is not evidence that the new
+unattended creative-to-staging path is connected.
+
+Read-only live checks on September 21: Drupal automation-health is observe-only,
+with zero enrolled jobs and zero reserved cents. Mac PID 78266 serves healthy
+on 127.0.0.1:3400 from the canonical site-studio-next checkout. The Phase 2 cloud
+pilot remains additive and disabled. Complete source review, automatic intake,
+real selected consumer integration and laptop-independent proof remain open.
+
+## Remaining gates (updated)
 
 - Full source/security review and Firestore ownership/timestamp hardening.
 - Real consumer/producer contract and scheduler/worker inventory.

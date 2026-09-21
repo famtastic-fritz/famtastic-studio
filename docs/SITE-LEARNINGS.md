@@ -1,5 +1,14 @@
 # Site Studio learning record
 
+## 2026-09-21 - Recovery must validate lineage, not only record existence
+
+A found outbox, expired attempt or successful model-call record is not enough
+to authorize recovery. Validate its complete job/packet/intent/fence lineage
+before financial settlement or artifact reuse. Reject stale dispatch generations
+even on duplicate-response paths. Sample time inside transaction callbacks:
+Firestore may rerun them after the original lease timestamp is stale. Retain
+separate evidence for simulated transaction retries and real cloud contention.
+
 ## 2026-09-21 - Validate the actual Mac parser, not a presumed Ruby version
 
 Observation: the Phase 2 validator selected system Ruby by executable presence

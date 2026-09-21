@@ -26,10 +26,10 @@ export function createAdmissionOperations(context) {
     boundedInteger(maxJobs, 'maxJobs', { min: 1, max: 100 });
     boundedInteger(maxTotalCostMicros, 'maxTotalCostMicros');
     requiredString(actor, 'actor', { max: 128 });
-    const now = at();
     const controlRef = refs.control();
     const budgetRef = refs.budget(pilotRunId);
     return db.runTransaction(async (tx) => {
+      const now = at();
       const [controlSnapshot, budgetSnapshot] = await Promise.all([
         tx.get(controlRef), tx.get(budgetRef),
       ]);
@@ -89,8 +89,8 @@ export function createAdmissionOperations(context) {
     }
     for (const key of keys) exactBoolean(patch[key], key);
     requiredString(actor, 'actor', { max: 128 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const ref = refs.control();
       const controls = validateControls(snapshotData(await tx.get(ref)));
       const updated = { ...controls, ...patch, updated_at_ms: now, updated_by: actor };
@@ -102,8 +102,8 @@ export function createAdmissionOperations(context) {
   async function pauseControls({ pilotRunId, actor = 'phase2-pause-operator' } = {}) {
     requiredString(pilotRunId, 'pilotRunId', { max: 128 });
     requiredString(actor, 'actor', { max: 128 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const ref = refs.control();
       const controls = validateControls(snapshotData(await tx.get(ref)));
       if (controls.active_pilot_run_id !== pilotRunId) {

@@ -10,6 +10,7 @@ import {
 } from './firestore-values.js';
 import { providerCheckpointFromCall } from './firestore-provider-checkpoint.js';
 import { authoritativeEnvelope, settlement, writeDeadLetter } from './firestore-worker-support.js';
+import { assertDispatchBinding, assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
 
 function deliverArrivingTask(tx, { refs, outboxRef, outbox, taskName, intentId, generation, now }) {
   if (!['submitting', 'delivered'].includes(outbox.state)) {
@@ -54,11 +55,11 @@ export function createClaimOperation(context) {
     ]) requiredString(value, label, { max: 200 });
     boundedInteger(dispatchGeneration, 'dispatchGeneration', { min: 1, max: 50 });
     boundedInteger(leaseMs, 'leaseMs', { min: 1_000, max: 3_600_000 });
-    const now = at();
     const freshAttemptId = nextId('attempt');
     const leaseToken = nextId('lease');
 
     return db.runTransaction(async (tx) => {
+      const now = at();
       const jobRef = refs.job(jobId);
       const outboxRef = refs.outbox(intentId);
       const [jobSnapshot, outboxSnapshot, controlSnapshot] = await Promise.all([
@@ -75,6 +76,7 @@ export function createClaimOperation(context) {
         || job.site_id !== siteId || job.packet_digest !== packetDigest) {
         throw storeFailure(409, 'task_identity_mismatch', 'Cloud task identity does not match the current job dispatch');
       }
+      assertDispatchBinding({ job, outbox, jobId, intentId, pilotRunId });
       if (['awaiting_approval', 'dead_letter'].includes(job.state)) {
         return { terminal: true, job_id: jobId, state: job.state };
       }
@@ -90,11 +92,16 @@ export function createClaimOperation(context) {
       let budget = null;
       if (resumeAttemptId) {
         priorAttempt = snapshotData(await tx.get(refs.attempt(resumeAttemptId)));
+        assertStoredAttempt(job, priorAttempt, resumeAttemptId);
         if (priorAttempt?.model_call_id) {
           [priorCall, budget] = (await Promise.all([
             tx.get(refs.call(priorAttempt.model_call_id)),
             tx.get(refs.budget(job.pilot_run_id)),
           ])).map(snapshotData);
+          assertStoredCall(job, priorAttempt, priorCall, priorAttempt.model_call_id);
+          if (assertPhase2(budget, 'Execution budget').pilot_run_id !== job.pilot_run_id) {
+            throw storeFailure(409, 'pilot_scope_conflict', 'Resume budget is outside the job pilot');
+          }
         }
       }
       if (job.state === 'running' && !priorAttempt) {

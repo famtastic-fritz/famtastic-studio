@@ -7,6 +7,7 @@ import {
 } from './firestore-values.js';
 import { providerCheckpointFromCall } from './firestore-provider-checkpoint.js';
 import { settlement } from './firestore-worker-support.js';
+import { assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
 
 export const WORKER_CLAIM_ACK_MS = 15 * 60 * 1000;
 
@@ -35,6 +36,11 @@ export async function loadDispatchTerminalContext(tx, refs, job) {
   ]);
   const call = assertPhase2(snapshotData(callSnapshot), 'Execution model call');
   const budget = assertPhase2(snapshotData(budgetSnapshot), 'Execution budget');
+  assertStoredAttempt(job, attempt, job.resume_attempt_id);
+  assertStoredCall(job, attempt, call, attempt.model_call_id);
+  if (budget.pilot_run_id !== job.pilot_run_id) {
+    throw storeFailure(409, 'pilot_scope_conflict', 'Terminal settlement budget is outside the job pilot');
+  }
   if (call.attempt_id !== attempt.attempt_id
     || !['provider_succeeded', 'resume_scheduled'].includes(attempt.state)) {
     throw storeFailure(503, 'provider_checkpoint_invariant', 'Dispatch terminal state has an invalid resume binding');

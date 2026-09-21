@@ -31,7 +31,10 @@ export function authoritativeEnvelope(job) {
 }
 
 export function assertActiveLease(job, lease, now) {
-  if (job.state !== 'running'
+  if (job.job_id !== lease.job_id || job.task_id !== lease.task_id
+    || job.pilot_run_id !== lease.pilot_run_id || job.packet_id !== lease.packet_id
+    || job.project_id !== lease.project_id || job.intent_id !== lease.intent_id
+    || job.state !== 'running'
     || job.active_attempt_id !== lease.attempt_id
     || job.lease_owner !== lease.worker_id
     || job.lease_token !== lease.lease_token

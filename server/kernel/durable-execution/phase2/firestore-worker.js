@@ -24,6 +24,7 @@ import {
   writeDeadLetter,
 } from './firestore-worker-support.js';
 import { createClaimOperation } from './firestore-claim.js';
+import { assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
 import {
   prepareProviderCheckpoint,
   providerCheckpointFromCall,
@@ -31,6 +32,7 @@ import {
 } from './firestore-provider-checkpoint.js';
 
 function assertAttemptOwnership(job, attempt, lease) {
+  assertStoredAttempt(job, attempt, lease.attempt_id);
   if (attempt.attempt_id !== lease.attempt_id
     || attempt.job_id !== job.job_id
     || attempt.task_id !== job.task_id
@@ -51,6 +53,7 @@ function assertAttemptOwnership(job, attempt, lease) {
 }
 
 function assertModelCallOwnership(job, attempt, call, modelCallId) {
+  assertStoredCall(job, attempt, call, modelCallId);
   if (attempt.model_call_id !== modelCallId
     || call.model_call_id !== modelCallId
     || call.job_id !== job.job_id
@@ -91,9 +94,9 @@ export function createWorkerOperations(context) {
     }
     boundedInteger(reservedCostMicros, 'reservedCostMicros', { min: 1 });
     boundedInteger(inputTokensEstimate, 'inputTokensEstimate');
-    const now = at();
     const modelCallId = deterministicDocumentId('call', lease.attempt_id, 1);
     return db.runTransaction(async (tx) => {
+      const now = at();
       const callRef = refs.call(modelCallId);
       const [jobSnapshot, attemptSnapshot, controlSnapshot, budgetSnapshot, callSnapshot] = await Promise.all([
         tx.get(refs.job(lease.job_id)), tx.get(refs.attempt(lease.attempt_id)), tx.get(refs.control()),
@@ -156,8 +159,8 @@ export function createWorkerOperations(context) {
   async function checkpointProviderSuccess({ lease, modelCallId, output, ...metrics } = {}) {
     if (!lease) throw storeFailure(400, 'lease_required', 'A worker lease is required');
     requiredString(modelCallId, 'modelCallId', { max: 200 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const [jobSnapshot, attemptSnapshot, callSnapshot, controlSnapshot] = await Promise.all([
         tx.get(refs.job(lease.job_id)),
         tx.get(refs.attempt(lease.attempt_id)),
@@ -205,10 +208,10 @@ export function createWorkerOperations(context) {
   async function completeJob({ lease, modelCallId, artifact } = {}) {
     validateArtifact(artifact);
     requiredString(modelCallId, 'modelCallId', { max: 200 });
-    const now = at();
     const artifactId = deterministicDocumentId('artifact', lease.job_id, artifact.logical_key, artifact.version);
     const approvalId = deterministicDocumentId('approval', lease.job_id, 'phase2-shadow');
     return db.runTransaction(async (tx) => {
+      const now = at();
       const artifactRef = refs.artifact(artifactId);
       const [jobSnapshot, attemptSnapshot, callSnapshot, budgetSnapshot, artifactSnapshot, controlSnapshot] = await Promise.all([
         tx.get(refs.job(lease.job_id)), tx.get(refs.attempt(lease.attempt_id)), tx.get(refs.call(modelCallId)),
@@ -295,8 +298,8 @@ export function createWorkerOperations(context) {
       cachedInputTokens, totalTokens, latencyMs, promptVersion,
       inputSha256, actualCostMicros,
     });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const jobRef = refs.job(lease.job_id);
       const baseReads = [
         tx.get(jobRef), tx.get(refs.attempt(lease.attempt_id)),
@@ -424,8 +427,8 @@ export function createWorkerOperations(context) {
     requiredString(modelCallId, 'modelCallId', { max: 200 });
     requiredString(failureClass, 'failureClass', { max: 100 });
     const measured = callMetrics(metrics, { allowUnknownCost: true });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const [jobSnapshot, attemptSnapshot, callSnapshot, budgetSnapshot, controlSnapshot] = await Promise.all([
         tx.get(refs.job(lease.job_id)), tx.get(refs.attempt(lease.attempt_id)),
         tx.get(refs.call(modelCallId)), tx.get(refs.budget(lease.pilot_run_id)), tx.get(refs.control()),

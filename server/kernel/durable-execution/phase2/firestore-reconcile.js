@@ -16,6 +16,7 @@ import {
   finalizeDispatchManual,
   loadDispatchTerminalContext,
 } from './firestore-dispatch-support.js';
+import { assertDispatchBinding, assertStoredAttempt, assertStoredCall } from './firestore-bindings.js';
 
 const STALE_ADMISSION_MS = 15 * 60 * 1000;
 
@@ -121,6 +122,7 @@ export function createReconcileOperations(context) {
 
     for (const candidate of reparableMissing) {
       const repaired = await db.runTransaction(async (tx) => {
+        const now = at();
         const [jobNow, controlsNow] = await Promise.all([
           tx.get(refs.job(candidate.job_id)), tx.get(refs.control()),
         ]);
@@ -129,6 +131,10 @@ export function createReconcileOperations(context) {
           throw storeFailure(409, 'pilot_scope_conflict', 'Reconciliation pilot changed during repair');
         }
         if (!job || job.phase_tag !== PHASE_TAG || ['awaiting_approval', 'dead_letter'].includes(job.state)) return false;
+        if (job.job_id !== candidate.job_id || job.pilot_run_id !== pilotRunId
+          || job.intent_id !== deterministicDocumentId('intent', job.job_id)) {
+          throw storeFailure(409, 'dispatch_identity_conflict', 'Intent repair job identity changed');
+        }
         const intentRef = refs.outbox(job.intent_id);
         if (snapshotData(await tx.get(intentRef))) return false;
         if (job.state !== 'accepted' || job.attempts_started !== 0) return 'manual';
@@ -150,6 +156,7 @@ export function createReconcileOperations(context) {
 
     for (const candidate of unclaimed) {
       const recovered = await db.runTransaction(async (tx) => {
+        const now = at();
         const [jobSnapshotNow, outboxSnapshotNow, controlsNow] = await Promise.all([
           tx.get(refs.job(candidate.job.job_id)),
           tx.get(refs.outbox(candidate.outbox.intent_id)),
@@ -160,6 +167,8 @@ export function createReconcileOperations(context) {
         }
         const job = assertPhase2(snapshotData(jobSnapshotNow), 'Execution job');
         const outbox = assertPhase2(snapshotData(outboxSnapshotNow), 'Dispatch intent');
+        assertDispatchBinding({ job, outbox, jobId: candidate.job.job_id,
+          intentId: candidate.outbox.intent_id, pilotRunId });
         const bound = job.pilot_run_id === pilotRunId
           && outbox.pilot_run_id === pilotRunId
           && outbox.job_id === job.job_id
@@ -237,6 +246,7 @@ export function createReconcileOperations(context) {
 
     for (const candidate of expired) {
       const recovered = await db.runTransaction(async (tx) => {
+        const now = at();
         const [jobSnapshotNow, attemptSnapshot, outboxSnapshotNow, controlsNow] = await Promise.all([
           tx.get(refs.job(candidate.job_id)),
           tx.get(refs.attempt(candidate.active_attempt_id)),
@@ -248,8 +258,14 @@ export function createReconcileOperations(context) {
         }
         const job = snapshotData(jobSnapshotNow);
         if (!job || job.phase_tag !== PHASE_TAG || job.state !== 'running' || job.lease_expires_at_ms > now) return 'stale';
+        if (job.active_attempt_id !== candidate.active_attempt_id || job.intent_id !== candidate.intent_id) return 'stale';
         const attempt = assertPhase2(snapshotData(attemptSnapshot), 'Execution attempt');
         const outbox = assertPhase2(snapshotData(outboxSnapshotNow), 'Dispatch intent');
+        assertDispatchBinding({ job, outbox, jobId: candidate.job_id, intentId: candidate.intent_id, pilotRunId });
+        assertStoredAttempt(job, attempt, candidate.active_attempt_id);
+        if (attempt.dispatch_generation !== outbox.dispatch_generation) {
+          throw storeFailure(409, 'dispatch_identity_conflict', 'Expired attempt generation does not match dispatch');
+        }
         let call = null;
         let budget = null;
         if (attempt.model_call_id) {
@@ -257,6 +273,10 @@ export function createReconcileOperations(context) {
             tx.get(refs.call(attempt.model_call_id)),
             tx.get(refs.budget(job.pilot_run_id)),
           ])).map(snapshotData);
+          assertStoredCall(job, attempt, call, attempt.model_call_id);
+          if (assertPhase2(budget, 'Execution budget').pilot_run_id !== pilotRunId) {
+            throw storeFailure(409, 'pilot_scope_conflict', 'Recovery budget is outside the job pilot');
+          }
         }
         if (call) {
           assertPhase2(call, 'Execution model call');

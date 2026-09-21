@@ -17,6 +17,7 @@ import {
   finalizeDispatchManual,
   loadDispatchTerminalContext,
 } from './firestore-dispatch-support.js';
+import { assertDispatchBinding } from './firestore-bindings.js';
 
 const MAX_BACKOFF_MS = 300_000;
 
@@ -73,9 +74,9 @@ export function createDispatchOperations(context) {
     requiredString(dispatcherId, 'dispatcherId', { max: 200 });
     boundedInteger(reservationMs, 'reservationMs', { min: 1, max: 300_000 });
     boundedInteger(baseBackoffMs, 'baseBackoffMs', { min: 0, max: 60_000 });
-    const now = at();
     const reservationToken = nextId('dispatchlease');
     return db.runTransaction(async (tx) => {
+      const now = at();
       const outboxRef = refs.outbox(intentId);
       const outbox = assertPhase2(snapshotData(await tx.get(outboxRef)), 'Dispatch intent');
       const [jobSnapshot, controlSnapshot] = await Promise.all([
@@ -84,6 +85,7 @@ export function createDispatchOperations(context) {
       ]);
       const job = assertPhase2(snapshotData(jobSnapshot), 'Execution job');
       const controls = requireRunnableControls(snapshotData(controlSnapshot), { dispatch: true });
+      assertDispatchBinding({ job, outbox, jobId: outbox.job_id, intentId, pilotRunId: controls.active_pilot_run_id });
       if (controls.active_pilot_run_id !== job.pilot_run_id
         || outbox.pilot_run_id !== job.pilot_run_id) {
         throw storeFailure(409, 'pilot_scope_conflict', 'Dispatch intent is outside the active pilot run');
@@ -153,8 +155,8 @@ export function createDispatchOperations(context) {
     requiredString(reservationToken, 'reservationToken', { max: 200 });
     requiredString(taskName, 'taskName', { max: 1000 });
     boundedInteger(dispatchGeneration, 'dispatchGeneration', { min: 1, max: 50 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const ref = refs.outbox(intentId);
       const outbox = assertPhase2(snapshotData(await tx.get(ref)), 'Dispatch intent');
       const [jobSnapshot, controlSnapshot] = await Promise.all([
@@ -162,6 +164,7 @@ export function createDispatchOperations(context) {
       ]);
       const job = assertPhase2(snapshotData(jobSnapshot), 'Execution job');
       const controls = validateControls(snapshotData(controlSnapshot));
+      assertDispatchBinding({ job, outbox, jobId: outbox.job_id, intentId, pilotRunId: controls.active_pilot_run_id });
       if (controls.active_pilot_run_id !== job.pilot_run_id
         || outbox.pilot_run_id !== job.pilot_run_id) {
         throw storeFailure(409, 'pilot_scope_conflict', 'Dispatch intent is outside the active pilot run');
@@ -212,8 +215,8 @@ export function createDispatchOperations(context) {
     exactBoolean(permanent, 'permanent');
     exactBoolean(submissionAttempted, 'submissionAttempted');
     boundedInteger(baseBackoffMs, 'baseBackoffMs', { min: 0, max: 60_000 });
-    const now = at();
     return db.runTransaction(async (tx) => {
+      const now = at();
       const ref = refs.outbox(intentId);
       const outbox = assertPhase2(snapshotData(await tx.get(ref)), 'Dispatch intent');
       const [jobSnapshot, controlSnapshot] = await Promise.all([
@@ -221,9 +224,13 @@ export function createDispatchOperations(context) {
       ]);
       const job = assertPhase2(snapshotData(jobSnapshot), 'Execution job');
       const controls = validateControls(snapshotData(controlSnapshot));
+      assertDispatchBinding({ job, outbox, jobId: outbox.job_id, intentId, pilotRunId: controls.active_pilot_run_id });
       if (controls.active_pilot_run_id !== job.pilot_run_id
         || outbox.pilot_run_id !== job.pilot_run_id) {
         throw storeFailure(409, 'pilot_scope_conflict', 'Dispatch intent is outside the active pilot run');
+      }
+      if (outbox.dispatch_generation !== dispatchGeneration) {
+        throw storeFailure(409, 'stale_dispatch_generation', 'Dispatch generation is no longer current');
       }
       if (outbox.state === 'delivered') return { ...outbox, duplicate: true };
       if (outbox.state !== 'submitting'

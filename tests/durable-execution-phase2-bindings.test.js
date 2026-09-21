@@ -48,6 +48,37 @@ function checkpointInput(lease, call, output = providerOutput()) {
 }
 
 describe('Phase 2 Firestore ownership bindings', () => {
+  for (const recovery of ['claim', 'reconcile']) {
+    it.each(['job_id', 'task_id', 'pilot_run_id', 'attempt_id'])(`${recovery} rejects a foreign expired attempt.%s`, async (field) => {
+      const base = await activeAttempt({ reserveCall: true });
+      base.advance(10_000);
+      const path = `executionAttempts/${base.lease.attempt_id}`;
+      base.firestore.seed(path, { ...base.firestore.read(path), [field]: 'foreign' });
+      const before = base.firestore.dump();
+      const invoke = recovery === 'reconcile'
+        ? () => base.store.reconcile({ pilotRunId: 'pilot-1', apply: true })
+        : () => base.store.claimJob({ jobId: base.lease.job_id, intentId: base.lease.intent_id,
+          dispatchGeneration: 1, pilotRunId: 'pilot-1', siteId: 'site-1', packetDigest: 'd'.repeat(64),
+          workerId: 'replacement', taskName: 'unused' });
+      await expect(invoke()).rejects.toMatchObject({ code: 'attempt_identity_conflict' });
+      expect(base.firestore.dump()).toEqual(before);
+    });
+
+    it.each(['job_id', 'attempt_id', 'model_call_id'])(`${recovery} rejects a foreign expired call.%s`, async (field) => {
+      const base = await activeAttempt({ reserveCall: true });
+      base.advance(10_000);
+      const path = `executionModelCalls/${base.call.model_call_id}`;
+      base.firestore.seed(path, { ...base.firestore.read(path), [field]: 'foreign' });
+      const before = base.firestore.dump();
+      const invoke = recovery === 'reconcile'
+        ? () => base.store.reconcile({ pilotRunId: 'pilot-1', apply: true })
+        : () => base.store.claimJob({ jobId: base.lease.job_id, intentId: base.lease.intent_id,
+          dispatchGeneration: 1, pilotRunId: 'pilot-1', siteId: 'site-1', packetDigest: 'd'.repeat(64),
+          workerId: 'replacement', taskName: 'unused' });
+      await expect(invoke()).rejects.toMatchObject({ code: 'model_call_identity_conflict' });
+      expect(base.firestore.dump()).toEqual(before);
+    });
+  }
   it.each([
     ['attempt_id', 'attempt_other'],
     ['job_id', 'job-other'],
