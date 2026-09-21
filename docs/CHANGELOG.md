@@ -1,5 +1,16 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Exercise the actual bounded dispatch CLI
+
+Two cross-repository tests run the existing Designs CLI through signed loopback
+ingress into the real selected staging route and pipeline, with synthetic Drupal
+authority and hosting. They exposed a Mac symlink direct-execution bug in Designs,
+now repaired there. Lost acknowledgement and replay preserve one build and one
+captured callback; unconfigured selected execution stays closed. Nine paired
+Node checks and both Studio cases pass. No production activation. Record actual
+CLI capability metadata, route topology and transport-size limitations in
+`docs/evidence/MAC-CREATIVE-CAPABILITIES-2026-09-21.md`.
+
 ## 2026-09-21 - Repair completed-source adoption fixture only
 
 The legacy roundtrip now starts with an unassociated normal artifact build of

@@ -1,5 +1,14 @@
 # Site Studio learning record
 
+## 2026-09-21 - Test executable entrypoints, not only imported functions
+
+Node canonicalizes module URLs across macOS `/tmp` and other symlinks; comparing
+an unresolved argv path can silently skip a CLI's main function. The actual
+bounded-worker child-process test exposed this while imported function tests
+passed. Preserve separate assertions for direct execution and inert import.
+The signed public staging ingress deliberately forwards to the distinct internal
+selected route, not the Phase 1 mock route. See the Mac capability evidence.
+
 ## 2026-09-21 - A completed-source fixture must supply complete authority
 
 The old fixture selected uncredited Home against an already branded export and

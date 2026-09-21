@@ -7,6 +7,9 @@ creative workflow and the Phase 1 mock firewall. Real selected admission is a
 separate opt-in capability; source integration is not production activation.
 Never weaken source/rights checks to accommodate a required creator-credit
 derivative: verify its original/derived hashes and private receipt instead.
+Read `docs/evidence/MAC-CREATIVE-CAPABILITIES-2026-09-21.md` before packaging
+the Mac worker. Advertised CLI media tools are not an unattended capability
+receipt; preserve the ingress-to-selected-route mapping and inert imports.
 
 Read CONVENTIONS.md and `.claude/skills/site-studio-conventions/SKILL.md` before
 editing. Read `.claude/skills/dna-capture/SKILL.md` for pipeline work. Read

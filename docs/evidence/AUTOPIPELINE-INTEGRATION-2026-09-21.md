@@ -2,6 +2,18 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Actual executable follow-up
+
+The existing Designs bounded worker now passes two cross-repository tests as
+an actual CLI child process through signed ingress and the real selected static
+pipeline. A Mac symlink no-op defect was repaired in Designs; nine paired Node
+checks pass, including inert imports and preserve-symlinks-main. Exactly one
+build and one captured callback survive acknowledgement loss and replay.
+Drupal claim authority and hosting are test doubles. See
+`MAC-CREATIVE-CAPABILITIES-2026-09-21.md` for exact evidence, capability metadata
+and route/transport limits. These are focused additions after the full suite
+below, not a new full-suite total or fresh-creative automation proof.
+
 ## Full integrated source verification
 
 Verified Studio source 5ab65a2a023c2259df2c3102c55e155b1d520dc9 against Designs
