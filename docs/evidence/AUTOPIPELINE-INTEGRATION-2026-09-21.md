@@ -2,6 +2,55 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Full integrated source verification
+
+Verified Studio source 5ab65a2a023c2259df2c3102c55e155b1d520dc9 against Designs
+3db3e01ed with all cross-repository fixtures enabled: 1,544 tests in 132 files
+passed, zero failed and zero skipped. Both lints, both execution proof commands
+and whitespace checks pass. The source suite took 254.45 seconds; the entire
+guarded command took 255.889 seconds. This is the current combined source total,
+not the older pre-integration 1,185-test count or a sum of overlapping runs.
+
+The real portal editor browser fixture was enabled against the current Designs
+frontend and its byte-matched existing dependencies. No dependency installation
+was needed for this combined rerun. Node 24.19.0, Vitest 3.2.7, PHP 8.5.9.
+
+The initial combined run was stopped by the 200 MiB free-space guard. Finished
+temporary review checkouts were removed only after their clean committed changes
+were integrated; branches, Git objects and evidence were retained. The next run
+reported six outdated assertions: four uncredited-output expectations and two
+empty-payload error expectations. Repairs assert the exact canonical append and
+PNG, unchanged original selection hashes, unchanged pre-credit transformation
+hashes, and distinct malformed-payload/invalid-signature rejection. No production
+guard changed. The focused rerun passes 48 cases, including portal mobile/desktop.
+
+Retained evidence under /tmp/famtastic-phase2-review.NVAfPl:
+
+- full-integrated-source.YB5OUl: disk-guard interruption, not a pass.
+- full-integrated-source-retry.e0vKhI: six assertion failures, retained.
+- regression-expectations.vvbCPf: missing expected error message and one default
+  five-second test timeout, retained; no production failure concealed.
+- regression-expectations-complete.ESsxAH: 48 tests/four files, lint, whitespace.
+- source-export-credit-integrated.gj3Syf: branded complete-source roundtrip.
+- full-integrated-source-final.Dp4s64: 1,544 tests/132 files and both proof scripts.
+
+External network and credential access were denied; loopback 3400 was denied to
+the tests. Authoritative current runtime and legacy data inventories remained
+identical. Phase 2 proof uses fake providers: 20 jobs, 25 attempts, 23 fake calls,
+18 artifacts, two dead letters and one provider execution for checkpoint recovery.
+No real model call, customer callback, message, deployment or cloud mutation ran.
+
+Read-only release anchoring still finds canonical Studio and origin/main at
+bf1ef9ca09276d08c6555690737eafb3d4b6e109; the canonical checkout is clean and
+/api/admin/health returns ok=true on port 3400. Designs origin/main remains
+f5bc140e4fcab1205c9d5f6fda724a2843a1909a. Neither service nor source was cut over.
+
+This closes combined source verification, not unattended customer delivery or
+cloud activation. Fresh proof admission/real creative adapter/fenced import,
+the no-owner-gate journey, real shared cloud claims and laptop-unavailable proof
+remain open. Complete-source transport sizing, private cloud provisioning,
+project/sign-in, cost reconciliation and sufficient disk headroom remain gates.
+
 ## Source ownership follow-up
 
 Both mapping writers now reject another project's existing site/repository,
