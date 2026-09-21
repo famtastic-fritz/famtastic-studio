@@ -69,10 +69,11 @@ export function assertOutboxOwnership(job, outbox, lease) {
 
 export function assertAttemptDispatchGeneration(job, attempt, outbox) {
   // A checkpoint can survive multiple unclaimed redrives without another call.
+  const currentAttempt = job.state === 'running' && attempt.dispatch_generation === outbox.dispatch_generation;
   const scheduledResume = ['queued', 'retry_wait'].includes(job.state)
-    && job.resume_attempt_id === attempt.attempt_id && attempt.state === 'resume_scheduled';
-  if (scheduledResume ? attempt.dispatch_generation >= outbox.dispatch_generation
-    : attempt.dispatch_generation !== outbox.dispatch_generation) {
+    && job.resume_attempt_id === attempt.attempt_id && attempt.state === 'resume_scheduled'
+    && attempt.dispatch_generation < outbox.dispatch_generation;
+  if (!currentAttempt && !scheduledResume) {
     throw storeFailure(409, 'dispatch_identity_conflict', 'Attempt generation does not match its active dispatch or checkpoint predecessor');
   }
 }

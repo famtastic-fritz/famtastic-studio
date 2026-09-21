@@ -210,6 +210,7 @@ async function harness() {
   const artifactStore = memoryObjectStore(runtime.gcp.artifact_bucket);
   return {
     runtime, store, firestore, sourceStore, artifactStore,
+    now: () => now,
     advance: (milliseconds) => { now += milliseconds; },
   };
 }
@@ -292,7 +293,7 @@ describe('Phase 2 orchestration runtime', () => {
       artifactStore: base.artifactStore,
       provider: model.provider,
       effects,
-      clock: () => 200,
+      clock: base.now,
     });
     const completed = await worker.execute({ body: task });
     expect(completed).toMatchObject({
@@ -414,7 +415,7 @@ describe('Phase 2 orchestration runtime', () => {
       artifactStore: base.artifactStore,
       provider,
       effects: createPhase2EffectsFirewall(),
-      clock: () => 200,
+      clock: base.now,
     });
     const first = await worker.execute({ body: flow.task });
     const retry = await worker.execute({ body: flow.task });
@@ -445,7 +446,7 @@ describe('Phase 2 orchestration runtime', () => {
     const worker = createPhase2WorkerService({
       config: base.runtime, store: base.store,
       sourceStore: base.sourceStore, artifactStore: base.artifactStore,
-      provider: model.provider, effects: createPhase2EffectsFirewall(), clock: () => 200,
+      provider: model.provider, effects: createPhase2EffectsFirewall(), clock: base.now,
     });
     await expect(worker.execute({ body: task }))
       .rejects.toMatchObject({ code: 'phase2_provider_disabled' });
@@ -472,7 +473,7 @@ describe('Phase 2 orchestration runtime', () => {
     const worker = createPhase2WorkerService({
       config: base.runtime, store: base.store,
       sourceStore: base.sourceStore, artifactStore: base.artifactStore,
-      provider: model.provider, effects: createPhase2EffectsFirewall(), clock: () => 200,
+      provider: model.provider, effects: createPhase2EffectsFirewall(), clock: base.now,
     });
     await expect(worker.execute({ body: flow.task }))
       .rejects.toMatchObject({ code: 'phase2_artifact_persistence_pending' });

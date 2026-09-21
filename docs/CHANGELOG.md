@@ -10,6 +10,17 @@
 - Independent Phase 2 review found four additional lease/lineage defects;
   dedicated repair and final verification remain required. No activation.
 
+## 2026-09-21 - Recheck provider authority after delayed responses
+
+Added transactional pre-submission lease, generation, envelope and call ownership
+authorization plus an immediate local remaining-lease check. Completion now
+validates its outbox; claim recovery distinguishes active generations from
+scheduled checkpoint predecessors; admission duplicates and renewals validate
+requested documents before acceptance or writes. Targeted synthetic tests:
+163 dedicated regressions and 130 compatibility tests passed. Cloud activation
+and real contention remain unproven; transaction and provider HTTP are not atomic.
+See `docs/evidence/PHASE2-PRESUBMISSION-FENCING-2026-09-21.md`.
+
 ## 2026-09-21 - Fence recovery records and refresh retried transaction clocks
 
 Bind dispatch records, expired attempts and checkpointed calls to exact job,

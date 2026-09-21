@@ -241,6 +241,7 @@ export async function createComposedPhase2ProofHarness() {
     workerHandler,
     call,
     advance(milliseconds) { now += milliseconds; },
+    now: () => now,
     taskBodies() { return phase2ProofTaskBodies(taskClient); },
   };
 }

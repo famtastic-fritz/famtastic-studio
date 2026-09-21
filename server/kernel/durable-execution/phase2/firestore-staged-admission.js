@@ -14,6 +14,8 @@ import {
   validateControls,
 } from './firestore-values.js';
 import { assertPhase2WorkEnvelope } from './work-envelope.js';
+import { assertDispatchBinding } from './firestore-bindings.js';
+import { authoritativeEnvelope } from './firestore-worker-support.js';
 
 const IDENTITY_FIELDS = [
   'site_id', 'pilot_run_id', 'job_id', 'task_id', 'packet_id',
@@ -65,6 +67,31 @@ function assertCallerBinding(identity, { siteId, pilotRunId, idempotencyKey }) {
   }
 }
 
+function assertAdmissionBinding(identity, identityDigest, binding, job) {
+  if (binding.pilot_run_id !== identity.pilot_run_id || job.pilot_run_id !== identity.pilot_run_id) {
+    throw storeFailure(409, 'pilot_scope_conflict', 'Admission records belong to a different pilot run');
+  }
+  const intentId = deterministicDocumentId('intent', identity.job_id);
+  if (IDENTITY_FIELDS.some((key) => job[key] !== identity[key])
+    || ['site_id', 'idempotency_key', 'job_id', 'task_id', 'packet_digest'].some((key) => binding[key] !== identity[key])
+    || binding.identity_digest !== identityDigest || job.identity_digest !== identityDigest
+    || binding.intent_id !== intentId || job.intent_id !== intentId
+    || !job.receipt_id || binding.receipt_id !== job.receipt_id) {
+    throw storeFailure(409, 'idempotency_conflict', 'Admission records are not bound to the requested identity and documents');
+  }
+}
+
+function assertFinalizedAdmission(identity, binding, job, outbox) {
+  assertDispatchBinding({ job, outbox, jobId: identity.job_id,
+    intentId: deterministicDocumentId('intent', identity.job_id), pilotRunId: identity.pilot_run_id });
+  authoritativeEnvelope(job);
+  if (binding.envelope_digest !== job.envelope_digest
+    || binding.source_ref !== job.source_ref || binding.source_sha256 !== job.source_sha256
+    || binding.source_bytes !== job.source_bytes || job.state === 'admission_reserved') {
+    throw storeFailure(409, 'idempotency_conflict', 'Finalized admission source is not bound to its stored job');
+  }
+}
+
 export function createStagedAdmissionOperations(context) {
   const { db, refs, at, iso, nextId } = context;
 
@@ -106,9 +133,11 @@ export function createStagedAdmissionOperations(context) {
         if (['expired', 'failed'].includes(binding.state)) {
           throw storeFailure(410, 'admission_terminal', 'Admission reservation is terminal and cannot be reused');
         }
-        const job = assertPhase2(snapshotData(await tx.get(refs.job(binding.job_id))), 'Execution job');
+        const job = assertPhase2(snapshotData(await tx.get(refs.job(identity.job_id))), 'Execution job');
+        assertAdmissionBinding(identity, identityDigest, binding, job);
         if (binding.state === 'finalized') {
-          const outbox = snapshotData(await tx.get(refs.outbox(binding.intent_id)));
+          const outbox = snapshotData(await tx.get(refs.outbox(intentId)));
+          assertFinalizedAdmission(identity, binding, job, outbox);
           return { finalized: true, identity, acceptance: acceptance(job, outbox, true) };
         }
         if (binding.state !== 'reserved' || job.state !== 'admission_reserved') {
@@ -122,7 +151,7 @@ export function createStagedAdmissionOperations(context) {
         }
         const reservationGeneration = job.admission_reservation_generation + 1;
         const expiresAt = now + ADMISSION_RECOVERY_MS;
-        tx.update(refs.job(job.job_id), {
+        tx.update(refs.job(identity.job_id), {
           admission_reservation_generation: reservationGeneration,
           admission_expires_at_ms: expiresAt, updated_at_ms: now,
         });
@@ -205,18 +234,14 @@ export function createStagedAdmissionOperations(context) {
       }
       const binding = assertPhase2(snapshotData(keySnapshot), 'Idempotency binding');
       const job = assertPhase2(snapshotData(jobSnapshot), 'Execution job');
-      if (binding.pilot_run_id !== pilotRunId || job.pilot_run_id !== pilotRunId) {
-        throw storeFailure(409, 'pilot_scope_conflict', 'Admission reservation belongs to a different pilot run');
-      }
-      if (binding.identity_digest !== identityDigest || binding.packet_digest !== identity.packet_digest
-        || binding.job_id !== identity.job_id || binding.task_id !== identity.task_id) {
-        throw storeFailure(409, 'idempotency_conflict', 'Finalized source does not match its admission reservation');
-      }
+      assertAdmissionBinding(identity, identityDigest, binding, job);
       if (binding.state === 'finalized') {
         if (binding.envelope_digest !== digest || job.envelope_digest !== digest) {
           throw storeFailure(409, 'idempotency_conflict', 'Admission was finalized with different source metadata');
         }
-        return acceptance(job, snapshotData(outboxSnapshot), true);
+        const outbox = snapshotData(outboxSnapshot);
+        assertFinalizedAdmission(identity, binding, job, outbox);
+        return acceptance(job, outbox, true);
       }
       if (binding.state !== 'reserved' || job.state !== 'admission_reserved') {
         throw storeFailure(503, 'admission_reservation_corrupt', 'Admission reservation cannot be finalized');

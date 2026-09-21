@@ -11,6 +11,22 @@
   delayed-response and cross-linked-record probes found additional lease and
   ownership gaps. Retain failure evidence and fix them before activation.
 
+## 2026-09-21 - A returned reservation is not current execution authority
+
+A transaction can commit while its response is delayed past the worker lease.
+Recheck the complete lease, dispatch and reserved-call lineage transactionally,
+then check the local remaining lease immediately before provider submission.
+Budget for the fixed provider timeout and headroom. Keep authorization evidence
+separate from evidence that a request was actually sent; no local check can make
+a database transaction and remote HTTP atomic. Terminal reconciliation must not
+be overwritten with invented zero cost by a late worker.
+
+Duplicates also require ownership checks. Read requested document IDs and bind
+their stored identities before returning acceptance or renewing a reservation.
+Checkpoint predecessors may span unclaimed redrives, but only with an explicit
+resume marker and scheduled state. Test both rejection and that valid recovery.
+Evidence: `docs/evidence/PHASE2-PRESUBMISSION-FENCING-2026-09-21.md` (synthetic only).
+
 ## 2026-09-21 - Recovery must validate lineage, not only record existence
 
 A found outbox, expired attempt or successful model-call record is not enough

@@ -92,3 +92,21 @@ Additional sources reviewed on 2026-09-21:
 - [Vertex generative AI pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing)
 - [Cloud Run HTTPS invocation](https://cloud.google.com/run/docs/triggering/https-request)
 - [Cloud Tasks delivery model](https://cloud.google.com/tasks/docs/dual-overview)
+
+## 2026-09-21 pre-submission fencing follow-up
+
+The delayed-reservation-response reproduction showed that a successful database
+call can return after terminal lease reconciliation. A new transaction now
+authorizes the exact current lease, generation, immutable envelope and reserved
+model call. The runtime checks the returned authorization and local clock
+immediately before invoking the provider, requiring its fixed 120-second timeout
+plus 5 seconds of headroom. Authorization is not a submission receipt.
+
+This design narrows known latency windows without claiming atomicity across
+Firestore and HTTP. Process suspension, clock movement and changes after the
+last check remain distributed-system risks. Provider timeout does not establish
+remote cancellation. Real contention and in-flight accounting remain activation
+gates. Duplicate admission and checkpoint predecessor validation were tightened
+with dedicated negative and positive synthetic tests. See
+`docs/evidence/PHASE2-PRESUBMISSION-FENCING-2026-09-21.md`; no new cloud or provider
+experiment was run for this follow-up.

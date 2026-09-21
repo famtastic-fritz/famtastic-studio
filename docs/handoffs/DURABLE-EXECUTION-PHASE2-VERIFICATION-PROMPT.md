@@ -64,6 +64,17 @@ Safety rules:
      visible manual review;
    - claims use fenced leases, controls are rechecked immediately before work,
      retries are bounded, stale completion fails, and exhaustion is visible;
+   - delayed reservation and pre-submission-authorization responses cannot cause
+     a provider call after terminal lease reconciliation; authorization binds
+     job, immutable envelope, attempt, reserved call, outbox generation, pilot
+     controls and cost coverage, followed by an immediate local clock check
+     requiring the shared provider timeout plus 5000 ms of remaining lease;
+   - completion rejects missing or cross-linked outbox records before settlement;
+     expired claims require the current attempt generation; scheduled checkpoint
+     predecessors survive unclaimed redrives without another provider call;
+   - renewed and finalized duplicate admissions bind requested document IDs,
+     stored job/binding identities and finalized outbox/source lineage before
+     acceptance or mutation;
    - provider success and measured cost checkpoint before artifact persistence,
      so artifact recovery does not repeat a billable provider call;
    - if model-call reservation commits but its response is lost, the durable
@@ -114,6 +125,12 @@ Safety rules:
    execution risk. Adapter-only and throwing-dispatcher-stub tests are not enough.
    Also require focused proofs for unclaimed-generation redrive and lost
    model-call-reservation response recovery.
+   The dedicated pre-submission and lineage-regressions test files cover the
+   M1/A1/A2/A3 follow-up. Use one worker and disabled caching when disk is tight;
+   refuse new test writes below 200 MiB free. Exact scoped commands and synthetic
+   evidence are in docs/evidence/PHASE2-PRESUBMISSION-FENCING-2026-09-21.md.
+   Authorization timestamps do not prove provider submission or make Firestore
+   and HTTP atomic; retain the real contention and in-flight accounting gates.
 
 6. Re-run the Phase 1 regression boundary:
    npx vitest run tests/durable-execution-schema.test.js tests/durable-execution-store.test.js tests/durable-execution-runtime.test.js tests/durable-execution-recovery.test.js tests/staging-acceptance.test.js tests/kernel-journal-durable.test.js --maxWorkers=2 --minWorkers=1

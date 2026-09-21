@@ -1,7 +1,7 @@
 import {
-  assertPhase2, requiredString, requireRunnableControls, snapshotData, storeFailure,
+  assertPhase2, envelopeDigest, requiredString, requireRunnableControls, snapshotData, storeFailure,
 } from './firestore-values.js';
-import { assertActiveLease } from './firestore-worker-support.js';
+import { assertActiveLease, authoritativeEnvelope } from './firestore-worker-support.js';
 import { assertAttemptOwnership, assertOutboxOwnership, assertStoredCall } from './firestore-bindings.js';
 import { assertProviderLeaseWindow } from './provider-submission.js';
 import {
@@ -26,6 +26,10 @@ export function createProviderSubmissionOperation({ db, refs, at }) {
         throw storeFailure(409, 'pilot_scope_conflict', 'Provider submission is outside the active pilot');
       }
       assertActiveLease(job, lease, now);
+      authoritativeEnvelope(job);
+      if (envelopeDigest(lease.work_envelope) !== job.envelope_digest) {
+        throw storeFailure(409, 'work_envelope_binding_mismatch', 'Provider submission must use the claimed immutable work envelope');
+      }
       assertAttemptOwnership(job, attempt, lease);
       assertOutboxOwnership(job, outbox, lease);
       assertStoredCall(job, attempt, call, modelCallId);
@@ -35,6 +39,7 @@ export function createProviderSubmissionOperation({ db, refs, at }) {
       if (call.provider !== 'vertex-gemini' || call.model !== VERTEX_GEMINI_MODEL
         || call.pricebook_version !== VERTEX_GEMINI_PRICEBOOK_VERSION
         || call.reserved_cost_micros !== PHASE2_PROVIDER_CALL_RESERVATION_MICROS
+        || !Number.isSafeInteger(job.reserved_cost_micros) || !Number.isSafeInteger(budget.reserved_cost_micros)
         || job.reserved_cost_micros < call.reserved_cost_micros
         || budget.reserved_cost_micros < call.reserved_cost_micros) {
         throw storeFailure(409, 'model_call_identity_conflict', 'Provider submission is not covered by the pinned call reservation');
