@@ -77,6 +77,7 @@ export function createSourceAssociation({ paths, store, qa, callback, secret, no
     for (const key of ['required_features', 'integrations', 'booking_details', 'ecommerce_details', 'custom_needs']) if (grant.intent.scope.snapshot[key]?.trim()) throw stagingError('source_association_scope_unsupported');
     if (grant.intent.requested_changes.length) throw stagingError('source_association_pending_revisions');
     const files = initial.files.map(f => ({ ...f, content_base64: fs.readFileSync(paths.within('sites', site_id, f.path)).toString('base64') }));
+    if (v2 && (grant.intent.authored_content?.pages || []).some(record => String(record?.customer_id) !== grant.customer_id)) throw stagingError('source_association_content_customer_changed');
     const review = await qa({ job: { id: `association-${grant.association_id}`, build: result,
       packet: { project_id: grant.project_id, continuation: { required_pages: initial.files.filter(f => f.path.endsWith('.html')).map(f => f.path), files: initial.files.map(f => ({ path: f.path, rights: { status: 'approved', evidence_ref: `association:${grant.association_id}:authored-source` } })) } },
       selected: { artifact_bundle: originalBundle || { schema_version: 1, files } } } });

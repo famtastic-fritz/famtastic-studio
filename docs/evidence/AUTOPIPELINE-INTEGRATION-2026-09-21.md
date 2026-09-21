@@ -2,6 +2,18 @@
 
 Status: in progress, local source only. No production cutover.
 
+## Source ownership follow-up
+
+Both mapping writers now reject another project's existing site/repository,
+including a first-association callback still pending. Exact same-owner repeated
+checkpoints remain valid. V2 association also rejects authored records belonging
+to another customer before QA, mapping persistence or callback delivery.
+
+Five focused tests in two files pass; 11 unselected association cases were
+intentionally skipped in this narrow run. Evidence: source-ownership-guards.5UdBPx.
+Protected current and legacy data remained unchanged. These are local transaction
+and cross-language fixture checks, not another complete suite or live release.
+
 ## Combined selected-source verification
 
 Studio bb59045 and Designs 46de8e847 implement the v2 narrow signed credit

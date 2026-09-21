@@ -81,7 +81,9 @@ export function createStagingStore({ paths, journal }) {
       if (!db.prepare('SELECT 1 FROM claims WHERE project=? AND token=?').get(job.packet.project_id, token) || job.qa?.passed !== true || job.build?.outcome !== 'success') throw stagingError('source_mapping_writer_unverified');
       const wire = job.source_export || job.build.source_export, record = decodeSourceExport(wire);
       if (!record.scope_complete || record.site_id !== job.build.site_id || record.repository.repository_path !== job.build.repository.repository_path) throw stagingError('source_mapping_writer_mismatch');
-      const prior = sourceMappings().find(m => m.project_id === job.packet.project_id);
+      const mappings = sourceMappings();
+      if (mappings.some(m => m.project_id !== job.packet.project_id && (m.site_id === record.site_id || m.repository_path === record.repository.repository_path))) throw stagingError('source_mapping_already_bound');
+      const prior = mappings.find(m => m.project_id === job.packet.project_id);
       if (prior && (prior.customer_id !== job.packet.continuation.customer.id || prior.request_id !== job.packet.request_id || prior.site_id !== record.site_id || prior.repository_path !== record.repository.repository_path)) throw stagingError('source_mapping_identity_changed');
       const content_records = { ...(prior?.content_records || {}) };
       const completed_steps = { ...(prior?.completed_steps || {}) };

@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { Readable } from 'node:stream';
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import { afterEach, expect, it } from 'vitest';
 import { fixture } from './staging-worker-fixture.mjs';
 import { shellFixture } from './legacy-shared-shell-fixture.mjs';
@@ -27,7 +28,7 @@ function agency(input) {
   child.stdin.write(JSON.stringify(input) + '\n');
   return { ready: read(), send: value => { child.stdin.write(JSON.stringify(value) + '\n'); return read(); } };
 }
-it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true, null], ...['expired', 'paid', 'reselected', 'ack_mismatch', 'bytes', 'callback_delay', 'upload_failure', 'transport_recovery'].map(mode => [false, false, mode])])('normal Studio source associates without seeded mapping (complete: %s, mismatched copy: %s, outbox: %s)', async (complete, wrongCopy, pendingCase) => {
+it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true, null], [true, false, 'cross_customer'], ...['expired', 'paid', 'reselected', 'ack_mismatch', 'bytes', 'callback_delay', 'upload_failure', 'transport_recovery'].map(mode => [false, false, mode])])('normal Studio source associates without seeded mapping (complete: %s, mismatched copy: %s, outbox: %s)', async (complete, wrongCopy, pendingCase) => {
   const delayed = ['callback_delay', 'upload_failure'].includes(pendingCase);
   const html = shellFixture().selected.replace('href="about.html"', 'href="index.html"');
   const copy = { page_name: 'About', title: 'About us', description: 'Our story', heading: 'Our story', body: 'Actual supplied page copy.' };
@@ -62,6 +63,16 @@ it.skipIf(!harness).each([[false, false, null], [true, false, null], [true, true
   const capabilities = () => ({ paths: f.paths, store: f.store, qa: createSelectedReviewQa({ paths: f.paths }), secret: 'synthetic-association-secret', now: () => localNow,
     callback: async body => { if (failCallback) throw new Error('synthetic_callback_delayed'); if (transient.length) throw Object.assign(new Error('temporary upstream failure'), { code: 'callback_rejected', responseStatus: transient.shift() }); acknowledged = await a.send({ callback: body }); if (acknowledged.status !== 200) throw Object.assign(new Error(JSON.stringify(acknowledged.response)), { code: 'callback_rejected', responseStatus: acknowledged.status, reasonCode: acknowledged.response.message }); return pendingCase === 'ack_mismatch' ? { ...acknowledged.response, association_id: 'wrong-association' } : acknowledged.response; } });
   const args = { site_id: built.site_id, run_id: built.run_id, association: grant };
+  if (pendingCase === 'cross_customer') {
+    const payload = JSON.parse(grant.payload_json);
+    payload.intent.authored_content.pages[0].customer_id = 'another-customer';
+    const payload_json = JSON.stringify(payload);
+    const signature = crypto.createHmac('sha256', 'synthetic-association-secret').update(`${payload.schema}\n${payload_json}`).digest('hex');
+    await expect(createSourceAssociation(capabilities()).finalize({ ...args, association: { ...grant, payload_json, signature } })).rejects.toThrow('content_customer_changed');
+    expect(f.store.sourceMappings()).toEqual([]); expect(f.store.listAssociations()).toEqual([]);
+    expect(f.counters.uploads).toBe(0); expect(acknowledged).toBeUndefined();
+    await a.send({ close: true }).catch(() => {}); return;
+  }
   if (wrongCopy) {
     await expect(createSourceAssociation(capabilities()).finalize(args)).rejects.toThrow('completed_content_changed');
     expect(f.store.sourceMappings()).toEqual([]); expect(f.counters.uploads).toBe(0);
