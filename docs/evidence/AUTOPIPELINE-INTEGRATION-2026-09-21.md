@@ -2,7 +2,41 @@
 
 Status: in progress, local source only. No production cutover.
 
-## Latest complete-source checkpoint
+## Latest complete-source checkpoint - private-review reconciliation
+
+Studio f527e8b plus the batch/shadow cleanup repair, paired with Designs
+4998be27695f5e3940212d9cebedb31d923c04a6, passes **1,588 tests / 135 files**,
+zero failed/skipped, both lints, both synthetic execution proofs and whitespace.
+Suite: 291.94 seconds; guarded command: 293.357 seconds. Receipt:
+`private-review-paired-cleanup.vq9vHH` under `/tmp/famtastic-phase2-review.NVAfPl`.
+All paired fixtures were enabled. Both protected data inventories are unchanged.
+The paired PHP module separately passes 716 tests / 4,160 assertions, with 68
+existing deprecations; see the Designs private-review compatibility contract.
+Do not add overlapping focused counts. No fresh creative execution or cloud
+activation is established by these receipts.
+
+The predecessor `private-review-full-paired.wVw6NX` was interrupted at 189.521s
+by the 200 MiB guard, not an assertion failure. Batch and shadow tests leaked
+synthetic directories. Their teardown now restores prior environment variables
+and deletes only roots allocated by the test. Focused receipt
+`fixture-cleanup-focused.AEF49y`: 12 cases/two files, 16.40s suite, 16.969s guarded.
+After the full rerun, no newer matching batch/shadow roots remain.
+
+Thirteen exact interrupted-run fixture directories were inventoried, checked for
+open files, archived, integrity/entry/hash verified, then removed recoverably.
+Retained archive `private-review-full-paired.wVw6NX/interrupted-fixtures.tar.xz`:
+3,178 entries, 235,528,188 original file bytes, 6,993,208 archived bytes, SHA256
+`07c0bd4f74e13eb02b69b3136b23582dbab0cd97781e254382423a35996a20f1`.
+The inventory and archive/cleanup receipts are alongside it. No owner data was
+deleted. Free space after the full run was 535 MiB, still inadequate for an image
+build. A later fetched Designs main f750a163 adds only delivery documentation;
+its merge preserves runtime/test source from the tested pair.
+
+Paid-operation journal and real private-review contention work are separate
+in-progress slices, not included in these totals. Creative adapter, fenced
+import, complete unattended journey and cloud activation remain unfinished.
+
+## Earlier complete-source checkpoint
 
 Studio `17a645b48cb7f84aacbf6bdf58c185abcc7c3db0` paired with Designs
 `44caa869e1b48d16c1c56b295083f8eda13612a5` now passes **1,588 tests / 135 files**,

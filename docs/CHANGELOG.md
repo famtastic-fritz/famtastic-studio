@@ -1,5 +1,16 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Remove test-owned batch and shadow fixtures after each case
+
+Batch tests now restore their prior data-root environment and remove only their
+own registered temporary roots. Shadow tests likewise remove their separately
+allocated shadow base, never an ambient restored path. Twelve focused cases pass
+in 16.40 seconds; the full paired source rerun is recorded in the integration
+evidence. The interrupted predecessor reached the 200 MiB disk guard, not an
+assertion failure. Its 13 exact synthetic fixture roots were inventoried and
+archived with verified hashes before their originals were removed. Production
+source, owner files and authoritative databases are unchanged.
+
 ## 2026-09-21 - Close the Phase 2 container CLI helper dependency
 
 Add only `server/kernel/cli-entry.js` to both image COPY instructions, filtered

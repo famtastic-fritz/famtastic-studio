@@ -1,5 +1,15 @@
 # Site Studio learning record
 
+## 2026-09-21 - Synthetic builds also need ownership-scoped cleanup
+
+Full regressions can pass their assertions yet exhaust disk when batch/shadow
+fixtures survive every case. Register each temporary root when allocated; restore
+the caller's environment before deleting only those test-owned roots. Verify
+absence in teardown. An interrupted run needs separate exact-target inventory,
+open-file checks and a verified recoverable archive, not wildcard deletion of
+all similarly named directories. Retain its failed-run receipt, and rerun the
+same paired source rather than crediting an older full-suite pass.
+
 ## 2026-09-21 - Verify the packaged import closure, not the host checkout
 
 A shared CLI helper can pass host tests while being absent from both filtered
