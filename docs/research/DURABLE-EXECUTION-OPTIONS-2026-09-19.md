@@ -37,3 +37,76 @@ Sources:
 - [Google Cloud Run jobs](https://docs.cloud.google.com/run/docs/create-jobs)
 - [SQLite transactions](https://www.sqlite.org/lang_transaction.html)
 - [SQLite online backup](https://www.sqlite.org/backup.html)
+
+## 2026-09-21 Phase 2 implementation addendum
+
+The Google serverless option remains the selected design, now as an inert cloud
+shadow candidate rather than an activated service. Two private Cloud Run
+services separate admission/reconciliation from execution. Cloud Tasks carries
+IDs-only named dispatch, a named Firestore database holds the durable state, and
+two private GCS buckets hold immutable source wrappers and observations. Initial
+infrastructure intends a settled baseline with both revisions at zero traffic,
+the queue paused and Scheduler absent. The current apply path is hard-disabled,
+so no such cloud baseline is claimed.
+
+The provider choice is `gemini-3.1-flash-lite` on Vertex through the stable
+`v1` API. Google's model page describes the model as stable and supporting
+structured output and thinking. Vertex documents `MINIMAL` as its default
+thinking level and as close as possible to a zero thinking budget, but thinking
+tokens can still occur. The pricebook therefore charges both response and
+reasoning tokens at the documented standard global rate. As of this review,
+Google lists $0.25 per million text/image/video input tokens and $1.50 per
+million response and reasoning tokens for standard global inference.
+
+The candidate fixes the provider identity, model, API version, location,
+thinking level, JSON schema, prompt size, combined output/thinking-token limit
+and reservation amount in code. Reported usage must have zero cached tokens and
+an exact total. These source checks do not replace a low-cap real GCP canary,
+which remains a separate activation gate.
+
+At-least-once delivery requires proof on both sides of submission. The Phase 2
+candidate records a worker-claim acknowledgement deadline and advances a fenced
+dispatch generation when a submitted task never claims. Old generations then
+fail before model work. It also treats an `ALREADY_EXISTS` task whose FULL record
+cannot be read as unknown execution risk, not safe deduplication. These are
+application recovery properties; an always-on VM, n8n or a chat schedule would
+not supply them.
+
+The current infrastructure scaffold is intentionally non-executable. In
+addition to the create-or-update Cloud Run problem, its separate queue-create
+and queue-pause commands do not prove an initially paused queue. A future apply
+must close both boundaries. Operational pause also cannot cancel a Vertex call
+after submission, so live containment evidence must retain and reconcile the
+model-call cost ledger.
+
+The Oracle VM option still does not close the execution gap. Hosting this code
+on a permanent VM would not itself establish transactional admission, dispatch
+reconciliation, lease fencing, provider checkpoints or cost accounting. n8n and
+scheduled chat jobs remain optional supervision or integration tools, not the
+durable authority.
+
+Additional sources reviewed on 2026-09-21:
+
+- [Gemini 3.1 Flash-Lite model](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite)
+- [Vertex thinking controls](https://cloud.google.com/vertex-ai/generative-ai/docs/thinking)
+- [Vertex generative AI pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing)
+- [Cloud Run HTTPS invocation](https://cloud.google.com/run/docs/triggering/https-request)
+- [Cloud Tasks delivery model](https://cloud.google.com/tasks/docs/dual-overview)
+
+## 2026-09-21 pre-submission fencing follow-up
+
+The delayed-reservation-response reproduction showed that a successful database
+call can return after terminal lease reconciliation. A new transaction now
+authorizes the exact current lease, generation, immutable envelope and reserved
+model call. The runtime checks the returned authorization and local clock
+immediately before invoking the provider, requiring its fixed 120-second timeout
+plus 5 seconds of headroom. Authorization is not a submission receipt.
+
+This design narrows known latency windows without claiming atomicity across
+Firestore and HTTP. Process suspension, clock movement and changes after the
+last check remain distributed-system risks. Provider timeout does not establish
+remote cancellation. Real contention and in-flight accounting remain activation
+gates. Duplicate admission and checkpoint predecessor validation were tightened
+with dedicated negative and positive synthetic tests. See
+`docs/evidence/PHASE2-PRESUBMISSION-FENCING-2026-09-21.md`; no new cloud or provider
+experiment was run for this follow-up.

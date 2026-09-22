@@ -24,6 +24,7 @@ const envKey = config.data_root_env;
 let liveRoot;
 let prevEnvValue;
 let prevShadowDataRoot;
+let ownedShadowRoot;
 
 beforeEach(() => {
   liveRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-next-shadow-live-'));
@@ -32,7 +33,8 @@ beforeEach(() => {
   // Each test gets its own SHADOW_DATA_ROOT base so runs from different tests
   // never share a parent directory, even transiently.
   prevShadowDataRoot = process.env.SHADOW_DATA_ROOT;
-  process.env.SHADOW_DATA_ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-next-shadow-base-'));
+  ownedShadowRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-next-shadow-base-'));
+  process.env.SHADOW_DATA_ROOT = ownedShadowRoot;
 });
 
 afterEach(() => {
@@ -41,6 +43,9 @@ afterEach(() => {
   if (prevShadowDataRoot === undefined) delete process.env.SHADOW_DATA_ROOT;
   else process.env.SHADOW_DATA_ROOT = prevShadowDataRoot;
   fs.rmSync(liveRoot, { recursive: true, force: true });
+  fs.rmSync(ownedShadowRoot, { recursive: true, force: true });
+  expect(fs.existsSync(liveRoot)).toBe(false);
+  expect(fs.existsSync(ownedShadowRoot)).toBe(false);
 });
 
 function honestBrief(overrides = {}) {

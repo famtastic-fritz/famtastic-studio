@@ -98,7 +98,13 @@ function checkSource(source, customer, selection, payment, research, lifecycle_s
   return errors;
 }
 
-function checkDesignContract(brand) {
+function checkDesignContract(brand, bundle) {
+  const c = brand?.design_contract;
+  if (c?.schema_version === 1 && c.kind === 'selected-source-preservation-v1') {
+    return /^[a-f0-9]{64}$/.test(c.source_sha256 || '') && bundle?.files?.some(f => f.sha256 === c.source_sha256 && f.path.endsWith('.html'))
+      && c.preservation === 'exact-source-and-marked-shell' && c.asset_policy?.preserve === true && c.asset_policy?.rights_safe_only === true
+      ? [] : ['brand.design_contract: source-preservation binding invalid'];
+  }
   return validateDesignContract(brand?.design_contract);
 }
 
@@ -128,7 +134,7 @@ export function prepareSelectedBuildPacket({
   else for (const field of ['id', 'name', 'email']) required(customer[field], `customer.${field}`, errors);
   if (!isObject(spec)) errors.push('spec: required');
   if (!isObject(brand)) errors.push('brand: required');
-  errors.push(...checkDesignContract(brand));
+  errors.push(...checkDesignContract(brand, artifact_bundle));
   errors.push(...(artifact_bundle ? validateArtifactBundle(artifact_bundle) : ['artifact_bundle: required approved proof artifact bundle']));
   if (!['staging', 'production'].includes(lifecycle_stage)) errors.push('lifecycle_stage: must be staging or production');
   errors.push(...checkSource(source, customer, selection, payment, research_packet_ref, lifecycle_stage));

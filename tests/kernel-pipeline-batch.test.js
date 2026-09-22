@@ -1,7 +1,7 @@
 // Batch builds. The measured win this exists for: three real briefs took 430s
 // sequentially and 180s concurrently (2.39x), because research is ~99% of a
 // build and is provider-bound rather than CPU-bound.
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -16,9 +16,23 @@ import { makeResearchStub } from './research-stub.mjs';
 import { makeCopyStub } from './copy-stub.mjs';
 
 const config = loadPathsConfig();
+const ownedRoots = new Set();
+let previousRoot;
+beforeEach(() => { previousRoot = process.env[config.data_root_env]; });
+afterEach(() => {
+  if (previousRoot === undefined) delete process.env[config.data_root_env];
+  else process.env[config.data_root_env] = previousRoot;
+  // Only directories allocated by this test, never a restored ambient root.
+  for (const root of ownedRoots) {
+    fs.rmSync(root, { recursive: true, force: true });
+    expect(fs.existsSync(root)).toBe(false);
+  }
+  ownedRoots.clear();
+});
 
 function kernels() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-next-batch-'));
+  ownedRoots.add(tmp);
   process.env[config.data_root_env] = tmp;
   const paths = createPaths();
   const journal = createJournal({ paths });

@@ -1,0 +1,17 @@
+import crypto from 'node:crypto';
+import { stagingError } from './staging-store.js';
+// Endpoint is configuration, never a packet-provided callback URL.
+export function createStagingCallback({ endpoint, secret, request }) {
+  const url = new URL(endpoint);
+  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash
+    || !['/api/pipeline/site-studio/callback', '/web/api/pipeline/site-studio/callback'].includes(url.pathname)
+    || !secret || !request) throw stagingError('callback_configuration_invalid');
+  return async body => {
+    const raw = JSON.stringify(body);
+    const response = await request(endpoint, { method: 'POST', redirect: 'error', body: raw,
+      headers: { 'Content-Type': 'application/json', 'X-FAMtastic-Signature': `sha256=${crypto.createHmac('sha256', secret).update(raw).digest('hex')}` } });
+    if (response.status !== 200 || response.body?.ok !== true) throw Object.assign(stagingError('callback_rejected'), { responseStatus: response.status,
+      reasonCode: /^source_association_[a-z_]+$/.test(response.body?.message || '') ? response.body.message : response.body?.error || null });
+    return response.body;
+  };
+}

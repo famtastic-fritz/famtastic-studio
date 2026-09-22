@@ -17,6 +17,7 @@
     "events": ".studio/events",
     "execution": ".studio/execution",
     "famtasticinc": ".studio/famtasticinc",
+    "staging": ".studio/selected-staging",
     "deploys": ".studio/deploys",
     "learning": ".studio/learning"
   },

@@ -1,5 +1,203 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Verify current-lease private review reads
+
+- Pair unchanged runtime with local Designs161123dc: final1,628/136, lints,
+  both synthetic proofs and offline infra pass. Agency PHP1,498/16,755 and
+  canonical legacy journey also pass; protected inventories unchanged.
+- Record the reproduced/repaired valid-large-brief issue and preserve complete
+  source-versus-installed-delivery boundaries. This checkpoint changes docs only.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
+## 2026-09-22 - Verify atomic agency import-to-review compatibility
+
+- Pair unchanged Studio runtime with local Designs880f163b: final1,628/136,
+  both lints/synthetic proofs and offline infra pass; protected data unchanged.
+- Record the agency's PHP1,468/16,031, canonical legacy journey and repaired
+  standalone PHP helper imports, retaining the initial failed paired receipt.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`. No activation.
+
+## 2026-09-22 - Verify paired retained-QA checkpoint
+
+- Record final paired1,628/136, agency PHP1,413/15,217 and canonical legacy
+  captured-mail journey with protected data unchanged; no Studio runtime change.
+- Distinguish local Designs482da42a from the remote review head after its push
+  failed for missing workflow permission. CI billing/cloud auth gates remain.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
+## 2026-09-22 - Isolate create-only cloud requests and uncertain outcomes
+
+Add an inert, exact Cloud Run POST-create primitive with injected transport and
+journal boundaries, no upsert/adoption, bounded request metadata and explicit
+unresolved intent before submission. Align shell service-name bounds. Independent
+recovery review is resolved; final paired1,628 tests/136files, lints, synthetic
+proofs and offline infra checks pass. Apply remains hard-disabled; no cloud call
+or production activation. See `docs/evidence/PHASE2-RUN-CREATE-ONLY-2026-09-22.md`.
+
+## 2026-09-22 - Prove actual Phase 2 Linux images
+
+- Build both filtered role images from an immutable Node base for Linux/AMD64;
+  verify non-root SDK imports, copied hashes and closed unconfigured startup.
+- Retain local receipts and stop the isolated VM. No runtime source change,
+  image push, production restart or cloud activation. See the Linux image receipt.
+
+## 2026-09-22 - Reverify recovered review source with current agency code
+
+- Full paired1,588 tests/135files, lint and both synthetic execution proofs pass
+  with unchanged protected data; retain fresh receipts outside temporary roots.
+- Record agency PHP983/6,731 and the captured-mail canonical journey separately
+  from the unfinished managed unattended flow. No runtime source or activation.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
+## 2026-09-21 - Verify paired journal and private-review integration
+
+- Pair e470dfe with Designs9583766f: 1,588 Studio tests, both lints and both
+  synthetic execution proofs pass; PHP791/4,804 passes with68 existing deprecations.
+- Protected inventories unchanged, zero external effects, main refs unchanged.
+  This is review-branch verification, not production or cloud activation.
+  Exact receipt: `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
+## 2026-09-21 - Remove test-owned batch and shadow fixtures after each case
+
+Batch tests now restore their prior data-root environment and remove only their
+own registered temporary roots. Shadow tests likewise remove their separately
+allocated shadow base, never an ambient restored path. Twelve focused cases pass
+in 16.40 seconds; the full paired source rerun is recorded in the integration
+evidence. The interrupted predecessor reached the 200 MiB disk guard, not an
+assertion failure. Its 13 exact synthetic fixture roots were inventoried and
+archived with verified hashes before their originals were removed. Production
+source, owner files and authoritative databases are unchanged.
+
+## 2026-09-21 - Close the Phase 2 container CLI helper dependency
+
+Add only `server/kernel/cli-entry.js` to both image COPY instructions, filtered
+contexts and source boundaries. Offline child-process regressions reproduce the
+missing dependency, check computed imports, and preserve inert imports and
+fail-closed startup. No runtime behavior or cloud apply gate changes. See
+`docs/evidence/PHASE2-CONTAINER-CLOSURE-2026-09-21.md` for executed evidence.
+
+## 2026-09-21 - Exercise the actual bounded dispatch CLI
+
+Two cross-repository tests run the existing Designs CLI through signed loopback
+ingress into the real selected staging route and pipeline, with synthetic Drupal
+authority and hosting. They exposed a Mac symlink direct-execution bug in Designs,
+now repaired there. Lost acknowledgement and replay preserve one build and one
+captured callback; unconfigured selected execution stays closed. Nine paired
+Node checks and both Studio cases pass. No production activation. Record actual
+CLI capability metadata, route topology and transport-size limitations in
+`docs/evidence/MAC-CREATIVE-CAPABILITIES-2026-09-21.md`.
+
+## 2026-09-21 - Repair completed-source adoption fixture only
+
+The legacy roundtrip now starts with an unassociated normal artifact build of
+fully branded Home and the exact PNG, supplies explicit file rights and retrieves
+each URL's actual bytes. The focused offline test passes first adoption, one-repo
+reuse, receipt/retry, conflicting duplicates, cross-account and missing/changed
+asset rejection, plus the retained numeric/Unicode JSON wire cases. No production
+Node guard, PHP asset cap or finalized-source validator changes. See
+`docs/evidence/COMPLETE-SOURCE-CREDIT-FIXTURE-2026-09-21.md`.
+
+## 2026-09-21 - Versioned narrow source-association credit capability
+
+Add v2 signed grants binding the retained original Home to the exact pinned
+canonical footer projection and PNG. V1 remains exact-original and assetless.
+First association uses original bytes for independent QA and retains the frozen
+projection through later mappings; non-Home pages require authored evidence.
+PHP/Node policy parity, identity, tampering and original length guards pass 28
+local tests. Full cross-repository association/revision verification is pending.
+
+## 2026-09-21 - Parent verification of integrated execution fencing
+
+Reviewed and integrated the isolated pre-submission/admission repair. Guarded
+parent reruns pass 362 Phase 2 tests plus the composed proof and lints; 42 Phase 1
+tests plus its proof and YAML checks also pass. Current-runtime and legacy data
+inventories are unchanged. Selected cross-language credit integration is still
+under verification; no production flags, service restart or cloud activation.
+
+## 2026-09-21 - Additive selected-consumer integration, local verification pending
+
+- Reconcile current main and the selected-staging continuation branch without
+  discarding the Phase 1 mock-only route or customer repository location policy.
+- Separate real selected admission and preserve the narrow signed ingress.
+- Bind selected QA, public hosting and source reuse to the exact receipted
+  creator-credit derivative while preserving immutable customer selections.
+- Independent Phase 2 review found four additional lease/lineage defects;
+  dedicated repair and final verification remain required. No activation.
+
+## 2026-09-21 - Recheck provider authority after delayed responses
+
+Added transactional pre-submission lease, generation, envelope and call ownership
+authorization plus an immediate local remaining-lease check. Completion now
+validates its outbox; claim recovery distinguishes active generations from
+scheduled checkpoint predecessors; admission duplicates and renewals validate
+requested documents before acceptance or writes. Targeted synthetic tests:
+163 dedicated regressions and 130 compatibility tests passed. Cloud activation
+and real contention remain unproven; transaction and provider HTTP are not atomic.
+See `docs/evidence/PHASE2-PRESUBMISSION-FENCING-2026-09-21.md`.
+
+## 2026-09-21 - Fence recovery records and refresh retried transaction clocks
+
+Bind dispatch records, expired attempts and checkpointed calls to exact job,
+pilot, packet, intent and fencing identities before mutation or reuse. Refresh
+timestamps within transaction callbacks. Thirty added regression cases and the
+full 1,185-test suite pass; both synthetic execution proofs and offline validation
+pass. This is local source evidence, not live Firestore or customer automation.
+See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
+## 2026-09-21 - Mac offline validation repair (local only)
+
+Use safe YAML parsing compatible with the workstation's Ruby 2.6, reject
+aliases/object construction, and fail closed when no parser is available.
+Full suite: 1,155 tests passed across 101 files. Offline infrastructure
+validation and example plan passed; Phase 1 and Phase 2 synthetic proofs passed.
+No deployment, cloud activation or customer execution occurred. See
+`docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md` for scope and remaining work.
+
+## 2026-09-21 - Inert durable execution Phase 2 candidate
+
+Added an isolated Google Cloud shadow runtime around the Phase 1 contracts:
+private control and worker HTTP services, staged Firestore admission, named Cloud
+Tasks dispatch, immutable GCS source and observation artifacts, fenced leases,
+provider-success checkpoints, bounded recovery, explicit dead letters, cost
+ledgers, exact OIDC route identities and a deny-by-default customer-effect
+firewall. The fixed provider is Vertex Gemini 3.1 Flash-Lite through
+`@google/genai` Vertex API `v1`, with `MINIMAL` thinking, a combined 4096 output
+and thinking-token bound, and billed thinking-token accounting.
+
+Unclaimed task deliveries now carry a bounded, transactional worker-claim
+acknowledgement and advance through fenced dispatch generations; stale tasks
+cannot execute and exhaustion is visible. A failed FULL lookup after Cloud Tasks
+reports `ALREADY_EXISTS` parks the job with unknown execution risk. Lost
+responses from a committed model-call reservation recover the attempt-bound call
+and can settle it at zero only with proven pre-provider absence.
+
+The infrastructure package is deliberately inert and apply is hard-disabled
+before cloud calls until Cloud Run creation is atomically create-only. The
+reviewed target gives new revisions zero traffic, pauses the queue, omits
+Scheduler, keeps all four application controls safe, and leaves the intake
+identity unattached to a cloud workload.
+A pause-only command and stop sequence persist the safe controls and continue
+IAM containment even when one containment action fails. There is no enable
+command in this package.
+
+Bootstrap, pause and apply refuse an ambient Firestore emulator. Two activation
+blockers remain explicit in the infrastructure scaffold: Cloud Run lacks an
+atomic create-only path, and queue creation followed by a separate pause leaves
+an unproven initial-running interval. Stop cannot cancel a Vertex request already
+in flight, so a live drill must reconcile its outcome and cost.
+
+The hermetic composed proof drives 20 synthetic jobs through the production
+control and worker HTTP composition. It ends with 18 observations awaiting the
+pilot review gate and two visible dead letters, including admission recovery,
+provider-checkpoint recovery and generation-10 dispatch exhaustion. It made no
+real provider, Google Cloud, network or customer-effect call. Firestore emulator
+concurrency, a real GCP provider canary, ingress connectivity, deployment and
+activation remain unproven. See
+[the Phase 2 evidence](evidence/DURABLE-EXECUTION-PHASE2-2026-09-21.md).
+The production dependency audit is clean; the full audit retains two moderate
+development-only `@vitest/mocker` findings whose reported fix requires a major
+Vitest upgrade.
+
 ## 2026-09-19 - Fail-closed durable execution Phase 1
 
 Selected staging intake now commits one AgentTaskLog row, one Phase 1 job and
@@ -26,6 +224,94 @@ no orphan and no external effect. Preservation of the actual 448 parked jobs,
 seven schedules and three performance rows remains for independent verification
 against a SQLite online-backup copy, never the live database. See
 [the Phase 1 evidence](evidence/DURABLE-EXECUTION-PHASE1-2026-09-19.md).
+## 2026-09-18 — Runtime integration and real hosting proof; activation closed
+
+Wired opt-in private configuration, server runtime injection, embedded/external
+worker lifecycle and the production `/web` callback mount. Added a narrowly
+scoped signed ingress proxy. Combined suite: 1,090 passing tests / 104 files,
+no skips; lint passes. A real isolated cPanel upload
+verified protected HTTPS bytes; its callback remained local. Installed agency
+SQLite integration passed 54 checks. No production worker activation, customer
+replay, notification, payment or final launch. Automatic target allocation is
+still absent. Current status: `docs/env/selected-staging-release-2026-09-18.md`.
+
+Historical September 17 uploaded-reference verification including anonymous-share hardening: **1,011 tests / 98 files in 55.85s** with all PHP/browser harnesses enabled. PHP 42 contract assertions/3 selection cases, 34 portal DNA checks, brand check, routing YAML, syntax, lint and diff checks pass. No live or Drive writes in that pass.
+
+## 2026-09-17 - Private uploaded reference reuse (local)
+
+Exact uploaded references retain protected-review restrictions through source metadata, exports, receipts and consumer gates. Revalidate agency access before hosting and success callback; reject anonymous/alias exposure and generic public deployment. Normal upload-to-About assembly preserves logo/Home bytes with zero generation. Full suite before final share-route hardening: 1,011/98; focused asset regression passes afterward.
+
+## 2026-09-17 - Verified ancestor reconciliation and portal browser proof
+
+Retain verified source history and check actual Git ancestry before reconciling an older acknowledged agency source with newer local completion. Three-revision callback/upload failures build only the missing page while preserving prior bytes; unrelated/tampered records remain rejected. Actual portal form/serializer proof at 390/1280 is included. Full suite: 1,010 tests / 97 files in 54.50s.
+
+## 2026-09-17 - Reconcile completion before callback acknowledgement
+
+The worker projects a local execution plan from its verified durable source mapping before assembly. Matching completed-page content/template/permission bindings skip only that completed step; the signed packet and callback identity stay unchanged. Delayed callback and failed upload followed by a new Team request preserve About and assemble only Team after restart. Original source origin is immutable; the current handoff initiator is separate. Missing-page assembly also supports an unambiguous hero with the same strict text-field contract as intro.
+
+## 2026-09-17 - Durable source mapping and normal request revisions
+
+- Verified worker finalization writes the project/source mapping into SQLite and includes it in the matched receipt. Later missing-page work reads exact mapped artifacts and continues the same repository after restart.
+- Normal writer regression covers first project creation, accepted-preview invalidation from request edits, serialization-only idempotency, Studio re-registration of completed source, and non-intro package-only source.
+- Full local suite: 1,004 tests / 96 files in 44.48s. See `docs/env/normal-selected-records-proof-2026-09-17.md` for remaining boundaries.
+
+## 2026-09-17 - First normal record-writer continuation
+
+- Consume a marked shell derived from exact selected HTML, explicitly recording that no original template was received. Added an artifact-only source-preservation design contract; no fabricated design tokens.
+- Added scoped artifact request signing to the runtime assembly and actual agency callback/request/selection/dispatch/reader/receipt proof. Missing copy/rights/features remain planning issues.
+- This first profile is static intro-section pages without media. Automatic project-source mapping, normal media rights and both-direction revision proof remain follow-on work.
+
+## 2026-09-17 - Lossless source wire and faithful inherited markers
+
+- Finalized-source wire v2 hashes domain-separated exact UTF-8 payload bytes and retains original JSON semantics through PHP storage.
+- Fixed planning intent checksum reserialization; scope snapshots carry producer bytes and their declared digest strategy.
+- Inherited phone/email/address/testimonial markers pass unchanged; protected-field edits remain rejected. See `docs/env/source-wire-v2-2026-09-17.md` and the normal-writer connection plan.
+
+## 2026-09-17 - Bounded legacy shared-shell continuation
+
+- Added source-offset parsing and authorized text-only assembly of absent root HTML pages, preserving selected header/footer/shared CSS and explicit page metadata.
+- Bound content, permission, template, selected bytes and component scope into lineage; unsafe or ambiguous source fails closed.
+- Continued mapped Studio source in its existing repository; preflight rejects existing output files and portable case collisions.
+- Synthetic browser and cross-language evidence is recorded in `docs/env/legacy-shared-shell-proof-2026-09-17.md`; no production activation.
+
+## 2026-09-17 - Canonical mixed-case manifests and durable intent planning
+
+- Matched PHP strcmp ordering for ASCII artifact paths, retaining original
+  filenames/bytes; actual PHP mixed-case/punctuation, reorder and tamper tests pass.
+- Added a planning stage in existing SQLite jobs and authenticated acceptance/
+  callback flow. Planning results never contain staging evidence or readiness.
+- Real agency selection/ledger/client to Next HTTP/planner to agency result
+  proof passes restart, duplicate, stale and cross-tenant negatives without builds.
+  Bounded affected sweep passed 25 tests/8 files in 9.16 seconds; lint passed.
+
+## 2026-09-17 - Bound completed-source round trip and stale-evidence repair
+
+- Bound source exports to live Git identity and actual verified bytes; bound
+  selected-browser QA to site/run/manifest. Added dirty/stale/cross-source and
+  incomplete-scope negatives. Preserved scaffold-byte verification semantics.
+- Reused explicitly mapped Studio-origin repositories through QA/hosting/receipt
+  with zero duplicate build; source-mapping absence is a named exception.
+- Proved actual worker export through real agency selection/serialization and
+  receipt services using synthetic authority/HTTP adapters. Two-worker sweep:
+  84 tests/18 files in 21.62 seconds. General concept execution remains open.
+
+## 2026-09-17 - Selection planner and actual source finalization export
+
+- Added inherited-source planning with explicit remaining-work/authority issues.
+- Pipeline now exports actual public hashes, committed repository/run identity,
+  spec/provenance and source verification after repository finalization. Pipeline
+  success alone never marks scope complete; missing pages/features/revisions or
+  selected-browser QA keep completion false. Two focused tests pass, including
+  actual agency selection-seam output; existing 12 worker tests pass and lint is
+  clean. Positive export-to-agency-to-worker proof remains the next increment.
+
+## 2026-09-17 - Independent retest and production evidence-owner trace
+
+- Recorded parent 134-test/19-file independent retest and PHP/API evidence.
+- Corrected routine-readiness claims: the selection serializer consumes an
+  evidence record absent from normal proof finalization. Documented actual
+  legacy output, derivable identity/bytes and missing scope/design/rights/
+  retrieval/hosting writers; no fabricated complete-site producer was added.
 
 ## 2026-09-14 - Independent source foundation and portable libraries
 
@@ -91,7 +377,7 @@ code were promoted by this documentation change.
 
 Validation: 11 focused discovery/inventory tests passed; whitespace checks pass.
 
-## 2026-09-13 — Read-only candidate recipe discovery
+## 2026-09-13 - Read-only candidate recipe discovery
 
 Added `GET /api/component-recipes` to discover specifications from sibling
 Component Studio while preserving readiness flags and explicitly reporting an
@@ -100,3 +386,50 @@ discovery tests and seven inventory tests pass locally. No executable owner UI
 import, scheduling runtime or production deployment is claimed.
 
 See [capability and learning](capabilities/OWNER-DESK-RECIPE-DISCOVERY.md).
+
+## 2026-09-17 - Selected staging continuation (local feature branch)
+
+- Persist signed selected packets as revision-bound durable jobs and expose an
+  explicit worker runtime with checkpointed packaging, QA, hosting and callback.
+- Import inherited selected provenance without research/copy/imagery generation;
+  preserve identical source files and the site-foundation ownership contract.
+- Add protected cPanel contract transport, bounded callback retry and rollback
+  semantics, real static browser/parity QA and synthetic cross-repo proof.
+- Document activation gates, interrupted-build reconciliation and unsupported
+  revision/application scope. No live service or production settings changed.
+
+## 2026-09-17 - Independent-review corrections
+
+- Validate static links, anchors and local resources with intercepted Chromium
+  requests and actionable evidence; no external fetches.
+- Reject ambiguous subfolder review URLs and keep all probes scoped.
+- Skip only busy claims while allowing independent queued projects to progress.
+- Derive mock-host access/noindex from installed protection; preserve foreign
+  .htaccess guard. Corrective affected/cross-repo suite: 43 tests passed.
+## 2026-09-17 - Reference aliases and inactive reupload correction
+
+Independent review found two bounded edge cases. Hash-addressed reads now validate every same-packet declared alias and return exact bytes without dropping either output path; tenant/current-rights/containment checks remain required. Reuploading withdrawn bytes returns an explicit inactive-reference conflict, preserving withdrawal evidence. The dashboard clears stale success notices before actions; its existing API error path displays the conflict. Actual controller and two-path worker completion plus browser API error propagation are covered locally. No regrant, live action or Drive write.
+## 2026-09-17 - First canonical-request Studio association (local)
+
+The actual current unpaid request/selection writer issues an immutable one-hour signed source association. A normal Studio run can bind its verified Git/browser/file evidence without seeded mapping or rebuilding completed pages. Exact completed-copy evidence is checked against current authored fields. Durable callback retry survives restart; the first signed callback registers source and refreshes the normal request without Select. Complete pages package unchanged; only missing pages build in the same repository. Paid/reselected/expired/cross-tenant/conflicting-source/changed-copy cases fail. The grant never establishes hosting, acceptance or checkout. Initial association is static and assetless; arbitrary Studio-first agency customer/request creation and live transport remain unproven. Full regression is recorded separately; no production or Drive writes.
+Final association validation: full suite **1,014 tests / 99 files in 59.76s** with all PHP and actual portal component browser harnesses enabled. Follow-up source-association route-handler/negative proof **3/3 in 6.49s**. PHP 42 contract assertions/3 selection cases, changed PHP syntax, Next lint/diff, brand integrity and 34 portal DNA checks pass. Tests use synthetic Drupal persistence and protected hosting responses; production remains unchanged.
+
+Association freshness follow-up: grant issue/acceptance re-read actual canonical intake scope/authored pages and contained selected file hashes/sizes, not only the saved intent. Direct row or source drift is rejected before mapping. Focused normal association/controller/route proof passes 3/3 in7.02s after this correction; the preceding full regression remains 1,014/99. Local only; no Drive write.
+
+## 2026-09-17 - Unattended source callback and partial ancestry correction
+
+Independent review found that durable association callbacks needed another manual call and that later ancestry rejected valid associated partial sources. The existing worker wake now retries the exact outbox envelope with explicit matched acknowledgement, shared project claims and bounded attempts. Expired/paid/reselected/changed-source/incorrect acknowledgements enter actionable non-ready reconciliation; unrelated work proceeds. Valid partial ancestry requires the original association and scope digest, exact authenticated wire, bound source/browser QA, only required_pages_incomplete, and actual Git ancestry/unchanged bytes. Callback-delay and upload-failure sequences add only Team after local About completion. Focused lifecycle proof10/10 passes21.57s; full regression recorded separately. No daemon, live activation, mail or Drive writes.
+
+Final unattended-outbox and associated-partial-ancestor regression: **1,021 tests / 99 files in 74.56s**, with all three PHP harness variables and actual portal component/browser dependencies. All10 association lifecycle cases pass, including ordinary wake after restart, explicit ACK mismatch, non-ready reconciliation, unrelated-job progress, callback delay and upload failure. PHP42/3, syntax, Next lint and diff checks pass. No production or Drive writes.
+
+## 2026-09-17 - Keep build success separate from handoff retries
+
+Independent POST-route review found that combining build and source association could rebuild on a failed callback replay. The combined run option is now explicitly rejected before work; supported orchestration creates once, then associates the stored site/run through its separate endpoint. Actual POST replay/concurrency/conflicting-input checks preserve run count and Git HEAD. Transient callback failures (including408/429/503) now retain persisted due times with5-second exponential backoff capped300 seconds, continuing within grant validity instead of stopping after three attempts. Permanent/stale authority still requires reconciliation. Focused11-case proof includes more than three transient failures, restart, automatic recovery and unrelated work; full regression recorded separately. No live or Drive changes.
+
+Final separate-handoff/backoff regression: **1,022 tests / 99 files in 70.01s**, all three PHP harnesses and actual portal component/browser dependencies enabled. Eleven association cases include actual POST combined-option refusal with concurrent/replayed/conflicting inputs, more than three transient failures including429, persisted due-time suppression, restart/ordinary-wake recovery, and unrelated-job fairness. Next lint and diff checks pass. Agency code is unchanged by this last correction; prior PHP42/3 and syntax checks remain applicable. Local-only; Drive excluded.
+
+## 2026-09-17 - Current handoff synopsis and independent closeout
+
+Final independent parent code review passed 1,022 tests/99 files in77.73s with all PHP/browser environments, plus PHP42/3 selection/3 portal API cases and lint/diff. Refreshed the canonical handoff and writer-plan openings to describe current bounded support, explicit unsupported profiles and actual operational gates; marked older checkpoint claims historical. Append-only progress entries must not leave the current synopsis stale. No production or Drive changes; final dependency cleanup is separate from code proof.
+
+Final cleanup: verified and removed only this task's temporary Next dependency symlink after independent review; its dependency target remains intact. The handoff synopsis records current cleanup, supported scope and final independent proof. No further code change or full sweep was needed for documentation-only closeout.

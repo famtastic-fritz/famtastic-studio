@@ -7,6 +7,7 @@
  * the eventual production runner; the default adapter is dry-run only.
  */
 import crypto from 'node:crypto';
+import { decodeSourceExport } from './source-export-wire.js';
 
 export const FAMTASTICINC_ADAPTER_SCHEMA_VERSION = 1;
 export const FAMTASTICINC_PROVIDER = 'famtasticinc';
@@ -76,7 +77,8 @@ export function createFamtasticIncAdapter({ env = process.env, transport = null,
     };
   }
 
-  function plan({ provider = FAMTASTICINC_PROVIDER, site_id, manifest_hash, repo_url = null, repository_mode = 'create_or_existing', branch = 'main', domain = null, environment = 'staging', target_root, remote_subdirectory = null, hosting_class = 'shared' } = {}) {
+  function plan({ provider = FAMTASTICINC_PROVIDER, site_id, manifest_hash, repo_url = null, repository_mode = 'create_or_existing', branch = 'main', domain = null, environment = 'staging', target_root, remote_subdirectory = null, hosting_class = 'shared', source_export = null } = {}) {
+    if (source_export && decodeSourceExport(source_export).use_restrictions) throw fail('protected_review_transport_required', 'This source requires an account-bound protected review transport.');
     assertProvider(provider);
     if (!safeSiteId(site_id)) throw fail('identity_invalid', 'site_id must be lowercase kebab-case');
     if (!text(manifest_hash)) throw fail('manifest_required', 'manifest_hash is required');
@@ -110,6 +112,7 @@ export function createFamtasticIncAdapter({ env = process.env, transport = null,
   }
 
   async function dispatch(planRecord, { dry_run = true, manifest = [], callback = null } = {}) {
+    if (planRecord.use_restrictions || planRecord.source_export && decodeSourceExport(planRecord.source_export).use_restrictions) throw fail('protected_review_transport_required', 'This source requires an account-bound protected review transport.');
     if (!planRecord || planRecord.schema_version !== FAMTASTICINC_ADAPTER_SCHEMA_VERSION) {
       throw fail('plan_invalid', 'a current FAMtastic Inc handoff plan is required');
     }

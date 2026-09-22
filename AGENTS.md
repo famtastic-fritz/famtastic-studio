@@ -1,5 +1,25 @@
 # Site Studio Next agent instructions
 
+For Phase 2 provisioning work, read `docs/contracts/PHASE2-RUN-CREATE-ONLY.md`.
+The new operator-only v2 request primitive is not a provisioner or permission to
+bypass apply-inert's hard stop. Never retry/adopt a collided or uncertain create,
+infer zero traffic from an empty traffic list, or call queue creation atomically
+paused. Keep the Mac lane intact and require actual ownership/containment evidence.
+
+For additive execution integration, read
+`docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md` and
+`docs/capabilities/SELECTED-STAGING-CONSUMER.md`. Preserve the existing Mac
+creative workflow and the Phase 1 mock firewall. Real selected admission is a
+separate opt-in capability; source integration is not production activation.
+Never weaken source/rights checks to accommodate a required creator-credit
+derivative: verify its original/derived hashes and private receipt instead.
+Read `docs/evidence/MAC-CREATIVE-CAPABILITIES-2026-09-21.md` before packaging
+the Mac worker. Advertised CLI media tools are not an unattended capability
+receipt; preserve the ingress-to-selected-route mapping and inert imports.
+When an entrypoint gains a shared import, update both role-specific Docker COPY
+and context allowlists plus source-boundaries, then test the actual copied closure
+with `tests/phase2-container-closure.test.js`. Host imports alone are not proof.
+
 Read CONVENTIONS.md and `.claude/skills/site-studio-conventions/SKILL.md` before
 editing. Read `.claude/skills/dna-capture/SKILL.md` for pipeline work. Read
 design.md, SITE-LEARNINGS.md and CONVERSATIONS.md before changing direction.

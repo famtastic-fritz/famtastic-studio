@@ -71,7 +71,7 @@ describe('pipeline: end to end from a brief to a built, verified site', () => {
 
     const result = await pipeline.run({ site_id, brief: honestBrief() });
 
-    expect(result.outcome).toBe('success');
+    expect(result.outcome, JSON.stringify(result.error)).toBe('success');
     expect(result.run_id).toBeTruthy();
     console.log('pipeline run_id:', result.run_id);
 

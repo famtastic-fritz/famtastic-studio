@@ -1,0 +1,568 @@
+# Additive Mac/cloud automation integration
+
+Status: in progress, local source only. No production cutover.
+
+## September 22 - Paired signed review-read checkpoint
+
+Designs161123dc3331c964191f5344661cae118c4b892b adds current shared-lease/HMAC
+private context/artifact/brief reads. An independent valid-large-brief finding
+was reproduced with real authored-content normalization before admission, then
+fixed with complete hash-bound64KiB range retrieval. Original scope/recorded
+permissions and exact credited proof bytes remain separate from actual QA.
+
+Unchanged Studio987228f (runtimec8dcb0d) pairs successfully: **1,628tests /136files**,
+zero failed/skipped,225.65s suite/227.468s guarded. Both lints, both synthetic
+proofs, offline infra and whitespace pass, all paired inputs/serial bounded
+profile enabled. Receipt `evidence-review-read-final-studio.mmkEvw` under the
+recovered task root. Designs base880f163b plus diff
+ee0bf848e184ca0800349b8a455192f5c9d2691338b7cc554937fce88e3459d6;
+only documentation followed. Protected data stayed unchanged, zero external effects.
+
+Agency full **1,498PHP tests /16,755assertions**, portal DNA34/34, email presentation86
+and canonical captured-mail legacy journey also pass. Both actual journey child
+receipts inspected. Earlier passes/control remain retained and are not added to
+these totals. Actual Mac materializer/reviewer, evidence upload, real creative/
+tool provenance, managed DI/selected continuation, full unattended journey and
+laptop-off cloud execution remain unfinished; no runtime capability is promoted.
+
+This Studio update is docs-only. Designs161123dc is LOCAL ONLY behind the existing
+workflow-permission push gate. Main remains Studio bf1ef9ca/Designs f750a163;
+separate GitHub Actions billing/cloud CLI authorization gates remain. No push
+bypass, provider, customer send, cloud mutation, live flag or canonical restart.
+
+## September 22 - Paired atomic import-to-review handoff
+
+Designs880f163bfdf3594e539a39673d5fc7fa2d4120ac now retains v2 research and
+enrolls one existing shared review job inside the creative import's root commit.
+Independent review's research-context and normal-clock-rollover findings are
+reproduced/fixed. No scanner, new queue, changed Mac routine or automatic approval.
+
+Studio38fac1c (runtimec8dcb0d) paired with the complete Designs patch passes
+**1,628 tests /136 files**, zero failed/skipped, both lints, both synthetic proofs,
+offline infra and whitespace. Suite218.91s /guard220.780s; protected data unchanged.
+Receipt `evidence-atomic-review-studio-final.Cd3pjh` under the recovered task root.
+Precommit Designs base5435a7dd plus exact diff
+4d57a039b86db6154693c1771ea463ceb089e7476e85d76b069d34c321f06405;
+only docs followed. All paired harness inputs and serial bounded execution used.
+
+The first pair's20failures and12secondary JSON-stream errors are retained in
+`evidence-atomic-review-studio-pair.UqE28n`. Extracting the unchanged portal
+normalizer required explicit helper imports in two dependency-free PHP harnesses;
+repair those real import lists without changing guards or assertions. Final pair
+above proves the repair. This Studio checkpoint itself changes documentation only.
+
+Agency PHP **1,468 tests /16,031 assertions**, portal DNA34/34, email presentation86
+and the canonical captured-mail **legacy** journey also pass. Both actual child
+receipts were read. The actual v2 import/QArelease composition uses private bytes,
+SQLite and HMAC but synthetic creative/review judgment; it is not an installed
+unattended customer or laptop-off journey. Protected inventories stay unchanged.
+
+Designs880f163b remains local: predecessor push failed for missing workflow scope.
+No retry or bypass; remote PR42 remainsf7f836cd. Fresh fetched main remains Designs
+f750a163/Studio bf1ef9ca. Actions billing and cloud CLI auth remain separate gates.
+No provider, real mail, canonical restart, cloud mutation or production activation.
+
+## September 22 - Paired retained-QA verification
+
+Studio runtimec8dcb0dfe640ca5ecc8a4d4f78cc53deab79923a paired with the Designs
+retained-QA implementation now committed locally as482da42a passes **1,628 tests
+/136 files**, no failures/skips, both lints, both synthetic execution proofs,
+offline infra validation and whitespace. Suite220.33s /guard222.176s. Receipt:
+`evidence-retained-qa-studio-pair.BTxTD0` under the recovered task evidence root.
+The guard records the precommit Designs basef7f836cd and exact diff SHA256
+4ed5b07e022ccc35e3a56fabb8f0201e87ab99bc38a9b0fdb6fe7007dea69ebf;
+only docs and explicit CI GD declaration followed, no runtime change.
+
+Designs separately passes **1,413 PHP tests /15,217 assertions**, portal DNA34/34,
+email presentation86 and the captured-mail canonical **legacy** journey. Main
+inspected both actual journey child receipts. Protected data inventories stayed
+unchanged. Synthetic review images/provenance do not prove actual independent
+judgment, managed unattended customer delivery or laptop-off execution.
+
+The Designs checkpoint push was rejected for missing GitHub OAuth workflow scope;
+PR42 still hasf7f836cd, not482da42a. Actions billing lock and absent cloud CLI
+authorization remain separate gates. No bypass, cloud call, provider execution,
+customer send or canonical service restart. This Studio update is docs-only.
+
+Latest source checkpoint: inert create-only Cloud Run request primitive and
+unresolved-submission recovery contract pass independent review and the final
+paired1,628 tests/136files, lints, both synthetic proofs and offline infra checks.
+Protected data unchanged. Designs9403fae7 supplies actual signed worker principals;
+retained independent QA and managed unattended delivery are still unfinished.
+See `PHASE2-RUN-CREATE-ONLY-2026-09-22.md`. No cloud request, apply enablement,
+customer send or canonical service restart occurred.
+
+Latest packaging checkpoint: both real filtered Linux/AMD64 images build, import
+their installed SDKs and fail closed on unconfigured startup. Non-root uid1000,
+networkless/read-only probes, exact source hashes and unchanged protected data
+are verified. The separate local VM is stopped; nothing was pushed/deployed.
+See `PHASE2-LINUX-IMAGES-2026-09-22.md`. Cloud apply/auth/canary gates remain open.
+
+## September 22 - Restored persistent workspace and fresh paired verification
+
+The prior `/tmp/famtastic-*` roots are absent; historical raw receipts below
+are no longer inspectable. Tracked work was recovered from Git without changing
+canonical checkouts. New private evidence is under
+`/Users/famtastic-fritz/Development/FAMtastic/worktrees/autopipeline-recovery.ggJXc1`.
+
+Clean Studio754859e24d11fb2e4f81458db8453ff1b6b0c6b1 paired with Designs5734fd75
+plus its core-mail harness repair passes **1,588 tests / 135 files**, lint, both
+synthetic execution proofs and whitespace. Suite372.62s, guarded376.288s, no
+failed/skipped tests; protected inventories unchanged. Receipt
+`evidence-restored-studio-pair.E1VblP`. Node24.19.0; repository-required Node22.23.2
+was used separately for the agency frontend build. All paired harnesses enabled.
+Fixture model/cloud counters remain synthetic; no provider was called.
+
+The agency's full PHP suite passes983/6,731 with68 existing deprecations. Its
+canonical fresh Drupal journey passes with all root/child JSON checks inspected,
+four core mails captured (including one probe) and34 transactional mails captured.
+The core collector repair affects only the verified disposable site. This journey
+still exercises legacy owner review, not managed unattended release. Exact dirty
+diff and guard hashes are recorded in Designs'
+`docs/evidence/AUTOPIPELINE-RECOVERED-VERIFICATION-2026-09-22.md`.
+
+No Studio runtime source changed in this checkpoint. Managed import is now locally
+implemented but unregistered; protected reads/QA/selection and actual creative
+provenance remain unfinished. Cloud CLI has no active account/project. The two
+known moderate development-only Vitest/mocker findings remain; current production
+audit is zero. No forced upgrade, production restart, provider or cloud activation.
+
+## Latest complete-source checkpoint - journal and private review
+
+Studio `e470dfecec3e6bd77bb70131dc68bc8b10affc82` with Designs
+`9583766faf59dd199710190519fdc7929193ceda` passes **1,588 tests / 135 files**,
+both lints, both synthetic execution proofs, and the combined **791 PHP tests /
+4,804 assertions**. Zero failed/skipped tests; PHP has the same 68 existing
+deprecations. Studio suite288.66s, PHP suite2.364s/60MiB, total guarded292.917s.
+Receipt `journal-review-paired-final.zQmLl9` under the existing evidence root.
+Every paired fixture was enabled; protected inventories unchanged. Both proof
+commands report zero external effects. These overlapping layers are not added.
+
+The paired source includes default-closed paid-operation journal, prepared-bundle
+verification and the separately frozen real MariaDB review harness. That harness
+passes seven current cases/84checks and all four exact old-source controls fail
+(22checks); its resource/credential cleanup is positively verified. This is not
+paid-journal MariaDB/provider, installed migration or unattended delivery proof.
+Exact source pins and receipts are in Designs' private-review DB contract.
+
+Read-only fetch confirmed main remains Studio bf1ef9ca and Designs f750a163.
+No canonical checkout/service, activation flag, customer notification, payment
+or cloud resource changed. Managed credited packaging/import, trusted provider
+recovery, independent QA and the fresh complete journey remain unfinished.
+CLI cloud authorization, Linux-image disk headroom and hosted CI billing remain
+external limitations. New managed-package source work is NOT included here.
+
+## Earlier complete-source checkpoint - private-review reconciliation
+
+Studio f527e8b plus the batch/shadow cleanup repair, paired with Designs
+4998be27695f5e3940212d9cebedb31d923c04a6, passes **1,588 tests / 135 files**,
+zero failed/skipped, both lints, both synthetic execution proofs and whitespace.
+Suite: 291.94 seconds; guarded command: 293.357 seconds. Receipt:
+`private-review-paired-cleanup.vq9vHH` under `/tmp/famtastic-phase2-review.NVAfPl`.
+All paired fixtures were enabled. Both protected data inventories are unchanged.
+The paired PHP module separately passes 716 tests / 4,160 assertions, with 68
+existing deprecations; see the Designs private-review compatibility contract.
+Do not add overlapping focused counts. No fresh creative execution or cloud
+activation is established by these receipts.
+
+The predecessor `private-review-full-paired.wVw6NX` was interrupted at 189.521s
+by the 200 MiB guard, not an assertion failure. Batch and shadow tests leaked
+synthetic directories. Their teardown now restores prior environment variables
+and deletes only roots allocated by the test. Focused receipt
+`fixture-cleanup-focused.AEF49y`: 12 cases/two files, 16.40s suite, 16.969s guarded.
+After the full rerun, no newer matching batch/shadow roots remain.
+
+Thirteen exact interrupted-run fixture directories were inventoried, checked for
+open files, archived, integrity/entry/hash verified, then removed recoverably.
+Retained archive `private-review-full-paired.wVw6NX/interrupted-fixtures.tar.xz`:
+3,178 entries, 235,528,188 original file bytes, 6,993,208 archived bytes, SHA256
+`07c0bd4f74e13eb02b69b3136b23582dbab0cd97781e254382423a35996a20f1`.
+The inventory and archive/cleanup receipts are alongside it. No owner data was
+deleted. Free space after the full run was 535 MiB, still inadequate for an image
+build. A later fetched Designs main f750a163 adds only delivery documentation;
+its merge preserves runtime/test source from the tested pair.
+
+Paid-operation journal and real private-review contention work are separate
+in-progress slices, not included in these totals. Creative adapter, fenced
+import, complete unattended journey and cloud activation remain unfinished.
+
+## Earlier complete-source checkpoint
+
+Studio `17a645b48cb7f84aacbf6bdf58c185abcc7c3db0` paired with Designs
+`44caa869e1b48d16c1c56b295083f8eda13612a5` now passes **1,588 tests / 135 files**,
+zero failed/skipped, both lints, both synthetic execution proofs and whitespace.
+Suite duration: 253.88 seconds; guarded command: 255.320 seconds. Receipt:
+`complete-artifact-container-regression.0Ng9Fg` under
+`/tmp/famtastic-phase2-review.NVAfPl`. All paired CLI, PHP producer, rights, credit,
+portal and staging harnesses were enabled. This includes the 17 container-context
+tests; do not add the older focused counts. Both protected Studio data inventories
+remain unchanged; no real provider or external customer effect occurred.
+
+The paired Designs module passes **591 PHP tests / 3,094 assertions**, with the
+same 68 existing PHPUnit deprecations and no failures/skips, receipt
+`designs-full-unit-artifacts.l3lWwV` (2.014 seconds guarded, 50 MiB PHP peak).
+Local PHP 8.5.9/isolated bootstrap is not hosted CI PHP 8.3 or installed MySQL.
+Private artifact preparation is integrated: unchanged legacy validation,
+exclusive private files, exact manifests, Git-free frozen callback parity and
+independently exercised DNA guards. Frozen executable test data lives outside
+the document root. Preparation remains unregistered/non-deliverable; file fsync
+does not prove power-loss-durable directory publication or authorize completion.
+
+The transaction-owned shared mutex/CAS repair is a separate in-progress source
+slice, not included in these receipts. Actual creative execution, paid-operation
+recovery, fenced import, fresh unattended delivery and real cloud execution
+remain open. No production cutover, customer send, cloud action or service restart.
+The source receipts below are retained history, superseded by this full run.
+
+Cloud discovery correction: live authenticated Console inspection verified the
+existing FAMtastic Site Studio project, `gen-lang-client-0744578052`. Its Cloud Run
+service/job lists are empty and its single VM is stopped. Project discovery is
+no longer a blocker; local CLI authorization remains absent. No cloud setting or
+resource changed. See `EXISTING-CLOUD-PROJECT-2026-09-21.md`; older project/sign-in
+statements below describe the earlier CLI-only checkpoint.
+
+Container closure follow-up: `1ff5923` is integrated as `45a1d68` with no merge
+conflicts. Both filtered images now include only the exact shared entry helper;
+their Docker COPY, context and source boundaries agree. Parent verification in
+`phase2-container-closure-integrated.SkmVix` passes 64 tests in five files, both
+lints, offline infrastructure validation and whitespace in 9.022 seconds.
+Protected data inventories remain unchanged. This adds 17 tests after the full
+1,571-case checkpoint below; do not sum overlapping focused totals or call it a
+new combined run. See `PHASE2-CONTAINER-CLOSURE-2026-09-21.md` for red/green
+children and limitations. No Linux image build or provisioning occurred.
+
+Studio `2da81faf84f52d293758b7e0bb4715a46742dffd` with Designs
+`2785725f7950ccdf1830c9eb95083029939725bd` passes **1,571 tests / 134 files**,
+zero failures/skips, both source lints, both synthetic execution proof commands
+and whitespace checks. Suite duration: 249.12 seconds; whole guarded command:
+250.572 seconds. Receipt: `complete-integrated-repair-final.oVambR` under
+`/tmp/famtastic-phase2-review.NVAfPl`. All cross-repository harnesses, actual
+bounded CLI and portal frontend fixtures were enabled. Protected current and
+legacy data inventories are unchanged. Real provider calls remain denied.
+
+The immediately preceding `complete-integrated-source.OCaFU5` run retained
+1,551 passes / 20 failures plus 12 cascading uncaught errors. The real new managed
+import guard was missing from the legacy fixture's explicit PHP class loader.
+Designs `88136ba5c` loads the actual dependency and refuses seeded admission-event
+data in that simple fixture, rather than stubbing away the production guard.
+Its focused 20-case rerun passed before the full green run above.
+
+Parent PHP verification against the same Designs source passes **243 tests /
+1,427 assertions**, plus **nine Node worker tests** in
+`managed-login-integrated-final.PToRbb`. Two existing PHPUnit doc-comment
+deprecations remain. This includes real controller login with synthetic
+credentials/session finalization: changed proof input cannot block valid login,
+login cannot retry proof work, and explicit resend retains strict authority.
+Independent read-only review of `eadc9a7` found no further confirmed defect.
+Neither these tests nor the portal browser fixture establishes installed live
+Drupal authentication, concurrent MySQL behavior or real mail delivery.
+
+Default-off fresh admission, shared claims and selected-static continuation are
+implemented source; actual creative execution, fenced completion/import and
+the new unattended customer journey remain unfinished. Cloud container closure
+received the separate repair/receipt above, after this suite. No cloud activation
+is claimed.
+
+Read-only recheck: canonical Studio remains clean on main `bf1ef9c`, local health
+returns `ok=true`, port 3400, Node v24.19.0. Both remote main SHAs are unchanged.
+GCP CLI still has no active account or selected project. Free disk recovered to
+about 2.6 GiB but remains variable; no owner files were deleted in this follow-up.
+
+The remaining sections are dated checkpoints, not newer release claims.
+
+## Actual executable follow-up
+
+The existing Designs bounded worker now passes two cross-repository tests as
+an actual CLI child process through signed ingress and the real selected static
+pipeline. A Mac symlink no-op defect was repaired in Designs; nine paired Node
+checks pass, including inert imports and preserve-symlinks-main. Exactly one
+build and one captured callback survive acknowledgement loss and replay.
+Drupal claim authority and hosting are test doubles. See
+`MAC-CREATIVE-CAPABILITIES-2026-09-21.md` for exact evidence, capability metadata
+and route/transport limits. These are focused additions after the full suite
+below, not a new full-suite total or fresh-creative automation proof.
+
+## Full integrated source verification
+
+Verified Studio source 5ab65a2a023c2259df2c3102c55e155b1d520dc9 against Designs
+3db3e01ed with all cross-repository fixtures enabled: 1,544 tests in 132 files
+passed, zero failed and zero skipped. Both lints, both execution proof commands
+and whitespace checks pass. The source suite took 254.45 seconds; the entire
+guarded command took 255.889 seconds. This was the combined source total then,
+not the older pre-integration 1,185-test count or a sum of overlapping runs.
+
+The real portal editor browser fixture was enabled against the current Designs
+frontend and its byte-matched existing dependencies. No dependency installation
+was needed for this combined rerun. Node 24.19.0, Vitest 3.2.7, PHP 8.5.9.
+
+The initial combined run was stopped by the 200 MiB free-space guard. Finished
+temporary review checkouts were removed only after their clean committed changes
+were integrated; branches, Git objects and evidence were retained. The next run
+reported six outdated assertions: four uncredited-output expectations and two
+empty-payload error expectations. Repairs assert the exact canonical append and
+PNG, unchanged original selection hashes, unchanged pre-credit transformation
+hashes, and distinct malformed-payload/invalid-signature rejection. No production
+guard changed. The focused rerun passes 48 cases, including portal mobile/desktop.
+
+Retained evidence under /tmp/famtastic-phase2-review.NVAfPl:
+
+- full-integrated-source.YB5OUl: disk-guard interruption, not a pass.
+- full-integrated-source-retry.e0vKhI: six assertion failures, retained.
+- regression-expectations.vvbCPf: missing expected error message and one default
+  five-second test timeout, retained; no production failure concealed.
+- regression-expectations-complete.ESsxAH: 48 tests/four files, lint, whitespace.
+- source-export-credit-integrated.gj3Syf: branded complete-source roundtrip.
+- full-integrated-source-final.Dp4s64: 1,544 tests/132 files and both proof scripts.
+
+External network and credential access were denied; loopback 3400 was denied to
+the tests. Authoritative current runtime and legacy data inventories remained
+identical. Phase 2 proof uses fake providers: 20 jobs, 25 attempts, 23 fake calls,
+18 artifacts, two dead letters and one provider execution for checkpoint recovery.
+No real model call, customer callback, message, deployment or cloud mutation ran.
+
+Read-only release anchoring still finds canonical Studio and origin/main at
+bf1ef9ca09276d08c6555690737eafb3d4b6e109; the canonical checkout is clean and
+/api/admin/health returns ok=true on port 3400. Designs origin/main remains
+f5bc140e4fcab1205c9d5f6fda724a2843a1909a. Neither service nor source was cut over.
+
+This closes combined source verification, not unattended customer delivery or
+cloud activation. Fresh proof admission/real creative adapter/fenced import,
+the no-owner-gate journey, real shared cloud claims and laptop-unavailable proof
+remain open. Complete-source transport sizing, private cloud provisioning,
+project/sign-in, cost reconciliation and sufficient disk headroom remain gates.
+
+## Source ownership follow-up
+
+Both mapping writers now reject another project's existing site/repository,
+including a first-association callback still pending. Exact same-owner repeated
+checkpoints remain valid. V2 association also rejects authored records belonging
+to another customer before QA, mapping persistence or callback delivery.
+
+Five focused tests in two files pass; 11 unselected association cases were
+intentionally skipped in this narrow run. Evidence: source-ownership-guards.5UdBPx.
+Protected current and legacy data remained unchanged. These are local transaction
+and cross-language fixture checks, not another complete suite or live release.
+
+## Combined selected-source verification
+
+Studio bb59045 and Designs 46de8e847 implement the v2 narrow signed credit
+projection. The original selected bytes and customer acceptance remain unchanged;
+the shared policy authorizes only the independently recomputed footer and exact
+PNG. Old grants remain exact-original/assetless. PHP re-reads its confined original
+proof; Studio checks its retained original, actual repository bytes and private
+receipt. The mapping retains the frozen policy through future source revisions.
+
+The integrated normal-record run passes seven PHP/Studio continuation cases and
+18 policy/tamper/parity cases (25 tests, two files). The first-association run
+passes all 11 cases, including partial/completed source, changed authored copy,
+expired/paid/reselected/foreign authority, acknowledgement mismatch, altered
+bytes, callback loss, upload interruption and persisted transport backoff. The
+first run reached the final content assertion and failed five legacy raw-HTML
+expectations; the corrected assertions compare the exact approved append, exact
+PNG, unchanged selected hash and retained signed policy. No preservation guard
+was removed to make the assertions pass.
+
+Independent PHP verification passes 89 dependency-free assertions, the existing
+three-case portal-selection seam, and four PHPUnit cases / 13 assertions using
+an existing matching dependency tree read-only. No installation was needed.
+
+Evidence: normal-records-credit-integrated.RPcDJC,
+source-association-integrated.oMDDJP (retained first failure),
+source-association-credit-recheck.DVAUsW, php-credit-policy.GdQPsR, and
+credit-parity-length.jm5KLb under the verifier root. Protected current and legacy
+data inventories remain unchanged. These use synthetic PHP persistence and
+disposable Studio records/hosting, not a production client, real SMTP, deployed
+trigger, complete fresh creative run or laptop-independent proof.
+
+The older explicitly supplied source-authority export path still requires its
+own fully branded source and per-file authority. Its compatibility and the final
+combined suite remain pending; do not call the integrated release complete.
+
+## Integrated security verification, September 21 follow-up
+
+Independent review and source repair for M1/A1/A2/A3 were integrated as
+763e056 and 485be76. Parent review read the complete repair and its dedicated
+regressions before integration. Two documentation-only conflicts retained both
+the selected-consumer and security evidence. The canonical checkout was untouched.
+
+The parent rerun passes 362 Phase 2 tests in 17 files, the composed execution
+proof, both source lints and whitespace checks. The composed proof retains 20
+synthetic jobs, 23 fake provider calls, 18 artifacts, two visible dead letters,
+and one provider call for checkpoint recovery. No real provider call occurred.
+The Phase 1 rerun passes 42 tests in six files, its execution proof and offline
+YAML infrastructure validation. These are source verification, not activation.
+
+Additional selected-consumer verification passes 33 tests in five files,
+including source finalization, protected hosting, repeat/recovery and exact
+credit provenance. Three cross-repository cases pass actual PHP producer and
+receipt logic, protected uploaded-asset preservation/withdrawal, and manifest
+byte ordering. These totals are separate runs, not a claim of a new full-suite
+total. First-source association and multi-revision PHP/Node integration are
+still being completed and must pass before release.
+
+Evidence directories under /tmp/famtastic-phase2-review.NVAfPl:
+
+- phase2-fencing-integrated.QYVl1A
+- phase1-integrated.fsnXqn
+- selected-boundaries.kipunn
+- integration-1.xB6nQM/protected-assets-and-agency.log
+
+The new local verification wrapper denies external network access and all
+test reads/writes to both the legacy Studio data and the actual configured
+runtime data root, plus credential directories. Owner checkout and LaunchAgent
+writes are denied. Both protected data inventories remain unchanged. Earlier
+legacy-only snapshots are not relabeled as current-runtime database proof.
+
+The remaining transaction-to-provider race is documented, not claimed solved
+atomically. Real Firestore contention, cloud timing/drain behavior, safe cloud
+resource creation and an authorized canary remain activation gates. Automatic
+fresh creative intake, the complete no-owner-gate customer journey, and shared
+Mac/cloud customer execution are not yet active or proven end to end.
+
+## Autonomous integration checkpoint, September 21
+
+The owner's explicit four-milestone goal supersedes the earlier conflict stop.
+All integration remains isolated from the canonical running checkout. Current
+main bf1ef9c was merged as 9468ecf, preserving the independent customer
+collection policy under Development/FAMtastic/sites. The selected consumer
+9d0f6a2 is being integrated; this is not a production release.
+
+The internal `/api/pipeline/staging/accept` route retains its Phase 1
+mock/disposable firewall. The real selected runtime has a separate
+`/api/pipeline/selected-staging/accept` route, requires an injected enabled
+runtime and refuses conflicting Phase 1 execution modes. The narrow private
+ingress retains the existing external signed path and forwards its exact bytes
+only to the real selected route. No orphan fallback queue, extra public Studio
+surface or automatic provider activation is introduced.
+
+Integration reproduced an additional incompatibility: main's mandatory creator
+credit derivative changed HTML and added the exact PNG, while the older selected
+QA and hosting consumers compared against the original bundle. Reconciliation
+also rejected later selections against the legitimately derived source. The
+repair recomputes the one owner-authorized deterministic transform, verifies
+its private receipt and exact public inventory, and preserves original selected
+hashes. It does not use arbitrary built output as its own QA baseline. Receipt
+files remain private; the original selection and client acceptance do not change.
+The changed output, including the PNG, must pass browser and hosting checks.
+
+Local evidence directory: integration-1.xB6nQM under the existing verifier root.
+The first retained selected run failed one of 41 tests (39 passed, one explicit
+cross-repository skip) at source reconciliation. The focused corrected case and
+eight new credit-provenance/tamper tests subsequently passed. This is not a
+full-suite pass; cross-repository and final merged verification remain required.
+
+The subsequent credit-and-selected-recheck.log run passes 28 tests in three
+files: all 12 selected-worker cases, nine credit/source/rights cases and seven
+route-boundary cases. Exact-original protected HTML is rejected before any
+pipeline write; unchanged protected imagery retains its original bytes.
+Reused multi-page builds use verified finalized-source provenance for their
+derivative baseline. First Studio-origin association still fails closed at
+its legacy assetless/original-Home gates; both producer and consumer need a
+matching signed, narrowly scoped creator-credit policy before that path passes.
+
+Independent review of fixed e163df7 found four reproducible Phase 2 issues:
+stale pre-submission lease after reconciliation; completion without full outbox
+binding; expired-claim attempt generation mismatch; and incomplete finalized
+duplicate admission ownership. These are assigned to a separate repair worktree
+on codex/phase2-presubmission-fencing. They remain release blockers until fixed,
+independently checked and regression-tested. No cloud activation is permitted.
+
+Read-only Mac inventory found no signed-in gcloud account or selected project.
+The disk also fell below 200 MiB free during this pass and remains below safe
+build headroom. Fritz has been asked for at least 5 GiB headroom and the intended
+existing Cloud project/sign-in. No user files, evidence or credentials were
+deleted, and no cloud resource was created. These are external prerequisites,
+not reasons to replace the Mac workflow or call the four milestones complete.
+
+## Milestone 1: offline validation compatibility
+
+Base candidate: 184f61d323a0fcadc1712e9a312c664117209bd1.
+Origin main: 16fc24ee03c679a8acf38cb1d6047895fa7c5b6d.
+Work branch: codex/autopipeline-mac-cloud-integration.
+
+The original candidate failed two bootstrap guard tests because macOS Ruby
+2.6 lacks YAML.safe_load_file. Safe parsing of file contents fixes this without
+weakening the gate. Added five checks cover valid YAML, malformed YAML, aliases,
+Ruby object tags, and absent parsers. Parser errors never invoke a fallback.
+
+Sandboxed rerun: npm ci, lint, diff check, 169 Phase 2 tests, 42 Phase 1 tests,
+both execution proofs, full suite (1,155 tests, 101 files), offline validation
+and offline example plan passed. npm audit --omit=dev: zero findings. Full audit
+retains two documented moderate development findings through Vitest/mocker;
+no forced major upgrade. No real cloud/provider/customer effects were exercised.
+Database/WAL/SHM before/after snapshots were identical.
+
+Original and repaired command logs are retained locally in the verifier evidence
+directory, with the repaired run under repair-1; they are not customer data or
+proof of production operation. The complete 82-file candidate review remains
+unfinished. Passing tests do not close the source review or activation gates.
+
+## Authorized sequence and handoff to the parallel design session
+
+1. Repair and finish Phase 2 independent review, preserving the original bundle.
+2. Trace and connect automatic request processing to existing Mac capabilities.
+3. Prove a controlled request through proofs, notification capture, selection and
+   exactly one staging build, including interruptions and duplicate events.
+4. Add cloud workers behind the same durable ownership protocol, not a second
+   competing customer queue. Prove offline-Mac recovery before claiming it.
+
+Preserve Drupal commercial/customer authority, selected artifacts, independent
+customer repositories and explicit acceptance before final launch. Routine
+green work must not gain a new Fritz approval gate. Unknown outcomes, rights,
+security, unsupported scope and budget exceptions must remain visible.
+
+The current Phase 1 endpoint explicitly requires mock/disposable configuration.
+Do not repurpose that mode or remove its firewall to pretend real execution is
+implemented. The Phase 2 cloud runtime is a separate shadow pilot, not a Mac
+worker connection. Mission Control is a later view over proven operational
+state, not a prerequisite and not another execution authority.
+
+## Milestone 2: recovery identity and transaction retry hardening
+
+Local source verification only. Dispatch reserve/deliver/release now bind the
+job, intent, outbox identity and bounded integer generation. Expired-attempt
+recovery validates task, packet, project, pilot, intent, fencing token and
+deterministic model-call identity before accounting or reuse. A late reconciler
+cannot recover a different active attempt. Lease/admission/dispatch timestamps
+are sampled inside transaction callbacks so retries do not commit stale clocks.
+
+Added 30 regression cases, including discarded transaction callbacks and foreign
+attempt/call records. These simulate retries; they do not prove live Firestore
+contention. The sandboxed repair-3 run passes 1,185 tests in 102 files, lint,
+both synthetic execution proofs, safe YAML validation and the offline plan.
+The legacy studio.db/WAL/SHM snapshots are identical. No production activation,
+provider call, customer callback, message or cloud mutation occurred.
+
+The canonical Designs disposable customer journey also passes after repairing
+its omitted frontend narration dependency. That fixture captures 34 messages
+and still exercises an owner-review gate; it is not evidence that the new
+unattended creative-to-staging path is connected.
+
+Read-only live checks on September 21: Drupal automation-health is observe-only,
+with zero enrolled jobs and zero reserved cents. Mac PID 78266 serves healthy
+on 127.0.0.1:3400 from the canonical site-studio-next checkout. The Phase 2 cloud
+pilot remains additive and disabled. Complete source review, automatic intake,
+real selected consumer integration and laptop-independent proof remain open.
+
+## Remaining gates (updated)
+
+Read-only integration check: `git merge-tree --write-tree HEAD 9d0f6a2`
+exits 1 with conflicts in server/modules/pipeline/index.js, docs/CHANGELOG.md
+and docs/SITE-LEARNINGS.md. No index, checkout or branch merge was performed.
+The real selected-staging consumer and Phase 1 mock admission both changed the
+same endpoint. This is a release integration stop, not permission to discard
+either side. Resolve through an explicit contract preserving the mock firewall
+and real consumer identity before activation, then rerun both regression suites.
+
+Runtime paths were separately read from /api/admin/paths: the running service
+uses Development/famtastic-wt-phase-0/.studio-next-data. The preserved legacy
+studio.db snapshot must not be represented as a snapshot of that filesystem
+data root. The runtime execution root does not exist; no production durable
+execution database was opened or migrated in this pass.
+
+- Full source/security review and Firestore ownership/timestamp hardening.
+- Real consumer/producer contract and scheduler/worker inventory.
+- End-to-end isolated customer proof and recovery evidence.
+- Authenticated shared Mac/cloud claims and deployment evidence.
+- Cloud create-only/initial-pause, concurrency, provenance, bounded canary and
+  in-flight cost accounting proofs. Cloud remains disabled.
