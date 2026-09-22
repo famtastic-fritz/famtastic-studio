@@ -1,0 +1,75 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ${PHASE2_WORKER_SERVICE}
+  labels:
+    app.kubernetes.io/name: site-studio-phase2-worker
+    famtastic.com/environment: phase2-cloud-shadow
+  annotations:
+    run.googleapis.com/ingress: internal
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "true"
+    spec:
+      serviceAccountName: ${PHASE2_WORKER_SA}@${PHASE2_PROJECT_ID}.iam.gserviceaccount.com
+      containerConcurrency: 1
+      timeoutSeconds: 300
+      containers:
+        - name: worker
+          image: ${PHASE2_WORKER_IMAGE}
+          ports:
+            - name: http1
+              containerPort: 8080
+          env:
+            - name: FAMTASTIC_EXECUTION_MODE
+              value: cloud-shadow
+            - name: FAMTASTIC_EXECUTION_SCOPE
+              value: phase2-pilot
+            - name: FAMTASTIC_PHASE2_RUNTIME
+              value: "1"
+            - name: FAMTASTIC_PHASE2_MAX_JOBS
+              value: "20"
+            - name: FAMTASTIC_PHASE2_PILOT_RUN_ID
+              value: ${PHASE2_PILOT_RUN_ID}
+            - name: FAMTASTIC_PHASE2_MAX_JOB_COST_MICROS
+              value: "${PHASE2_MAX_JOB_COST_MICROS}"
+            - name: FAMTASTIC_PHASE2_MAX_TOTAL_COST_MICROS
+              value: "${PHASE2_MAX_TOTAL_COST_MICROS}"
+            - name: FAMTASTIC_PHASE2_MODEL
+              value: gemini-3.1-flash-lite
+            - name: FAMTASTIC_PHASE2_PRICEBOOK_VERSION
+              value: vertex-gemini-2026-09-21
+            - name: FAMTASTIC_PHASE2_VERTEX_LOCATION
+              value: global
+            - name: GOOGLE_CLOUD_PROJECT
+              value: ${PHASE2_PROJECT_ID}
+            - name: FAMTASTIC_PHASE2_REGION
+              value: ${PHASE2_REGION}
+            - name: FAMTASTIC_PHASE2_QUEUE
+              value: ${PHASE2_QUEUE}
+            - name: FAMTASTIC_PHASE2_WORKER_URL
+              value: ${PHASE2_WORKER_URL}
+            - name: FAMTASTIC_PHASE2_WORKER_AUDIENCE
+              value: ${PHASE2_WORKER_AUDIENCE}
+            - name: FAMTASTIC_PHASE2_CONTROL_AUDIENCE
+              value: ${PHASE2_CONTROL_AUDIENCE}
+            - name: FAMTASTIC_PHASE2_INTAKE_SERVICE_ACCOUNT
+              value: ${PHASE2_INTAKE_SA}@${PHASE2_PROJECT_ID}.iam.gserviceaccount.com
+            - name: FAMTASTIC_PHASE2_SCHEDULER_SERVICE_ACCOUNT
+              value: ${PHASE2_SCHEDULER_SA}@${PHASE2_PROJECT_ID}.iam.gserviceaccount.com
+            - name: FAMTASTIC_PHASE2_TASK_INVOKER_SERVICE_ACCOUNT
+              value: ${PHASE2_TASK_INVOKER_SA}@${PHASE2_PROJECT_ID}.iam.gserviceaccount.com
+            - name: FAMTASTIC_PHASE2_FIRESTORE_DATABASE
+              value: ${PHASE2_FIRESTORE_DATABASE}
+            - name: FAMTASTIC_PHASE2_SOURCE_BUCKET
+              value: ${PHASE2_SOURCE_BUCKET}
+            - name: FAMTASTIC_PHASE2_ARTIFACT_BUCKET
+              value: ${PHASE2_ARTIFACT_BUCKET}
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi

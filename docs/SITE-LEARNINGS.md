@@ -1,5 +1,56 @@
 # Site Studio learning record
 
+## 2026-09-21 - Validate the actual Mac parser, not a presumed Ruby version
+
+Observation: the Phase 2 validator selected system Ruby by executable presence
+and then called an unavailable YAML.safe_load_file method. Two guard tests
+failed before reaching their intended safety boundary.
+
+Guidance: check safe-parser capability, parse file contents through safe_load,
+reject aliases and object construction, and fail closed if no parser exists.
+Do not silently skip validation or replace the workstation runtime globally.
+Keep original failure receipts alongside repaired results. Cloud execution is
+additive; this fix does not install automatic Mac customer triggers.
+
+## 2026-09-21 - Source proof is not cloud activation proof
+
+Observation: a cloud-shaped runtime can pass deterministic HTTP, storage,
+dispatch, lease, recovery and cost tests without proving a deployable customer
+path. Local Phase 1 cannot call an internal-only Cloud Run control service, and
+an authorized but unattached intake service account does not create that path.
+Likewise, a fake provider response proves checkpoint behavior but not the exact
+Vertex API request, latency, usage metadata or billable cost in the target
+project.
+
+Guidance: keep source, committed, merged, deployed, traffic-serving and active
+states distinct. An inert baseline should require more than one independent
+gate: zero revision traffic, a paused queue, absent Scheduler, persistent global
+pause, dispatch off, worker off and provider off. Admission must reserve durable
+identity before immutable object storage, while duplicate reservations renew a
+generation-bound expiry so reconciliation cannot race an in-flight write. Save
+a successful provider outcome before artifact persistence so recovery never
+repeats a billable model call merely because the artifact write failed.
+Likewise, bind the model-call ID to the attempt inside its reservation
+transaction, so a lost commit response can be classified without inventing a
+second call. A queued task also needs a durable claim deadline: advance its
+generation when no claim is recorded, and reject every older generation before
+provider work.
+
+The current observation sends bounded packet metadata, not selected preview
+bytes. It can prove execution mechanics, not visual or design quality. Before
+activation, independently prove Firestore concurrency, a low-cap Vertex `v1`
+canary, a named cloud ingress workload and network route, image provenance,
+zero-traffic probes and the pause/stop drill. A future Mission Control page can
+be a read-only view over these states; it is not required to make the backend
+durable and must not become a second execution authority.
+Do not describe a baseline as inert when a queue is created running and paused
+only by a later command. Also record that stopping future work cannot cancel a
+provider request already submitted; drain evidence must reconcile its outcome
+and cost.
+
+Evidence: `npm run prove:execution:phase2`, the Phase 2 focused tests and
+`docs/evidence/DURABLE-EXECUTION-PHASE2-2026-09-21.md`.
+
 ## 2026-09-19 - A 202 receipt must follow durable intent, not precede work
 
 Observation: the signed staging endpoint recorded acceptance but did not start
@@ -109,7 +160,7 @@ contract now names forbidden agency runtime dependencies. A future executable
 application recipe needs an independence test in addition to visual parity and
 catalog discovery tests.
 
-## 2026-09-13 — Owner Desk recipe discovery and evidence boundaries
+## 2026-09-13 - Owner Desk recipe discovery and evidence boundaries
 
 Observation: An earlier research review counted relative path segments incorrectly and called the Component Studio sibling import broken. Executing the existing import showed it was already correct. The new `/api/component-recipes` endpoint adds specification discovery, not a path repair.
 

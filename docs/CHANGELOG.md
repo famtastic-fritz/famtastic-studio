@@ -1,5 +1,74 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Narrow Phase 2 rebase and Mac verification
+
+Reapplied the inert Phase 2 cloud-shadow foundation and Mac-safe YAML parser
+onto current `main` without the unrelated selected-staging series. The isolated
+branch passes 169 focused Phase 2 tests, 42 Phase 1 regression tests and the
+full 1,157-test suite under Node 24. The offline validator and example-value
+plan pass without contacting Google Cloud. Production dependencies report zero
+audit findings; the full audit retains the known two moderate development-only
+Vitest findings whose available remediation is a breaking major upgrade.
+
+This is a review branch only. No Studio service, worker, provider, cloud
+resource, scheduler, queue, customer site, callback, message, payment or
+deployment changed. See
+`docs/evidence/PHASE2-NARROW-VERIFICATION-2026-09-22.md`.
+
+## 2026-09-21 - Mac offline validation repair (local only)
+
+Use safe YAML parsing compatible with the workstation's Ruby 2.6, reject
+aliases/object construction, and fail closed when no parser is available.
+Full suite: 1,155 tests passed across 101 files. Offline infrastructure
+validation and example plan passed; Phase 1 and Phase 2 synthetic proofs passed.
+No deployment, cloud activation or customer execution occurred. See
+`docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md` for scope and remaining work.
+
+## 2026-09-21 - Inert durable execution Phase 2 candidate
+
+Added an isolated Google Cloud shadow runtime around the Phase 1 contracts:
+private control and worker HTTP services, staged Firestore admission, named Cloud
+Tasks dispatch, immutable GCS source and observation artifacts, fenced leases,
+provider-success checkpoints, bounded recovery, explicit dead letters, cost
+ledgers, exact OIDC route identities and a deny-by-default customer-effect
+firewall. The fixed provider is Vertex Gemini 3.1 Flash-Lite through
+`@google/genai` Vertex API `v1`, with `MINIMAL` thinking, a combined 4096 output
+and thinking-token bound, and billed thinking-token accounting.
+
+Unclaimed task deliveries now carry a bounded, transactional worker-claim
+acknowledgement and advance through fenced dispatch generations; stale tasks
+cannot execute and exhaustion is visible. A failed FULL lookup after Cloud Tasks
+reports `ALREADY_EXISTS` parks the job with unknown execution risk. Lost
+responses from a committed model-call reservation recover the attempt-bound call
+and can settle it at zero only with proven pre-provider absence.
+
+The infrastructure package is deliberately inert and apply is hard-disabled
+before cloud calls until Cloud Run creation is atomically create-only. The
+reviewed target gives new revisions zero traffic, pauses the queue, omits
+Scheduler, keeps all four application controls safe, and leaves the intake
+identity unattached to a cloud workload.
+A pause-only command and stop sequence persist the safe controls and continue
+IAM containment even when one containment action fails. There is no enable
+command in this package.
+
+Bootstrap, pause and apply refuse an ambient Firestore emulator. Two activation
+blockers remain explicit in the infrastructure scaffold: Cloud Run lacks an
+atomic create-only path, and queue creation followed by a separate pause leaves
+an unproven initial-running interval. Stop cannot cancel a Vertex request already
+in flight, so a live drill must reconcile its outcome and cost.
+
+The hermetic composed proof drives 20 synthetic jobs through the production
+control and worker HTTP composition. It ends with 18 observations awaiting the
+pilot review gate and two visible dead letters, including admission recovery,
+provider-checkpoint recovery and generation-10 dispatch exhaustion. It made no
+real provider, Google Cloud, network or customer-effect call. Firestore emulator
+concurrency, a real GCP provider canary, ingress connectivity, deployment and
+activation remain unproven. See
+[the Phase 2 evidence](evidence/DURABLE-EXECUTION-PHASE2-2026-09-21.md).
+The production dependency audit is clean; the full audit retains two moderate
+development-only `@vitest/mocker` findings whose reported fix requires a major
+Vitest upgrade.
+
 ## 2026-09-19 - Fail-closed durable execution Phase 1
 
 Selected staging intake now commits one AgentTaskLog row, one Phase 1 job and
@@ -91,7 +160,7 @@ code were promoted by this documentation change.
 
 Validation: 11 focused discovery/inventory tests passed; whitespace checks pass.
 
-## 2026-09-13 — Read-only candidate recipe discovery
+## 2026-09-13 - Read-only candidate recipe discovery
 
 Added `GET /api/component-recipes` to discover specifications from sibling
 Component Studio while preserving readiness flags and explicitly reporting an
