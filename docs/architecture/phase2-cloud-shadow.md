@@ -1,5 +1,11 @@
 # Phase 2 cloud shadow architecture
 
+September 22 provisioning clarification: the local create-only request primitive
+is described in `../contracts/PHASE2-RUN-CREATE-ONLY.md`. Apply remains disabled.
+The older zero-traffic/initially-paused targets below are not verified API states;
+empty Run traffic defaults to latest-ready, and queue state is output-only. Do not
+unlock the dead-code apply sequence from a passing request-builder test.
+
 ## Decision
 
 Phase 2 targets Google Cloud Tasks plus two private Cloud Run services, but the

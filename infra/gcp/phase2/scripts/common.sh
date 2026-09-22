@@ -44,7 +44,7 @@ require_phase2_env() {
     return 1
   }
   for key in PHASE2_CONTROL_SERVICE PHASE2_WORKER_SERVICE; do
-    [[ "${!key}" =~ ^[a-z][a-z0-9-]{0,61}[a-z0-9]$ ]] || {
+    [[ "${!key}" =~ ^[a-z]([a-z0-9-]{0,47}[a-z0-9])?$ ]] || {
       printf '%s is not a valid Cloud Run service name\n' "$key" >&2
       return 1
     }

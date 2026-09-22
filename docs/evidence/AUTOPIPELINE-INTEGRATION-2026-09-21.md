@@ -2,6 +2,14 @@
 
 Status: in progress, local source only. No production cutover.
 
+Latest source checkpoint: inert create-only Cloud Run request primitive and
+unresolved-submission recovery contract pass independent review and the final
+paired1,628 tests/136files, lints, both synthetic proofs and offline infra checks.
+Protected data unchanged. Designs9403fae7 supplies actual signed worker principals;
+retained independent QA and managed unattended delivery are still unfinished.
+See `PHASE2-RUN-CREATE-ONLY-2026-09-22.md`. No cloud request, apply enablement,
+customer send or canonical service restart occurred.
+
 Latest packaging checkpoint: both real filtered Linux/AMD64 images build, import
 their installed SDKs and fail closed on unconfigured startup. Non-root uid1000,
 networkless/read-only probes, exact source hashes and unchanged protected data

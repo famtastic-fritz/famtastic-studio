@@ -1,5 +1,13 @@
 # Phase 2 Google Cloud shadow baseline
 
+September 22 clarification: the operator-only create request primitive now exists
+in `scripts/run-create-only.mjs`; see
+`../../../docs/contracts/PHASE2-RUN-CREATE-ONLY.md`. It does not remove the apply
+hard stop or install a transport/journal. The older proposed zero-traffic and
+atomically-paused creation claims below are **unproved desired states**, not API
+guarantees: empty Run traffic defaults to latest-ready traffic, and queue state is
+output-only. Real containment and reconciliation remain required before apply.
+
 This package describes an inert cloud shadow. It does not make the current
 Phase 1 SQLite database a cloud authority, and it does not authorize customer
 work. The repository contains isolated Phase 2 control, worker, Firestore,
@@ -7,12 +15,12 @@ Cloud Tasks, GCS, OIDC, and Vertex Gemini runtime modules. Source tests are not
 cloud deployment evidence, so this package still stops before traffic or
 activation.
 
-The baseline is intentionally unable to execute work:
+The intended baseline must be unable to execute work (not yet provisioned):
 
 - both Cloud Run services are internal and IAM authenticated;
 - control and worker use different runtime service accounts;
 - only immutable image digests are accepted;
-- new revisions receive no traffic;
+- initial service traffic/URI/IAM containment must be reconciled and verified;
 - the Cloud Tasks queue finishes baseline creation in `PAUSED` state with 0.1
   dispatches per second and concurrency 1;
 - no Scheduler job is created;
@@ -35,6 +43,7 @@ The baseline is intentionally unable to execute work:
 | `scripts/validate.sh` | Offline shell, YAML, public-access, and prose checks |
 | `scripts/plan.sh` | Local plan, plus optional read-only cloud and dry-run checks |
 | `scripts/apply-inert.sh` | Review scaffolding, hard-disabled before cloud calls until Run creation is create-only |
+| `scripts/run-create-only.mjs` | Offline-buildable create-only request/one-submit primitive; not a complete apply path |
 | `scripts/stop.sh` | Explicitly gated first-response containment |
 | `../../../scripts/pause-durable-execution-phase2.mjs` | Exact-gated, pause-only persistent control transaction |
 | `EVIDENCE-RECEIPT.md` | Deployment or no-deployment evidence record |
@@ -117,7 +126,7 @@ The source and artifact buckets must be different. The worker URL must end in
 The control audience must be a different `run.app` origin. Both origins must use
 Cloud Run's deterministic
 `https://SERVICE-PROJECT_NUMBER.REGION.run.app` form with no trailing slash.
-The service name, hyphen, and project number DNS segment must be at most 63
+Service IDs must contain 1-49 characters; the service name, hyphen, and project number DNS segment must be at most 63
 characters. Online plan reads the numeric project number and rejects guessed
 legacy hash hostnames or any mismatch before mutation. Caller identities
 must be service accounts in the configured project. User principals are not a

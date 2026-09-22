@@ -1,5 +1,19 @@
 # Site Studio learning record
 
+## 2026-09-22 - A missing outcome is not proof of no submission
+
+Persist unresolved intent before external mutation, not a `not_submitted` claim.
+After acceptance followed by a crash or failed outcome write, retain uncertainty
+and reconcile read-only. A per-handle WeakMap is not a cross-process journal.
+Create-only prevents overwrite, not duplicate submission or early execution.
+Empty Cloud Run traffic routes to latest; output-only queue state cannot create
+an atomically paused queue. Keep initial IAM/application containment independently
+gated. Injected transport tests do not prove actual API behavior or durability.
+
+For paired regressions use every fixture input and the established serial bounded
+profile. Keep failed default-parallel/omitted-path receipts; do not relabel them
+as passing or omit their skipped coverage.
+
 ## 2026-09-22 - Copied-source checks and Linux image checks answer different questions
 
 The former Mac copied-closure test caught missing imports but could not prove

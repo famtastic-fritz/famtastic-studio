@@ -7,6 +7,10 @@ apply:
   gate: PHASE2_CREATE_ONLY_RUN_GATE
   accepted_gate_values: []
   failure_point: before-any-cloud-call-or-mutation
+  create_only_request_source: scripts/run-create-only.mjs
+  create_only_request_wired_to_apply: false
+  initial_containment_verified: false
+  legacy_zero_traffic_and_atomic_pause_targets: unproved-do-not-activate
 services:
   control:
     precondition: absent

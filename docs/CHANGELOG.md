@@ -1,5 +1,14 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Isolate create-only cloud requests and uncertain outcomes
+
+Add an inert, exact Cloud Run POST-create primitive with injected transport and
+journal boundaries, no upsert/adoption, bounded request metadata and explicit
+unresolved intent before submission. Align shell service-name bounds. Independent
+recovery review is resolved; final paired1,628 tests/136files, lints, synthetic
+proofs and offline infra checks pass. Apply remains hard-disabled; no cloud call
+or production activation. See `docs/evidence/PHASE2-RUN-CREATE-ONLY-2026-09-22.md`.
+
 ## 2026-09-22 - Prove actual Phase 2 Linux images
 
 - Build both filtered role images from an immutable Node base for Linux/AMD64;

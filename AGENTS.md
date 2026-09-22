@@ -1,5 +1,11 @@
 # Site Studio Next agent instructions
 
+For Phase 2 provisioning work, read `docs/contracts/PHASE2-RUN-CREATE-ONLY.md`.
+The new operator-only v2 request primitive is not a provisioner or permission to
+bypass apply-inert's hard stop. Never retry/adopt a collided or uncertain create,
+infer zero traffic from an empty traffic list, or call queue creation atomically
+paused. Keep the Mac lane intact and require actual ownership/containment evidence.
+
 For additive execution integration, read
 `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md` and
 `docs/capabilities/SELECTED-STAGING-CONSUMER.md`. Preserve the existing Mac
