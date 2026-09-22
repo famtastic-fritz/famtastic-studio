@@ -1,5 +1,13 @@
 # Site Studio learning record
 
+## 2026-09-22 - Copied-source checks and Linux image checks answer different questions
+
+The former Mac copied-closure test caught missing imports but could not prove
+production dependency installation or Linux packaging. Actual filtered AMD64
+images now pass networkless non-root import and startup-denial probes. Preserve
+both evidence layers, pin the base digest, compare copied hashes, and never treat
+local image IDs as pushed registry digests or proof of cloud authorization.
+
 ## 2026-09-22 - Missing raw evidence must be rerun, not inferred from Git
 
 Git preserved source when temporary work/evidence roots disappeared, but it did

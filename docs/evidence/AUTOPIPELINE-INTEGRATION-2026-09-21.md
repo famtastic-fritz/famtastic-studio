@@ -2,6 +2,12 @@
 
 Status: in progress, local source only. No production cutover.
 
+Latest packaging checkpoint: both real filtered Linux/AMD64 images build, import
+their installed SDKs and fail closed on unconfigured startup. Non-root uid1000,
+networkless/read-only probes, exact source hashes and unchanged protected data
+are verified. The separate local VM is stopped; nothing was pushed/deployed.
+See `PHASE2-LINUX-IMAGES-2026-09-22.md`. Cloud apply/auth/canary gates remain open.
+
 ## September 22 - Restored persistent workspace and fresh paired verification
 
 The prior `/tmp/famtastic-*` roots are absent; historical raw receipts below

@@ -1,5 +1,12 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Prove actual Phase 2 Linux images
+
+- Build both filtered role images from an immutable Node base for Linux/AMD64;
+  verify non-root SDK imports, copied hashes and closed unconfigured startup.
+- Retain local receipts and stop the isolated VM. No runtime source change,
+  image push, production restart or cloud activation. See the Linux image receipt.
+
 ## 2026-09-22 - Reverify recovered review source with current agency code
 
 - Full paired1,588 tests/135files, lint and both synthetic execution proofs pass

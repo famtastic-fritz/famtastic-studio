@@ -1,5 +1,11 @@
 # Phase 2 copied container closure, 2026-09-21
 
+September22 follow-up: actual filtered Linux/AMD64 builds and non-root, networkless
+SDK/entrypoint probes now pass. See `PHASE2-LINUX-IMAGES-2026-09-22.md`. This
+supersedes the image-build limitation below, not its cloud activation boundary.
+The former temporary raw receipts below are unavailable; the new receipt is
+retained outside temporary storage.
+
 Base: `2da81faf84f52d293758b7e0bb4715a46742dffd`.
 Branch: `codex/mac-phase-cli-entry`.
 Isolated worktree: `/tmp/famtastic-mac-phase-cli.vu42M5/studio`.
