@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Reverify recovered review source with current agency code
+
+- Full paired1,588 tests/135files, lint and both synthetic execution proofs pass
+  with unchanged protected data; retain fresh receipts outside temporary roots.
+- Record agency PHP983/6,731 and the captured-mail canonical journey separately
+  from the unfinished managed unattended flow. No runtime source or activation.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
 ## 2026-09-21 - Verify paired journal and private-review integration
 
 - Pair e470dfe with Designs9583766f: 1,588 Studio tests, both lints and both

@@ -1,5 +1,13 @@
 # Site Studio learning record
 
+## 2026-09-22 - Missing raw evidence must be rerun, not inferred from Git
+
+Git preserved source when temporary work/evidence roots disappeared, but it did
+not preserve private raw receipts. Retain new receipts outside ephemeral roots,
+record exact paired source and dirty-diff hashes, and inspect JSON before claiming
+success. Fresh paired1,588/135 passes; the agency journey's legacy owner-review
+fixture is regression evidence, not the new managed unattended-delivery proof.
+
 ## 2026-09-21 - Reverify the actual cross-repository pair
 
 Independent PHP journal/artifact tests cannot replace the full Studio/agency

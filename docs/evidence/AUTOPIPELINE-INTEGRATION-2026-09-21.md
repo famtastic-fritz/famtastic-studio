@@ -2,6 +2,35 @@
 
 Status: in progress, local source only. No production cutover.
 
+## September 22 - Restored persistent workspace and fresh paired verification
+
+The prior `/tmp/famtastic-*` roots are absent; historical raw receipts below
+are no longer inspectable. Tracked work was recovered from Git without changing
+canonical checkouts. New private evidence is under
+`/Users/famtastic-fritz/Development/FAMtastic/worktrees/autopipeline-recovery.ggJXc1`.
+
+Clean Studio754859e24d11fb2e4f81458db8453ff1b6b0c6b1 paired with Designs5734fd75
+plus its core-mail harness repair passes **1,588 tests / 135 files**, lint, both
+synthetic execution proofs and whitespace. Suite372.62s, guarded376.288s, no
+failed/skipped tests; protected inventories unchanged. Receipt
+`evidence-restored-studio-pair.E1VblP`. Node24.19.0; repository-required Node22.23.2
+was used separately for the agency frontend build. All paired harnesses enabled.
+Fixture model/cloud counters remain synthetic; no provider was called.
+
+The agency's full PHP suite passes983/6,731 with68 existing deprecations. Its
+canonical fresh Drupal journey passes with all root/child JSON checks inspected,
+four core mails captured (including one probe) and34 transactional mails captured.
+The core collector repair affects only the verified disposable site. This journey
+still exercises legacy owner review, not managed unattended release. Exact dirty
+diff and guard hashes are recorded in Designs'
+`docs/evidence/AUTOPIPELINE-RECOVERED-VERIFICATION-2026-09-22.md`.
+
+No Studio runtime source changed in this checkpoint. Managed import is now locally
+implemented but unregistered; protected reads/QA/selection and actual creative
+provenance remain unfinished. Cloud CLI has no active account/project. The two
+known moderate development-only Vitest/mocker findings remain; current production
+audit is zero. No forced upgrade, production restart, provider or cloud activation.
+
 ## Latest complete-source checkpoint - journal and private review
 
 Studio `e470dfecec3e6bd77bb70131dc68bc8b10affc82` with Designs
