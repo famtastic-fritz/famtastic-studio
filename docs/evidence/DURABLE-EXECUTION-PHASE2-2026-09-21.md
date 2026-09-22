@@ -3,18 +3,19 @@
 ## Result
 
 Phase 2 is implemented as a local, inert candidate on top of the verified Phase
-1 base. The final focused Phase 2 and Phase 1 regression suites pass. The full
-repository suite is not green in this Linux workspace for the classified
-environment and timeout failures below. The candidate is not pushed, merged,
-deployed, traffic-serving or active. No Google Cloud resource, model API,
-schedule, customer repository, callback, message, publish, deployment or
-payment was changed by this work.
+1 base. The original Linux receipt below is historical. A narrow September 22
+rebase onto current `main` passes the focused Phase 2 and Phase 1 suites plus
+the full 1,157-test Mac suite. That review branch is not merged, deployed,
+traffic-serving or active. No Google Cloud resource, model API, schedule,
+customer repository, callback, message, publish, deployment or payment was
+changed by the re-verification. See
+`PHASE2-NARROW-VERIFICATION-2026-09-22.md` for its exact source and commands.
 
 | State | Evidence |
 | --- | --- |
 | Phase 1 base | Commit `16fc24e`, confirmed by the owner as merged, installed and healthy |
-| Phase 2 source | Implemented on `codex/durable-execution-phase2-cloud-pilot` |
-| Local verification | Phase 2: 14 files, 169 tests passed; Phase 1 regression: 6 files, 42 tests passed |
+| Phase 2 source | Narrow review branch `codex/phase2-cloud-shadow-20260922` |
+| Local verification | Phase 2: 14 files, 169 tests passed; Phase 1 regression: 6 files, 42 tests passed; full suite: 101 files, 1,157 tests passed |
 | Pushed or merged | No |
 | Cloud baseline applied | No |
 | Real provider canary | No |

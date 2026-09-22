@@ -1,5 +1,20 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Narrow Phase 2 rebase and Mac verification
+
+Reapplied the inert Phase 2 cloud-shadow foundation and Mac-safe YAML parser
+onto current `main` without the unrelated selected-staging series. The isolated
+branch passes 169 focused Phase 2 tests, 42 Phase 1 regression tests and the
+full 1,157-test suite under Node 24. The offline validator and example-value
+plan pass without contacting Google Cloud. Production dependencies report zero
+audit findings; the full audit retains the known two moderate development-only
+Vitest findings whose available remediation is a breaking major upgrade.
+
+This is a review branch only. No Studio service, worker, provider, cloud
+resource, scheduler, queue, customer site, callback, message, payment or
+deployment changed. See
+`docs/evidence/PHASE2-NARROW-VERIFICATION-2026-09-22.md`.
+
 ## 2026-09-21 - Mac offline validation repair (local only)
 
 Use safe YAML parsing compatible with the workstation's Ruby 2.6, reject
