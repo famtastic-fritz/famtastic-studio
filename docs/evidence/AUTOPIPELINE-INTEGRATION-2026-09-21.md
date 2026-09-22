@@ -2,6 +2,34 @@
 
 Status: in progress, local source only. No production cutover.
 
+## September 22 - Paired signed review-read checkpoint
+
+Designs161123dc3331c964191f5344661cae118c4b892b adds current shared-lease/HMAC
+private context/artifact/brief reads. An independent valid-large-brief finding
+was reproduced with real authored-content normalization before admission, then
+fixed with complete hash-bound64KiB range retrieval. Original scope/recorded
+permissions and exact credited proof bytes remain separate from actual QA.
+
+Unchanged Studio987228f (runtimec8dcb0d) pairs successfully: **1,628tests /136files**,
+zero failed/skipped,225.65s suite/227.468s guarded. Both lints, both synthetic
+proofs, offline infra and whitespace pass, all paired inputs/serial bounded
+profile enabled. Receipt `evidence-review-read-final-studio.mmkEvw` under the
+recovered task root. Designs base880f163b plus diff
+ee0bf848e184ca0800349b8a455192f5c9d2691338b7cc554937fce88e3459d6;
+only documentation followed. Protected data stayed unchanged, zero external effects.
+
+Agency full **1,498PHP tests /16,755assertions**, portal DNA34/34, email presentation86
+and canonical captured-mail legacy journey also pass. Both actual journey child
+receipts inspected. Earlier passes/control remain retained and are not added to
+these totals. Actual Mac materializer/reviewer, evidence upload, real creative/
+tool provenance, managed DI/selected continuation, full unattended journey and
+laptop-off cloud execution remain unfinished; no runtime capability is promoted.
+
+This Studio update is docs-only. Designs161123dc is LOCAL ONLY behind the existing
+workflow-permission push gate. Main remains Studio bf1ef9ca/Designs f750a163;
+separate GitHub Actions billing/cloud CLI authorization gates remain. No push
+bypass, provider, customer send, cloud mutation, live flag or canonical restart.
+
 ## September 22 - Paired atomic import-to-review handoff
 
 Designs880f163bfdf3594e539a39673d5fc7fa2d4120ac now retains v2 research and

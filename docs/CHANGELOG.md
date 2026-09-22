@@ -1,5 +1,14 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Verify current-lease private review reads
+
+- Pair unchanged runtime with local Designs161123dc: final1,628/136, lints,
+  both synthetic proofs and offline infra pass. Agency PHP1,498/16,755 and
+  canonical legacy journey also pass; protected inventories unchanged.
+- Record the reproduced/repaired valid-large-brief issue and preserve complete
+  source-versus-installed-delivery boundaries. This checkpoint changes docs only.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
 ## 2026-09-22 - Verify atomic agency import-to-review compatibility
 
 - Pair unchanged Studio runtime with local Designs880f163b: final1,628/136,

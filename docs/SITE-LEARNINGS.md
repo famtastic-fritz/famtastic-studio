@@ -1,5 +1,14 @@
 # Site Studio learning record
 
+## 2026-09-22 - Download complete authored scope before claiming review readiness
+
+A valid multi-page agency brief can exceed the signed context response bound.
+An actual admitted seven-page/raw-content fixture reproduced the409; reference
+the whole document and retrieve exact hash-bound64KiB ranges without truncation.
+The future Mac consumer must assemble and verify total bytes/document hash before
+JSON decoding, then preserve relative assets in an isolated private preview.
+Signed artifact transport is not actual independent judgment or a browsable site.
+
 ## 2026-09-22 - Shared PHP helpers also belong to standalone harness closures
 
 Drupal autoloaded tests can pass while paired Node-to-PHP consumers fail at class
