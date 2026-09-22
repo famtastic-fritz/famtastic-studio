@@ -2,6 +2,28 @@
 
 Status: in progress, local source only. No production cutover.
 
+## September 22 - Paired retained-QA verification
+
+Studio runtimec8dcb0dfe640ca5ecc8a4d4f78cc53deab79923a paired with the Designs
+retained-QA implementation now committed locally as482da42a passes **1,628 tests
+/136 files**, no failures/skips, both lints, both synthetic execution proofs,
+offline infra validation and whitespace. Suite220.33s /guard222.176s. Receipt:
+`evidence-retained-qa-studio-pair.BTxTD0` under the recovered task evidence root.
+The guard records the precommit Designs basef7f836cd and exact diff SHA256
+4ed5b07e022ccc35e3a56fabb8f0201e87ab99bc38a9b0fdb6fe7007dea69ebf;
+only docs and explicit CI GD declaration followed, no runtime change.
+
+Designs separately passes **1,413 PHP tests /15,217 assertions**, portal DNA34/34,
+email presentation86 and the captured-mail canonical **legacy** journey. Main
+inspected both actual journey child receipts. Protected data inventories stayed
+unchanged. Synthetic review images/provenance do not prove actual independent
+judgment, managed unattended customer delivery or laptop-off execution.
+
+The Designs checkpoint push was rejected for missing GitHub OAuth workflow scope;
+PR42 still hasf7f836cd, not482da42a. Actions billing lock and absent cloud CLI
+authorization remain separate gates. No bypass, cloud call, provider execution,
+customer send or canonical service restart. This Studio update is docs-only.
+
 Latest source checkpoint: inert create-only Cloud Run request primitive and
 unresolved-submission recovery contract pass independent review and the final
 paired1,628 tests/136files, lints, both synthetic proofs and offline infra checks.

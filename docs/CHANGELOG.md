@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Verify paired retained-QA checkpoint
+
+- Record final paired1,628/136, agency PHP1,413/15,217 and canonical legacy
+  captured-mail journey with protected data unchanged; no Studio runtime change.
+- Distinguish local Designs482da42a from the remote review head after its push
+  failed for missing workflow permission. CI billing/cloud auth gates remain.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
 ## 2026-09-22 - Isolate create-only cloud requests and uncertain outcomes
 
 Add an inert, exact Cloud Run POST-create primitive with injected transport and

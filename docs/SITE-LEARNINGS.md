@@ -1,5 +1,13 @@
 # Site Studio learning record
 
+## 2026-09-22 - Keep paired verification separate from publication permission
+
+The retained-QA pair passes locally but the agency checkpoint cannot be pushed
+with the current credential's missing workflow scope. Preserve verified local
+source and exact precommit diff hashes; record the remote head separately. A
+paired pass does not resolve GitHub account permissions, billing or cloud auth,
+and does not make synthetic review fixtures an installed autonomous reviewer.
+
 ## 2026-09-22 - A missing outcome is not proof of no submission
 
 Persist unresolved intent before external mutation, not a `not_submitted` claim.
