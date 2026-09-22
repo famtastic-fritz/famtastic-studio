@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-22 - Verify atomic agency import-to-review compatibility
+
+- Pair unchanged Studio runtime with local Designs880f163b: final1,628/136,
+  both lints/synthetic proofs and offline infra pass; protected data unchanged.
+- Record the agency's PHP1,468/16,031, canonical legacy journey and repaired
+  standalone PHP helper imports, retaining the initial failed paired receipt.
+  See `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`. No activation.
+
 ## 2026-09-22 - Verify paired retained-QA checkpoint
 
 - Record final paired1,628/136, agency PHP1,413/15,217 and canonical legacy

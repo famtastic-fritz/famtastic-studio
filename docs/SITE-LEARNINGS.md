@@ -1,5 +1,14 @@
 # Site Studio learning record
 
+## 2026-09-22 - Shared PHP helpers also belong to standalone harness closures
+
+Drupal autoloaded tests can pass while paired Node-to-PHP consumers fail at class
+loading. A portal normalizer extraction exposed two missing explicit imports.
+Add the actual helper to both dependency-free harnesses; preserve the failed run
+and rerun the entire paired suite. Final1,628/136 passes, no product guard or
+assertion relaxed. A root-atomic import/review handoff removes a source crash gap,
+not the separate requirements for real independent judgment and installed delivery.
+
 ## 2026-09-22 - Keep paired verification separate from publication permission
 
 The retained-QA pair passes locally but the agency checkpoint cannot be pushed

@@ -2,6 +2,38 @@
 
 Status: in progress, local source only. No production cutover.
 
+## September 22 - Paired atomic import-to-review handoff
+
+Designs880f163bfdf3594e539a39673d5fc7fa2d4120ac now retains v2 research and
+enrolls one existing shared review job inside the creative import's root commit.
+Independent review's research-context and normal-clock-rollover findings are
+reproduced/fixed. No scanner, new queue, changed Mac routine or automatic approval.
+
+Studio38fac1c (runtimec8dcb0d) paired with the complete Designs patch passes
+**1,628 tests /136 files**, zero failed/skipped, both lints, both synthetic proofs,
+offline infra and whitespace. Suite218.91s /guard220.780s; protected data unchanged.
+Receipt `evidence-atomic-review-studio-final.Cd3pjh` under the recovered task root.
+Precommit Designs base5435a7dd plus exact diff
+4d57a039b86db6154693c1771ea463ceb089e7476e85d76b069d34c321f06405;
+only docs followed. All paired harness inputs and serial bounded execution used.
+
+The first pair's20failures and12secondary JSON-stream errors are retained in
+`evidence-atomic-review-studio-pair.UqE28n`. Extracting the unchanged portal
+normalizer required explicit helper imports in two dependency-free PHP harnesses;
+repair those real import lists without changing guards or assertions. Final pair
+above proves the repair. This Studio checkpoint itself changes documentation only.
+
+Agency PHP **1,468 tests /16,031 assertions**, portal DNA34/34, email presentation86
+and the canonical captured-mail **legacy** journey also pass. Both actual child
+receipts were read. The actual v2 import/QArelease composition uses private bytes,
+SQLite and HMAC but synthetic creative/review judgment; it is not an installed
+unattended customer or laptop-off journey. Protected inventories stay unchanged.
+
+Designs880f163b remains local: predecessor push failed for missing workflow scope.
+No retry or bypass; remote PR42 remainsf7f836cd. Fresh fetched main remains Designs
+f750a163/Studio bf1ef9ca. Actions billing and cloud CLI auth remain separate gates.
+No provider, real mail, canonical restart, cloud mutation or production activation.
+
 ## September 22 - Paired retained-QA verification
 
 Studio runtimec8dcb0dfe640ca5ecc8a4d4f78cc53deab79923a paired with the Designs
