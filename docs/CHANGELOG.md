@@ -1,5 +1,13 @@
 # Site Studio Next change log
 
+## 2026-09-21 - Verify paired journal and private-review integration
+
+- Pair e470dfe with Designs9583766f: 1,588 Studio tests, both lints and both
+  synthetic execution proofs pass; PHP791/4,804 passes with68 existing deprecations.
+- Protected inventories unchanged, zero external effects, main refs unchanged.
+  This is review-branch verification, not production or cloud activation.
+  Exact receipt: `docs/evidence/AUTOPIPELINE-INTEGRATION-2026-09-21.md`.
+
 ## 2026-09-21 - Remove test-owned batch and shadow fixtures after each case
 
 Batch tests now restore their prior data-root environment and remove only their

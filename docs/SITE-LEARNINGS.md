@@ -1,5 +1,12 @@
 # Site Studio learning record
 
+## 2026-09-21 - Reverify the actual cross-repository pair
+
+Independent PHP journal/artifact tests cannot replace the full Studio/agency
+pair. Run all paired source/portal/dispatch fixtures with exact source paths,
+then both lint/proof commands and combined PHP. The current pair passes1588
+Studio tests and791 PHP tests; synthetic receipts do not activate the pipeline.
+
 ## 2026-09-21 - Synthetic builds also need ownership-scoped cleanup
 
 Full regressions can pass their assertions yet exhaust disk when batch/shadow

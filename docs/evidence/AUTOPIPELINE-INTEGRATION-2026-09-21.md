@@ -2,7 +2,32 @@
 
 Status: in progress, local source only. No production cutover.
 
-## Latest complete-source checkpoint - private-review reconciliation
+## Latest complete-source checkpoint - journal and private review
+
+Studio `e470dfecec3e6bd77bb70131dc68bc8b10affc82` with Designs
+`9583766faf59dd199710190519fdc7929193ceda` passes **1,588 tests / 135 files**,
+both lints, both synthetic execution proofs, and the combined **791 PHP tests /
+4,804 assertions**. Zero failed/skipped tests; PHP has the same 68 existing
+deprecations. Studio suite288.66s, PHP suite2.364s/60MiB, total guarded292.917s.
+Receipt `journal-review-paired-final.zQmLl9` under the existing evidence root.
+Every paired fixture was enabled; protected inventories unchanged. Both proof
+commands report zero external effects. These overlapping layers are not added.
+
+The paired source includes default-closed paid-operation journal, prepared-bundle
+verification and the separately frozen real MariaDB review harness. That harness
+passes seven current cases/84checks and all four exact old-source controls fail
+(22checks); its resource/credential cleanup is positively verified. This is not
+paid-journal MariaDB/provider, installed migration or unattended delivery proof.
+Exact source pins and receipts are in Designs' private-review DB contract.
+
+Read-only fetch confirmed main remains Studio bf1ef9ca and Designs f750a163.
+No canonical checkout/service, activation flag, customer notification, payment
+or cloud resource changed. Managed credited packaging/import, trusted provider
+recovery, independent QA and the fresh complete journey remain unfinished.
+CLI cloud authorization, Linux-image disk headroom and hosted CI billing remain
+external limitations. New managed-package source work is NOT included here.
+
+## Earlier complete-source checkpoint - private-review reconciliation
 
 Studio f527e8b plus the batch/shadow cleanup repair, paired with Designs
 4998be27695f5e3940212d9cebedb31d923c04a6, passes **1,588 tests / 135 files**,
