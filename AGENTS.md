@@ -16,6 +16,16 @@ site writes; preserve authored documents, backend code, credentials and records.
 Dirty or foreign targets must fail closed. Do not invent remote URLs or change a
 foreign origin. Private repositories are the default for new customer sites.
 
+Every newly created customer repository must use the centralized FAMtastic
+Designs communication contract from `vendor/site-foundation`. Its mandatory
+`.famtastic/communications.json` and
+`docs/FAMTASTIC-DESIGNS-COMMUNICATION-DELIVERY.md` mean a local site produces
+only a versioned, idempotent delivery intent and proof/workspace evidence. It
+never sends direct SMTP mail or calls a mail-provider API. FAMtastic Designs
+owns the template registry, branded renderer, Shay signature, authenticated SMTP
+dispatch, outbox state and message receipt. A local proof is not customer
+delivery; preserve the central delivery evidence boundary.
+
 Keep library discovery declarative, read-only and pinned. Business-specific
 assets are not generally reusable without provenance and permission. Local,
 pushed, deployed and production-proven states must remain distinct. Update the
