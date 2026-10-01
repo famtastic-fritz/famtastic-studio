@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-10-01 - Pin portable mobile owner navigation
+
+Pinned the Component Studio catalog revision containing `mobile-owner-nav` 1.0.0 and recorded its source, install, discovery and consumer boundaries. No generator import, customer release or provider connection was added.
+
 ## 2026-09-19 - Fail-closed durable execution Phase 1
 
 Selected staging intake now commits one AgentTaskLog row, one Phase 1 job and

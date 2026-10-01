@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-10-01 - Keep library discovery and consumer adoption distinct
+
+A phone owner control can be captured as a neutral package and pinned for discovery without making the site depend on the studio. An exact catalog revision protects provenance, but an unavailable local checkout or a discovered entry cannot claim a generated customer artifact. Track month-calendar, account and provider work separately from navigation.
+
 ## 2026-09-19 - A 202 receipt must follow durable intent, not precede work
 
 Observation: the signed staging endpoint recorded acceptance but did not start
