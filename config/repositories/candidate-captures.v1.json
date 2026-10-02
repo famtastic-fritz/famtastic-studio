@@ -19,6 +19,26 @@
         "owner_accepted": false
       },
       "runtime_library_pin_changed": false
+    },
+    {
+      "id": "shay-service-path-v1",
+      "site_repository": "https://github.com/famtastic-fritz/site-tighten-up-your-locs",
+      "site_source_commit": "2f893acc9f1c4a6c3806d920c1af353187f97857",
+      "component_repository": "https://github.com/famtastic-fritz/component-studio",
+      "component_review_commit": "90ea28338107a130df42eb2ed6ee34da066da742",
+      "component_catalog_id": "service-path",
+      "component_version": "1.0.0",
+      "status": "neutral_frontend_package_on_private_review_branch",
+      "readiness": {
+        "source_reference_verified": true,
+        "neutral_package_available": true,
+        "install_tested": true,
+        "discovery_tested": true,
+        "executable_import_proven": false,
+        "production_proven": false,
+        "owner_accepted": false
+      },
+      "runtime_library_pin_changed": false
     }
   ]
 }

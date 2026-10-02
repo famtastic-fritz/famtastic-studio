@@ -1,5 +1,9 @@
 # Conversation decisions
 
+## 2026-10-01 - Scope of the first reusable package
+
+Fritz's modular-reuse authorization covers private review-branch capture. The first extract is a generic numbered Services section, with no Shay copy, branding, records, media, auth or booking runtime. Site Studio Next records the exact Component Studio package commit and tested discovery separately from the unfinished phone site desk. The stable runtime pin remains unchanged.
+
 ## 2026-10-01 - Fritz directed reuse toward Site Studio Next
 
 Fritz asked for modular Shay site functions and said reusable components should be captured and tracked in Site Studio Next as the legacy Site Studio is phased out. This branch records a read-only candidate linked to exact private customer and Component Studio review commits. It leaves the stable library pin, generator, customer source/runtime and production unchanged. Promotion awaits neutral package and installation proof.

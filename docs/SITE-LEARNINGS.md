@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-10-01 - A narrow package can advance without promoting its parent capture
+
+The Shay phone site desk still needs a neutral auth, media and content contract. Its numbered Services section did not: Component Studio separated it as data-only `service-path` 1.0.0 and passed two different clean installs. Site Studio Next can track that package's exact private review commit and test read-only discovery while leaving its stable runtime library pin and the broader phone-desk readiness unchanged. An installable frontend section is not a customer deployment or generator import.
+
 ## 2026-10-01 - Track research without changing a stable library pin
 
 An independently tested customer flow can identify a reusable seam without providing a generic installer. Keep a read-only, exact-commit candidate ledger apart from the runtime library registry until neutral extraction and cross-business installation have evidence. A review-branch source reference does not authorize a Site Studio import or a customer release.

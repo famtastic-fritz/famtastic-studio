@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-10-01 - Track tested Service Path extraction
+
+Pinned Component Studio review commit `90ea28338107a130df42eb2ed6ee34da066da742` for the neutral `service-path` 1.0.0 package in the read-only candidate ledger. Two independent clean installs and read-only catalog discovery are proven; production adoption, generator import and the broader phone site desk remain unproven. The stable runtime library revision was not moved.
+
 ## 2026-10-01 - Track Shay modular-site component candidate
 
 Recorded the exact customer-source and Component Studio review commits in a read-only candidate ledger. The stable runtime Component Studio pin is unchanged. This is research capture, not an installable package, executable import, customer deployment or owner acceptance.

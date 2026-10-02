@@ -16,4 +16,17 @@ describe('Shay reusable candidate ledger',()=>{
     for(const flag of ['neutral_package_available','install_tested','executable_import_proven','production_proven','owner_accepted'])expect(entry.readiness[flag]).toBe(false);
     expect(runtime.entries.find(item=>item.id==='component-studio').revision).toBe('5371b242a314cb4c689d39bf0e975bf8373b2b0d');
   });
+  it('tracks the narrow Service Path install separately from the unfinished phone desk',()=>{
+    const ledger=read('../config/repositories/candidate-captures.v1.json');
+    const entry=ledger.entries.find(item=>item.id==='shay-service-path-v1');
+    expect(entry.component_review_commit).toMatch(/^[a-f0-9]{40}$/);
+    expect(entry.component_catalog_id).toBe('service-path');
+    expect(entry.component_version).toBe('1.0.0');
+    expect(entry.readiness.neutral_package_available).toBe(true);
+    expect(entry.readiness.install_tested).toBe(true);
+    expect(entry.readiness.discovery_tested).toBe(true);
+    expect(entry.readiness.executable_import_proven).toBe(false);
+    expect(entry.readiness.production_proven).toBe(false);
+    expect(entry.runtime_library_pin_changed).toBe(false);
+  });
 });
