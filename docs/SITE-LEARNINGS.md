@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-10-01 - Keep a live customer instance separate from generator readiness
+
+A neutral Connect Card package can be pinned and discovered while one customer-owned card is live. Site Studio Next should record the exact package and site commits and distinguish that deployed instance from general package production proof or executable generator import. The customer's payment destination and terms remain in the customer application, never a shared library or platform ledger.
+
 ## 2026-10-01 - A narrow package can advance without promoting its parent capture
 
 The Shay phone site desk still needs a neutral auth, media and content contract. Its numbered Services section did not: Component Studio separated it as data-only `service-path` 1.0.0 and passed two different clean installs. Site Studio Next can track that package's exact private review commit and test read-only discovery while leaving its stable runtime library pin and the broader phone-desk readiness unchanged. An installable frontend section is not a customer deployment or generator import.

@@ -39,6 +39,28 @@
         "owner_accepted": false
       },
       "runtime_library_pin_changed": false
+    },
+    {
+      "id": "shay-connect-card-v1",
+      "site_repository": "https://github.com/famtastic-fritz/site-tighten-up-your-locs",
+      "site_source_commit": "de89941c05a75dc3c5bbaa09c38c27a6b93e3e66",
+      "customer_url": "https://tightenupyourlocs.com/connect/",
+      "component_repository": "https://github.com/famtastic-fritz/component-studio",
+      "component_review_commit": "01ac5ec310220a8337caf69dfb7b869dd6c47c36",
+      "component_catalog_id": "connect-card",
+      "component_version": "1.1.0",
+      "status": "customer_instance_live_read_only_candidate",
+      "readiness": {
+        "source_reference_verified": true,
+        "neutral_package_available": true,
+        "install_tested": true,
+        "discovery_tested": true,
+        "customer_instance_deployed": true,
+        "executable_import_proven": false,
+        "production_proven": false,
+        "owner_accepted": false
+      },
+      "runtime_library_pin_changed": false
     }
   ]
 }

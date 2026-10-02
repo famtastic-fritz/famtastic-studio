@@ -1,5 +1,9 @@
 # Conversation decisions
 
+## 2026-10-01 - Fritz requested Shay's digital card and reusable capture
+
+Fritz authorized Shay's customer-owned digital card and live production release after relevant Agency Agents review, while continuing to track reusable work in Site Studio Next instead of the retiring Site Studio. This branch records a read-only Connect Card candidate at exact private package and customer source commits. No platform runtime pin or generator import changes here.
+
 ## 2026-10-01 - Scope of the first reusable package
 
 Fritz's modular-reuse authorization covers private review-branch capture. The first extract is a generic numbered Services section, with no Shay copy, branding, records, media, auth or booking runtime. Site Studio Next records the exact Component Studio package commit and tested discovery separately from the unfinished phone site desk. The stable runtime pin remains unchanged.

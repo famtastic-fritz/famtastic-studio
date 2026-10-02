@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-10-01 - Track Shay Connect Card 1.1.0
+
+Added the exact Component Studio package revision and independently deployed Shay card source to the read-only candidate ledger. Pinned catalog discovery and the live customer URL were checked; executable Studio import and general package production readiness remain unproven. The stable runtime library revision was not moved, and no legacy Site Studio code was changed.
+
 ## 2026-10-01 - Track tested Service Path extraction
 
 Pinned Component Studio review commit `90ea28338107a130df42eb2ed6ee34da066da742` for the neutral `service-path` 1.0.0 package in the read-only candidate ledger. Two independent clean installs and read-only catalog discovery are proven; production adoption, generator import and the broader phone site desk remain unproven. The stable runtime library revision was not moved.
