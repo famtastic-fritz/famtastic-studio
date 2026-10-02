@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "read_only_candidate_ledger",
+  "entries": [
+    {
+      "id": "shay-phone-site-desk-v1",
+      "site_repository": "https://github.com/famtastic-fritz/site-tighten-up-your-locs",
+      "site_source_commit": "2f893acc9f1c4a6c3806d920c1af353187f97857",
+      "component_repository": "https://github.com/famtastic-fritz/component-studio",
+      "component_review_commit": "93a94b8f815d83f9474df84d6b412e9037338529",
+      "component_catalog_id": "phone-site-desk-shay-capture",
+      "status": "research_capture_on_private_review_branches",
+      "readiness": {
+        "source_reference_verified": true,
+        "neutral_package_available": false,
+        "install_tested": false,
+        "executable_import_proven": false,
+        "production_proven": false,
+        "owner_accepted": false
+      },
+      "runtime_library_pin_changed": false
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-10-01 - Track research without changing a stable library pin
+
+An independently tested customer flow can identify a reusable seam without providing a generic installer. Keep a read-only, exact-commit candidate ledger apart from the runtime library registry until neutral extraction and cross-business installation have evidence. A review-branch source reference does not authorize a Site Studio import or a customer release.
+
 ## 2026-09-21 - Validate the actual Mac parser, not a presumed Ruby version
 
 Observation: the Phase 2 validator selected system Ruby by executable presence

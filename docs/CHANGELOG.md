@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-10-01 - Track Shay modular-site component candidate
+
+Recorded the exact customer-source and Component Studio review commits in a read-only candidate ledger. The stable runtime Component Studio pin is unchanged. This is research capture, not an installable package, executable import, customer deployment or owner acceptance.
+
 ## 2026-09-22 - Narrow Phase 2 rebase and Mac verification
 
 Reapplied the inert Phase 2 cloud-shadow foundation and Mac-safe YAML parser

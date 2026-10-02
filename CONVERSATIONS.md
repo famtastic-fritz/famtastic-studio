@@ -1,5 +1,9 @@
 # Conversation decisions
 
+## 2026-10-01 - Fritz directed reuse toward Site Studio Next
+
+Fritz asked for modular Shay site functions and said reusable components should be captured and tracked in Site Studio Next as the legacy Site Studio is phased out. This branch records a read-only candidate linked to exact private customer and Component Studio review commits. It leaves the stable library pin, generator, customer source/runtime and production unchanged. Promotion awaits neutral package and installation proof.
+
 ## 2026-09-17: client-led build and acceptance
 
 Fritz directed automatic selected-direction build/revision work without his
