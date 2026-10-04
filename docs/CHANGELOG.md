@@ -1,5 +1,12 @@
 # Site Studio Next change log
 
+## 2026-10-04 - Customer messaging candidate discovery
+
+Recorded the Component Studio `consent-sms-loop` package as a source candidate
+and linked the umbrella agent contract. Studio's pinned catalog, generator,
+customer runtimes and production SMS senders are unchanged. See
+[the capability record](capabilities/CUSTOMER-MESSAGING-CANDIDATE.md).
+
 ## 2026-09-22 - Narrow Phase 2 rebase and Mac verification
 
 Reapplied the inert Phase 2 cloud-shadow foundation and Mac-safe YAML parser

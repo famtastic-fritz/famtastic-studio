@@ -22,6 +22,12 @@ pushed, deployed and production-proven states must remain distinct. Update the
 changelog, site learnings, research and evidence after meaningful changes. Never
 copy raw private conversations or customer data into shared catalogs.
 
+For appointment SMS or two-way replies, read the umbrella
+`docs/agent-startup/CUSTOMER-MESSAGING-CONTRACT.v1.md` and
+`docs/capabilities/CUSTOMER-MESSAGING-CANDIDATE.md` here. The Component Studio
+`consent-sms-loop` package is a candidate build-time input; catalog discovery
+or source tests do not install it in a customer site or authorize sending.
+
 The parent FAMtastic ecosystem owns universal doctrine. This independent repo
 consumes that doctrine; old parent-tracked copies are not alternate sources.
 
