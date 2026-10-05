@@ -1,5 +1,9 @@
 # Conversation decisions
 
+## 2026-10-04: SMS workflow 0.2 discovery
+
+Fritz requested a reusable customer SMS component and Shay-specific workflow after a successful personal Textbee test. Site Studio Next records a review-only pin to Component Studio's neutral 0.2 source, exposing its readiness through read-only library discovery. The package's customer-owned consent, quota, template, audit and sender gates remain outside Studio execution; no customer sending is enabled here. Publish order is Component Studio commit first, then Studio pin.
+
 ## 2026-09-17: client-led build and acceptance
 
 Fritz directed automatic selected-direction build/revision work without his
