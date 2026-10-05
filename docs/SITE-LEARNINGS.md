@@ -1,5 +1,16 @@
 # Site Studio learning record
 
+## 2026-10-04 - SMS component discovery is not provider activation
+
+A reusable reply classifier and signed-webhook verifier can be tested without
+granting a customer site permission to send. Keep the package pin, independent
+installation, business sender, site-owned consent/outbox, hosted round trip and
+owner acceptance as separate records. Fritz's Textbee personal-phone lab uses
+fictional data and cannot stand in for a client's production sender.
+
+Evidence: [candidate capability](capabilities/CUSTOMER-MESSAGING-CANDIDATE.md)
+and the umbrella customer messaging contract.
+
 ## 2026-09-21 - Validate the actual Mac parser, not a presumed Ruby version
 
 Observation: the Phase 2 validator selected system Ruby by executable presence

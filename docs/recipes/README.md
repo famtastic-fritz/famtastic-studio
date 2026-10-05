@@ -5,6 +5,14 @@ Studio Next, and each delivered site repository. A catalog entry is a
 versioned capability boundary, not a promise that Site Studio can regenerate
 every implementation from prose.
 
+## Customer messaging candidate (2026-10-04)
+
+The [customer messaging capability record](../capabilities/CUSTOMER-MESSAGING-CANDIDATE.md)
+points to Component Studio's tested `consent-sms-loop` reference package.
+It is not pinned into this Studio's live library catalog or imported by the
+site generator. A future adoption needs an exact library revision, independent
+installation and a site-owned sender, consent, outbox and reply workflow.
+
 ## Service business Owner Desk — research candidate (2026-09-13)
 
 The separate Component Studio branch `research/service-business-owner-desk`
