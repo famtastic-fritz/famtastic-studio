@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-10-04 - Versioned SMS workflow discovery review
+
+Pinned Component Studio's locally committed `consent-sms-loop` 0.2.0 revision for read-only catalog discovery and updated the customer-messaging capability pointer. The package installed independently and passed fictional tests in Component Studio; this Studio change does not execute it, send messages or establish a business provider. Publish only after the Component Studio commit exists on its private remote.
+
 ## 2026-10-04 - Customer messaging candidate discovery
 
 Recorded the Component Studio `consent-sms-loop` package as a source candidate

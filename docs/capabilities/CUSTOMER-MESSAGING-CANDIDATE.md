@@ -1,14 +1,19 @@
 # Customer messaging component candidate
 
 Status: source candidate, 2026-10-04. Component Studio
-`packages/consent-sms-loop` version 0.1.0 at commit
-`09fb09a1b61c9251a151862559db9792a8c88004` supplies a provider-neutral
-reply classifier, a signed Textbee webhook verifier and an allowlisted lab
-sender. Its package tests and independent installer test passed locally. This
-record is a pointer, not a Studio library pin or customer implementation.
+`packages/consent-sms-loop` version 0.2.0 at commit
+`f41528a30e5d18368da77800f20ce1c17a48f95e` supplies a disabled-by-default
+provider-neutral reminder workflow, reply classifier, signed Textbee webhook
+verifier and allowlisted lab sender. Its 13 package tests and independent
+eight-file hashed installation passed locally. Studio's repository catalog is
+now pinned to that exact **local review commit** for read-only discovery; this
+branch must not be published before Component Studio publishes the commit.
+This does not install an executable workflow or customer implementation.
 
 The agency-wide contract is
-`FAMtastic/docs/agent-startup/CUSTOMER-MESSAGING-CONTRACT.v1.md`. Each client
+`FAMtastic/docs/agent-startup/CUSTOMER-MESSAGING-CONTRACT.v1.md`, but that
+referenced file was absent from the inspected umbrella checkout on 2026-10-04.
+The canonical document must be restored or this pointer corrected. Each client
 site owns appointment authority, SMS-specific consent, suppression, durable
 outbox, reply matching, owner review and release evidence. YES can request
 attendance confirmation; NO requires follow-up; STOP suppresses future SMS.
@@ -17,7 +22,8 @@ None changes an appointment without an approved site workflow.
 ## Adoption gates
 
 1. Pin an exact Component Studio revision in Studio's repository catalog and
-   independently verify the catalog bytes. This has not happened.
+   independently verify the catalog bytes. The 0.2 local review pin/discovery
+   passed; publication of the Component Studio revision remains pending.
 2. Install an exact package version in an independent customer repo and test it
    there. A sibling checkout is not a runtime dependency.
 3. Use an approved business sender and site-specific consent text. Fritz's
@@ -27,5 +33,6 @@ None changes an appointment without an approved site workflow.
 5. Record a release-matched owner phone task before marking owner accepted.
 
 Current state: `source_captured` and `install_tested` in Component Studio;
-`candidate` in Site Studio Next. No SMS provider is installed, configured or
-enabled by this Studio change.
+`discovery_only` in Site Studio Next's local review. `executable_import_proven`,
+`production_proven` and `customer_sending_enabled` remain false. No SMS provider
+is installed, configured or enabled by this Studio change.
