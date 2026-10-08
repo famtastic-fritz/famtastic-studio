@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-10-07 - Verify callable discovery
+
+A capability pointer must include a checked source pin and an actual command invocation from the consuming checkout. Keep local handoff proof separate from automatic pipeline use and customer runtime adoption.
+
 ## 2026-10-04 - Pinning source for discovery is a separate gate
 
 Component Studio catalog discovery requires the checkout HEAD, origin and tracked catalog bytes to match one exact Studio registry pin. The new SMS package can be discovered locally only after its owning Component Studio commit is pinned; that read-only result is not an executable import, site install or business sender. A local pin to an unpublished commit must remain a coordinated review branch until the owner repository publishes first. The referenced umbrella customer-messaging contract path is currently absent and requires canonical repair.
