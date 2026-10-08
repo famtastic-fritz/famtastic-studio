@@ -1,5 +1,9 @@
 # Site Studio learning record
 
+## 2026-10-07 - Verify callable discovery
+
+A capability pointer must include a checked source pin and an actual command invocation from the consuming checkout. Keep local handoff proof separate from automatic pipeline use and customer runtime adoption.
+
 ## 2026-09-19 - A 202 receipt must follow durable intent, not precede work
 
 Observation: the signed staging endpoint recorded acceptance but did not start

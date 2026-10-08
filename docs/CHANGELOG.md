@@ -1,5 +1,9 @@
 # Site Studio Next change log
 
+## 2026-10-07 - Local quality-tool discovery
+
+Added a pinned declarative descriptor and shared CLI handoff guide for the installed FAMtastic report, credential and accessibility checks. Both Studio checkouts have local positive/negative handoff evidence; no server or generator change.
+
 ## 2026-09-19 - Fail-closed durable execution Phase 1
 
 Selected staging intake now commits one AgentTaskLog row, one Phase 1 job and

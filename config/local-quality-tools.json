@@ -1,0 +1,20 @@
+{
+  "contractVersion": 1,
+  "studio": "Site Studio Next",
+  "packageVersion": "0.1.0",
+  "capabilityIds": [
+    "quality.research-report",
+    "quality.secret-scan",
+    "quality.accessibility-local"
+  ],
+  "sha256": {
+    "run.cjs": "2fef0e3e026347c111b603a4af21dee56c8e0fc1349b5572cf7f812566b228da",
+    "validate-report.cjs": "a5aab72e334882b85f35cbce1f8fac2b540b491ebf21450c8c0dc493810c0cc7",
+    "fixture-provider.cjs": "6d573b1dcb5743a2cf3f031f9017419bef0c06303dcb0b9627a806a604114b84",
+    "require-valid-report.cjs": "1112b24e0d447f88c05efaf272a288509870b1a51df5471b29dcd7860c2b6b89",
+    "axe-local.cjs": "4807338b5326bd039577c011f3b6e4df7ed2187e07d726f3369a2ddf7820bd7e",
+    "package-lock.json": "2d09d76519d616e2dd082830b24df43b1982cc7d729bab0eb8c89a556e6b2fd2",
+    "studio-consumer.cjs": "99633dabb713febef94da391ee361d145fd438f2fcd6fa1ea2fd312e96ac8c79"
+  },
+  "execution": "Explicit local CLI only; no automatic runtime consumption"
+}
