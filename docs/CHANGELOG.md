@@ -1,5 +1,19 @@
 # Site Studio Next change log
 
+## 2026-10-21 - Source branch reconciliation
+
+Prepared an isolated merge of remote main `112619b3e8cfd0c15bebdba7eccc8be3fe5224bd`
+and local main `d4b90e79b28a11e5aa2488ff23076c451abd8c1b`, retaining the inert
+Phase 2 cloud-shadow and SMS discovery records alongside foundation 1.2.0's
+central communications scaffold. Both sides' quality-tool descriptor is identical.
+Resolved only overlapping changelog/learning insertions and repaired the newly
+emitted 1.1.0 manifest's stale 1.0.0-only JSON schema, retaining legacy validation.
+
+This records source/local verification, not a committed/merged release, Studio
+restart, provider activation, message delivery or owner acceptance. Earlier dated
+review-branch records remain historical. See
+[evidence](evidence/BRANCH-RECONCILIATION-2026-10-21.md).
+
 ## 2026-10-07 - Local quality-tool discovery
 
 Added a pinned declarative descriptor and shared CLI handoff guide for the installed FAMtastic report, credential and accessibility checks. Both Studio checkouts have local positive/negative handoff evidence; no server or generator change.

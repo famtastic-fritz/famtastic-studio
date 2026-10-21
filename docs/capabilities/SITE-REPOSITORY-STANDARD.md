@@ -1,9 +1,11 @@
-# Independent site source contract 1.0.0
+# Independent site source contracts 1.0.0 and 1.1.0
 
 ## Implemented behavior
 
-The single source package is `vendor/site-foundation`, captured byte-for-byte by
-Component Studio under packages/site-foundation. Public API:
+The source package consumed here is `vendor/site-foundation`. Component Studio
+records published package versions under packages/site-foundation. This source
+reconciliation includes a local schema compatibility repair; publication of that
+repair to Component Studio is not established here. Public API:
 
 - `createRepoScaffold(input)` returns manifest/files, without mutation.
 - `preflightRepository(input)` reads Git identity/remote/common directory and
@@ -12,7 +14,13 @@ Component Studio under packages/site-foundation. Public API:
 - `requireRepositoryContract(root, siteId)` validates the source contract/files.
 
 The manifest lives at `.famtastic/site-manifest.json`, with schema_version 1,
-contract_version 1.0.0 and format source_repository. Business owner and builder
+contract_version 1.1.0 for new scaffolds and format source_repository. Existing
+1.0.0 repositories remain supported without silently rewriting authored records.
+The vendored JSON schema accepts both supported versions. Foundation 1.2.0 adds
+CODEX.md, FAMTASTIC-CONTEXT.md, SITE-STATE.md and the central communications
+contract/document to new scaffolds. Version 1.1.0 validates the centralized
+FAMtastic Designs route, mandatory template versions and Shay signature; this
+records delivery intent requirements, not an enabled sender or delivery proof. Business owner and builder
 are separate fields. Repository state is local_only until a remote push receipt
 has verified the exact remote ref. No URL is inferred from a site name.
 

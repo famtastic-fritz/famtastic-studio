@@ -1,5 +1,22 @@
 # Site Studio learning record
 
+## 2026-10-21 - Merge ancestry and executable contracts need separate checks
+
+Observation: local and remote main had distinct contributions plus identical
+quality discovery changes. The new foundation emitted contract 1.1.0, while its
+vendored JSON schema still allowed only 1.0.0. A clean textual merge would retain
+that consumer inconsistency.
+
+Guidance: integrate in an isolated branch from freshly fetched remote main,
+preserve both source heads and historical evidence, and test generated artifacts
+against their declared schema while preserving old contracts. Keep discovery
+handoffs distinct from automatic runtime consumption. Host contention can exceed
+existing 5-second test deadlines: retain the failed default-concurrency result
+and rerun serially without increasing timeouts before attributing a regression.
+
+Evidence: [source reconciliation](evidence/BRANCH-RECONCILIATION-2026-10-21.md).
+Scope: site_local integration lesson; no shared/global profile changes.
+
 ## 2026-10-07 - Verify callable discovery
 
 A capability pointer must include a checked source pin and an actual command invocation from the consuming checkout. Keep local handoff proof separate from automatic pipeline use and customer runtime adoption.
