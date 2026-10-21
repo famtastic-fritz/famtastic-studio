@@ -35,3 +35,11 @@ Current state: `source_captured` and `install_tested` in Component Studio;
 `discovery_only` in Site Studio Next's local review. `executable_import_proven`,
 `production_proven` and `customer_sending_enabled` remain false. No SMS provider
 is installed, configured or enabled by this Studio change.
+
+## 2026-10-21 source reconciliation update
+
+The pinned 0.2.0 catalog/discovery changes are present in preserved remote main
+`112619b3e8cfd0c15bebdba7eccc8be3fe5224bd` and retained in the current isolated
+reconciliation. The October 4 PR/review wording above is historical, not a fresh
+GitHub status check. No executable SMS import, customer installation, business
+sender, hosted round trip or owner acceptance was established by this merge.
